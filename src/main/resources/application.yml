@@ -1,0 +1,32 @@
+spring:
+  profiles:
+    active: dev
+
+# dev-config
+---
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://39.96.17.163:3306/dev-hniecs?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: dev-hniecs
+    password: LCERPijnGMeN37Jz
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+server:
+  #¶Ë¿ÚºÅ
+  port: 10000
+---
+
+# pro-config
+---
+spring:
+  profiles: pro
+  datasource:
+    url: jdbc:mysql://39.96.17.163:3306/dev-hniecs?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: dev-hniecs
+    password: LCERPijnGMeN37Jz
+    driver-class-name: com.mysql.cj.jdbc.Driver
+server:
+  #¶Ë¿ÚºÅ
+  port: 10018
+---
