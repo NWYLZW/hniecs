@@ -1,6 +1,7 @@
 package com.hniecs.mainserver.tool.api;
 
 import com.hniecs.mainserver.tool.api.itf.HErrorCode;
+import lombok.Getter;
 
 /**
  * @author  yijie
@@ -21,17 +22,13 @@ public enum ResultCode implements HErrorCode {
 
     FAILED(500, "失败");
 
+    @Getter
     private long code;
+    @Getter
     private String message;
 
     private ResultCode(long code, String message) {
         this.code = code;
         this.message = message;
-    }
-    public long getCode() {
-        return code;
-    }
-    public String getMessage() {
-        return message;
     }
 }
