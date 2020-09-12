@@ -1,9 +1,9 @@
 package com.hniecs.mainserver.controller;
 
 import com.hniecs.mainserver.tool.api.CommonResult;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.error.ErrorAttributes;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -15,22 +15,30 @@ import javax.servlet.http.HttpServletRequest;
  * @logs[0] 2020-09-12 18:26 yijie 创建了MainErrorController.js文件
  */
 @RestController
+@Slf4j
 public class MainErrorController implements ErrorController {
-    @Autowired
-    private ErrorAttributes errorAttributes;
     /**
-     * 默认错误
+     * 默认错误路由
      */
-    private static final String path_default = "/error";
+    private static final String PATH  = "/error";
     @Override
     public String getErrorPath() {
-        return path_default;
+        return PATH ;
     }
+
     /**
-     * 错误信息
+     * 处理响应码错误
      */
-    @RequestMapping()
+    @RequestMapping(value = PATH ,  produces = {MediaType.APPLICATION_JSON_VALUE})
     public CommonResult error(HttpServletRequest request) {
+        // 获取响应码
+        Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
+        if(statusCode == 404) {
+            return CommonResult.notFound();
+        } else if(statusCode == 403) {
+            return CommonResult.forbidden();
+        }
+
         return CommonResult.notFound();
     }
 }
