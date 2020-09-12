@@ -1,10 +1,7 @@
 package com.hniecs.mainserver.dao;
 
 import com.hniecs.mainserver.entity.UserEntity;
-import org.apache.ibatis.annotations.Delete;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -14,6 +11,7 @@ import java.util.List;
  * @date    2020-09-13
  * @logs[0] yijie 2020-09-13 创建了文件UserDao.java
  */
+@Mapper
 public interface UserDao {
     /**
      * 获得所有用户的简略信息
@@ -24,7 +22,7 @@ public interface UserDao {
      * 通过id获得某个用户的简略信息
      */
     @Select("select * from  user where id = #{id}")
-    public UserEntity getUserSimpleById(UserEntity param);
+    public UserEntity getUserSimpleById(Long id);
 
     /**
      * 插入一个用户

@@ -18,6 +18,19 @@ public class UserEntity {
     private String userName;
     private String passwordSHA;
 
+    public UserEntity(String userName, String password) {
+        this.userName = userName;
+        this.setPassword(password);
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+            "id=" + id +
+            ", userName='" + userName + '\'' +
+            '}';
+    }
+
     public void setPassword (String password) {
         this.passwordSHA = Password.generatePasswordHash(password);
     }
