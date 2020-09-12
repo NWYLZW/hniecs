@@ -24,11 +24,15 @@ public class UserBaseController {
     private UserBaseService userBaseService;
 
     @PostMapping("/user/base/login")
-    public CommonResult login(@RequestBody Map<String,Object> user) {
-        if (user.get("userName").equals("admin")) {
-            return CommonResult.success("admin");
+    public CommonResult login(@RequestBody Map<String, String> user) {
+        String msg = userBaseService.login(
+            user.get("userName"),
+            user.get("password")
+        );
+        if (msg.equals("0")) {
+            return CommonResult.success("登录成功");
         } else {
-            return CommonResult.validateFailed();
+            return CommonResult.validateFailed(msg);
         }
     }
     @PostMapping("/user/base/register")

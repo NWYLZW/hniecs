@@ -19,6 +19,9 @@ public class UserBaseService {
     @Autowired
     private UserModel userModel;
 
+    public String login(String userName, String password) {
+        return userModel.vertify(userName, password);
+    }
     /**
      * 注册新用户
      * @param userName  用户名

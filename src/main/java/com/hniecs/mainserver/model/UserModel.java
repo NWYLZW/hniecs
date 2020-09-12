@@ -22,12 +22,39 @@ public class UserModel {
     private UserDao userDao;
 
     /**
+     * 获取某个用户名对应用户
+     * @param userName 用户名
+     */
+    private UserEntity get(String userName) {
+        return userDao.getUserSimpleByUserName(userName);
+    }
+
+    /**
+     * 检查是否有某个用户
+     * @param userName 用户名
+     */
+    private boolean have(String userName) {
+        UserEntity u = userDao.getUserSimpleByUserName(userName);
+        return u != null;
+    }
+
+    /**
+     * 检查是否能够登录
+     * @param userName  用户名
+     * @param password  密码
+     */
+    public String vertify(String userName, String password) {
+        UserEntity u = get(userName);
+        if (u == null) return "该用户名用户不存在";
+        return u.vertifyPWD(password)?"0":"密码错误";
+    }
+
+    /**
      * 添加用户
      * @param user  用户entity实体结构
      */
     public String addUser (UserEntity user) {
-        UserEntity u = userDao.getUserSimpleByUserName(user.getUserName());
-        if (u != null) return "该用户名用户已存在";
+        if (have(user.getUserName())) return "该用户名用户已存在";
         try {
             userDao.insert(user);
             return "0";
