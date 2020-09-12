@@ -1,6 +1,7 @@
 package com.hniecs.mainserver.controller;
 
 import com.hniecs.mainserver.tool.api.CommonResult;
+import com.hniecs.mainserver.tool.api.ResultCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.MediaType;
@@ -33,10 +34,12 @@ public class MainErrorController implements ErrorController {
     public CommonResult error(HttpServletRequest request) {
         // 获取响应码
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");
-        if(statusCode == 404) {
-            return CommonResult.notFound();
+        if(statusCode == 401) {
+            return CommonResult.unauthorized();
         } else if(statusCode == 403) {
             return CommonResult.forbidden();
+        } else if(statusCode == 404) {
+            return CommonResult.notFound();
         }
 
         return CommonResult.notFound();
