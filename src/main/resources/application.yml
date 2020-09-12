@@ -13,7 +13,6 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
 
 server:
-  #¶Ë¿ÚºÅ
   port: 10000
 ---
 
@@ -27,6 +26,5 @@ spring:
     password: LCERPijnGMeN37Jz
     driver-class-name: com.mysql.cj.jdbc.Driver
 server:
-  #¶Ë¿ÚºÅ
   port: 10018
 ---
