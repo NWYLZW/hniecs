@@ -23,6 +23,11 @@ public interface UserDao {
      */
     @Select("select * from  user where id = #{id}")
     public UserEntity getUserSimpleById(Long id);
+    /**
+     * 通过用户名获得某个用户的简略信息
+     */
+    @Select("select * from  user where user_name = #{userName}")
+    public UserEntity getUserSimpleByUserName(String userName);
 
     /**
      * 插入一个用户

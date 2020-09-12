@@ -1,8 +1,12 @@
 package com.hniecs.mainserver.controller;
 
+import com.hniecs.mainserver.service.UserBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.Map;
 
 /**
@@ -13,7 +17,12 @@ import java.util.Map;
  * @logs[1] yijie 2020-09-13 修改了文件名
  */
 @RestController
+@Slf4j
 public class UserBaseController {
+    @Resource
+    @Autowired
+    private UserBaseService userBaseService;
+
     @PostMapping("/user/base/login")
     public CommonResult login(@RequestBody Map<String,Object> user) {
         if (user.get("userName").equals("admin")) {
@@ -23,11 +32,15 @@ public class UserBaseController {
         }
     }
     @PostMapping("/user/base/register")
-    public CommonResult register(@RequestBody Map<String,Object> registerData) {
-        if (registerData.get("userName").equals("admin")) {
-            return CommonResult.success("admin");
+    public CommonResult register(@RequestBody Map<String, String> registerData) {
+        String msg = userBaseService.registerNewUser(
+            registerData.get("userName"),
+            registerData.get("password")
+        );
+        if (msg.equals("0")) {
+            return CommonResult.success("注册成功");
         } else {
-            return CommonResult.validateFailed();
+            return CommonResult.validateFailed(msg);
         }
     }
 }
