@@ -1,7 +1,9 @@
 package com.hniecs.mainserver.tool.api;
 
 import com.hniecs.mainserver.tool.api.itf.HErrorCode;
+import lombok.Data;
 
+@Data
 public class CommonResult<T> {
     private long code;
     private String message;
@@ -57,6 +59,21 @@ public class CommonResult<T> {
     }
 
     /**
+     * 接口不存在的返回结果
+     */
+    public static <T> CommonResult<T> notFound() {
+        return failed(ResultCode.NOT_FOUND);
+    }
+
+    /**
+     * 接口不存在的返回结果
+     * @param message 提示信息
+     */
+    public static <T> CommonResult<T> notFound(String message) {
+        return new CommonResult<T>(ResultCode.NOT_FOUND.getCode(), message, null);
+    }
+
+    /**
      * 参数验证失败返回结果
      */
     public static <T> CommonResult<T> validateFailed() {
@@ -83,29 +100,5 @@ public class CommonResult<T> {
      */
     public static <T> CommonResult<T> forbidden(T data) {
         return new CommonResult<T>(ResultCode.FORBIDDEN.getCode(), ResultCode.FORBIDDEN.getMessage(), data);
-    }
-
-    public long getCode() {
-        return code;
-    }
-
-    public void setCode(long code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
-
-    public T getData() {
-        return data;
-    }
-
-    public void setData(T data) {
-        this.data = data;
     }
 }
