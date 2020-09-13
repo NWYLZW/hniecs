@@ -7,7 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Map;
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+import java.util.*;
 
 /**
  * @author  yijie
@@ -24,13 +27,20 @@ public class UserBaseController {
     private UserBaseService userBaseService;
 
     @PostMapping("/user/base/login")
-    public CommonResult login(@RequestBody Map<String, String> user) {
+    public CommonResult login(@RequestBody Map<String, String> user, HttpSession session) {
         String msg = userBaseService.login(
             user.get("userName"),
             user.get("password")
         );
         if (msg.equals("0")) {
-            return CommonResult.success("登录成功");
+            Object sessionToken = session.getAttribute("sessionToken");
+            if (sessionToken == null) {
+                sessionToken = "123";
+                session.setAttribute("sessionToken", sessionToken);
+            }
+            Hashtable data = new Hashtable();
+            data.put("sessionToken", sessionToken.toString());
+            return CommonResult.success(data, "登陆成功");
         } else {
             return CommonResult.validateFailed(msg);
         }
