@@ -4,11 +4,15 @@ import com.hniecs.mainserver.tool.security.Password;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Date;
+
 /**
  * @desc    用户基类
  * @author  yijie
- * @date    2020-09-12 15:34
- * @logs[0] 2020-09-13 01:47 yijie 添加了密码生成与校验
+ * @date    2020-09-12 15:34 yijie
+ * @logs[0] 2020-09-12 15:34 yijie 创建了该文件
+ * @logs[1] 2020-09-13 01:47 yijie 添加了密码生成与校验
+ * @logs[2] 2020-09-13 01:47 yijie 添加了创建时间与修改时间成员
  */
 public class UserEntity {
     // 用户id
@@ -20,6 +24,11 @@ public class UserEntity {
     // SHA算法加密后的密码
     private String passwordSHA;
 
+    // 创建时间
+    public Date ctime;
+    // 修改时间
+    public Date mtime;
+
     public UserEntity(String userName, String password) {
         this.userName = userName;
         this.setPassword(password);
@@ -29,6 +38,8 @@ public class UserEntity {
     public String toString() {
         return "UserEntity{" +
             "id=" + id +
+            ", ctime='" + ctime + '\'' +
+            ", mtime='" + mtime + '\'' +
             ", userName='" + userName + '\'' +
             '}';
     }

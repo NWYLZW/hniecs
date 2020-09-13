@@ -9,10 +9,10 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.Resource;
 
 /**
- * @author  yijie
  * @desc    UserModel.java
+ * @author  yijie
  * @date    2020-09-13
- * @logs[0] yijie 2020-09-13 创建了文件UserModel.java
+ * @logs[0] 2020-09-13 yijie 创建了文件UserModel.java
  */
 @Slf4j
 @Repository
