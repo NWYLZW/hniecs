@@ -25,10 +25,10 @@ public class InvitationCodeModel {
     private InvitationCodeDao invitationCodeDao;
 
     /**
-     * TODO lh 添加验证码组
+     * TODO lh 添加邀请码组
      * @param user              用户实体
      * @param canInviteCount    能邀请的用户个数
-     * @param invitationCodes   验证码数组
+     * @param invitationCodes   邀请码数组
      */
     public String addInvitationCodes(
         UserEntity user,
@@ -39,8 +39,8 @@ public class InvitationCodeModel {
     }
 
     /**
-     * TODO lh 验证码数组 使用一个验证码
-     * @param invitationCode   验证码实体
+     * TODO lh 邀请码数组 使用一个邀请码
+     * @param invitationCode   邀请码实体
      */
     public String useInvitationCode(
         InvitationCodeEntity invitationCode
