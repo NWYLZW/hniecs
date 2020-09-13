@@ -2,6 +2,8 @@ package com.hniecs.mainserver.entity;
 
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @desc    邀请码实体对象 InvitationCodeEntity.java
  * @author  yijie
@@ -22,14 +24,21 @@ public class InvitationCodeEntity {
     // 剩余邀请次数 -1 无限邀请
     public int canInviteCount;
 
+    // 创建时间
+    public Date ctime;
+    // 修改时间
+    public Date mtime;
+
     @Override
     public String toString() {
         return "InvitationCodeEntity{" +
             "id=" + id +
+            ", createUserId=" + createUserId +
             ", invitationCode='" + invitationCode + '\'' +
             ", status=" + status +
             ", canInviteCount=" + canInviteCount +
-            ", createUserId=" + createUserId +
+            ", ctime=" + ctime +
+            ", mtime=" + mtime +
             '}';
     }
 }
