@@ -12,15 +12,15 @@ import lombok.Data;
 public class InvitationCodeEntity {
     // 邀请码id
     public long id;
-    // 邀请码主体
+    // 创建邀请码的用户id
+    public long createUserId;
+
+    // 邀请码内容 长度在50个以内
     public String invitationCode;
     // 邀请码状态 0 未使用，1 已使用，2 禁止使用
     public int status;
     // 剩余邀请次数 -1 无限邀请
     public int canInviteCount;
-
-    // 创建邀请码的用户id
-    public long createUserId;
 
     @Override
     public String toString() {
