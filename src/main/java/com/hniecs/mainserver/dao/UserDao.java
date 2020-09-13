@@ -32,12 +32,20 @@ public interface UserDao {
     /**
      * 插入一个用户
      */
-    @Insert("INSERT INTO user(user_name, passwordSHA) VALUES(#{userName}, #{passwordSHA})")
+    @Insert(
+        "INSERT INTO " +
+            "user(user_name, passwordSHA, ctime) " +
+            "VALUES(#{userName}, #{passwordSHA}, #{ctime})"
+    )
     void insert(UserEntity user);
     /**
      * 修改一个用户
      */
-    @Update("UPDATE user SET user_name=#{userName},passwordSHA=#{passwordSHA} WHERE id =#{id}")
+    @Update(
+        "UPDATE user " +
+            "SET user_name=#{userName}, passwordSHA=#{passwordSHA}, mtime=#{mtime} " +
+            "WHERE id =#{id}"
+    )
     void update(UserEntity user);
     /**
      * 删除一个用户
