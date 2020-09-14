@@ -34,28 +34,29 @@ public class InvitationCodeModel {
     /**
      * TODO lh 添加邀请码组
      * 一个用户对应一个邀请码，每个用户他的邀请码有效次数有限
-     * @param user              用户实体
-     * @param availableInviteCount    能邀请的用户个数
-     * @param invitationCodes   邀请码数组
+     * @param user                  用户实体
+     * @param availableInviteCount  能邀请的用户个数
+     * @param invitationCodes       邀请码数组
      */
     public String addInvitationCodes(
         UserEntity user,
         int availableInviteCount,
         ArrayList<String> invitationCodes
     ) {
+        InvitationCodeEntity entity = new InvitationCodeEntity();
+        entity.setMtime(new Date());
+        entity.setCtime(new Date());
+        entity.setCreateUserId(user.getId());
+        entity.setStatus(0);
+        entity.setAvailableInviteCount(availableInviteCount);
+
         for (String invitationCode : invitationCodes) {
-            InvitationCodeEntity entity = new InvitationCodeEntity();
-            entity.setMtime(new Date());
-            entity.setCtime(new Date());
-            entity.setCreateUserId(user.getId());
             entity.setInvitationCode(invitationCode);
-            entity.setAvailableInviteCount(availableInviteCount);
-            entity.setStatus(0);
             try {
                 invitationCodeDao.insert(entity);
             } catch (Exception e) {
                 e.printStackTrace();
-                return "插入失败,创建者:"+user.getUserName()+"执行时间:"+new Date();
+                return "插入失败, 创建者:"+user.getUserName() + "执行时间:" + new Date();
             }
         }
         return "0";
