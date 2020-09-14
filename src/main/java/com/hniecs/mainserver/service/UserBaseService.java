@@ -12,8 +12,8 @@ import javax.annotation.Resource;
 /**
  * @desc      UserBaseService.java
  * @author    yijie
- * @date      2020-09-13
- * @logs[0]   yijie 2020-09-13 创建了文件UserBaseService.java
+ * @date      2020-09-13 00:00
+ * @logs[0]   2020-09-13 00:00 yijie 创建了文件UserBaseService.java
  * @logs[1]   2020-09-14 21:35 yijie 添加邀请码校验逻辑
  */
 @Service
