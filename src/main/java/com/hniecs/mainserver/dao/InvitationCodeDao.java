@@ -1,9 +1,9 @@
 package com.hniecs.mainserver.dao;
 
-import com.hniecs.mainserver.entity.InvitationCodeEntity;
-import org.apache.ibatis.annotations.*;
+    import com.hniecs.mainserver.entity.InvitationCodeEntity;
+    import org.apache.ibatis.annotations.*;
 
-import java.util.ArrayList;
+    import java.util.ArrayList;
 
 /**
  * @desc    InvitationCodeDao.java
