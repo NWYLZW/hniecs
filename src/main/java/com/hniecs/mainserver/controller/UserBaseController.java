@@ -39,7 +39,6 @@ public class UserBaseController {
                 session.setAttribute("sessionToken", sessionToken);
             }
             Hashtable data = new Hashtable();
-            ////!!!!!!  单例？ 多例？  名字是否重复？  zerohua
             data.put("sessionToken", sessionToken.toString());
 
             return CommonResult.success(data, "登陆成功");
