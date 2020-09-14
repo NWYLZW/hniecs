@@ -15,8 +15,8 @@ import javax.annotation.Resource;
  */
 @Service
 public class UserBaseService {
+
     @Resource
-    @Autowired
     private UserModel userModel;
 
     public String login(String userName, String password) {

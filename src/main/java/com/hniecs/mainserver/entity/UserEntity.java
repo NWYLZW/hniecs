@@ -15,18 +15,33 @@ import java.util.Date;
  * @logs[2] 2020-09-13 01:47 yijie 添加了创建时间与修改时间成员
  */
 public class UserEntity {
-    // 用户id
+
+    /**
+     * 用户id
+     */
     @Getter
     private long id;
-    // 用户名
-    @Getter @Setter
+
+    /**
+     * 用户名
+     */
+    @Getter
+    @Setter
     private String userName;
-    // SHA算法加密后的密码
+
+    /**
+     * SHA算法加密后的密码
+     */
     private String passwordSHA;
 
-    // 创建时间
+    /**
+     * 创建时间
+     */
     public Date ctime;
-    // 修改时间
+
+    /**
+     * 修改时间
+     */
     public Date mtime;
 
     public UserEntity(String userName, String password) {
@@ -47,6 +62,7 @@ public class UserEntity {
     public void setPassword (String password) {
         this.passwordSHA = Password.generatePasswordHash(password);
     }
+
     /**
      * 校验密码是否正确
      * @param password 待校验密码

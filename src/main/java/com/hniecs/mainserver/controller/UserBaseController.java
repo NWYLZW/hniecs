@@ -22,8 +22,8 @@ import java.util.*;
 @RestController
 @Slf4j
 public class UserBaseController {
+
     @Resource
-    @Autowired
     private UserBaseService userBaseService;
 
     @PostMapping("/user/base/login")
@@ -39,7 +39,9 @@ public class UserBaseController {
                 session.setAttribute("sessionToken", sessionToken);
             }
             Hashtable data = new Hashtable();
+            ////!!!!!!  单例？ 多例？  名字是否重复？  zerohua
             data.put("sessionToken", sessionToken.toString());
+
             return CommonResult.success(data, "登陆成功");
         } else {
             return CommonResult.validateFailed(msg);
@@ -57,4 +59,6 @@ public class UserBaseController {
             return CommonResult.validateFailed(msg);
         }
     }
+
+    //退出登录
 }

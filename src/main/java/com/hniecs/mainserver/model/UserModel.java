@@ -17,8 +17,8 @@ import javax.annotation.Resource;
 @Slf4j
 @Repository
 public class UserModel {
+
     @Resource
-    @Autowired
     private UserDao userDao;
 
     /**

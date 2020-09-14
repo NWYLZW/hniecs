@@ -23,6 +23,7 @@ public interface UserDao {
      */
     @Select("select * from  user where id = #{id}")
     public UserEntity getUserSimpleById(Long id);
+
     /**
      * 通过用户名获得某个用户的简略信息
      */
@@ -31,25 +32,31 @@ public interface UserDao {
 
     /**
      * 插入一个用户
+     * @param user 用户实体
+     * @return 操作成功行数
      */
     @Insert(
         "INSERT INTO " +
             "user(user_name, passwordSHA, ctime) " +
             "VALUES(#{userName}, #{passwordSHA}, #{ctime})"
     )
-    void insert(UserEntity user);
+    int insert(UserEntity user);
+
     /**
-     * 修改一个用户
+     * @param user 用户实体
+     * @return 操作成功行数
      */
     @Update(
         "UPDATE user " +
             "SET user_name=#{userName}, passwordSHA=#{passwordSHA}, mtime=#{mtime} " +
             "WHERE id =#{id}"
     )
-    void update(UserEntity user);
+    int update(UserEntity user);
+
     /**
-     * 删除一个用户
+     * @param id 用户id
+     * @return 操作成功行数
      */
     @Delete("DELETE FROM user WHERE id =#{id}")
-    void delete(Long id);
+    int delete(Long id);
 }

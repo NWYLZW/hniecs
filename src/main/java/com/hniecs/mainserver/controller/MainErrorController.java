@@ -1,7 +1,6 @@
 package com.hniecs.mainserver.controller;
 
 import com.hniecs.mainserver.tool.api.CommonResult;
-import com.hniecs.mainserver.tool.api.ResultCode;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.http.MediaType;
@@ -22,6 +21,7 @@ public class MainErrorController implements ErrorController {
      * 默认错误路由
      */
     private static final String PATH  = "/error";
+
     @Override
     public String getErrorPath() {
         return PATH ;

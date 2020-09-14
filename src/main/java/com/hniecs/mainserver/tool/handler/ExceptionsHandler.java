@@ -14,7 +14,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @Slf4j
 @RestControllerAdvice
 public class ExceptionsHandler {
-    /* 运行时异常 */
+
+    /**
+     * 运行时异常
+     * @param ex
+     * @return
+     */
     @ExceptionHandler(RuntimeException.class)
     public CommonResult runtimeExceptionHandler(RuntimeException ex) {
         log.error("运行时异常：{}", ex.getMessage(), ex);

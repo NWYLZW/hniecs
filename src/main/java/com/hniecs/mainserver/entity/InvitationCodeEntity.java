@@ -12,22 +12,41 @@ import java.util.Date;
  */
 @Data
 public class InvitationCodeEntity {
-    // 邀请码id
-    public long id;
-    // 创建邀请码的用户id
-    public long createUserId;
 
-    // 邀请码内容 长度在50个以内
-    public String invitationCode;
-    // 邀请码状态 0 未使用，1 已使用，2 禁止使用
-    public int status;
-    // 剩余邀请次数 -1 无限邀请
-    public int canInviteCount;
+    /**
+     * 邀请码id
+     */
+    private long id;
 
-    // 创建时间
-    public Date ctime;
-    // 修改时间
-    public Date mtime;
+    /**
+     * 创建邀请码的用户id
+     */
+    private long createUserId;
+
+    /**
+     * 邀请码内容 长度在50个以内
+     */
+    private String invitationCode;
+
+    /**
+     * 邀请码状态 0 未使用，1 已使用，2 禁止使用
+     */
+    private int status;
+
+    /**
+     * 剩余邀请次数 -1 无限邀请
+     */
+    private int canInviteCount;
+
+    /**
+     * 创建时间
+     */
+    private Date ctime;
+
+    /**
+     * 修改时间
+     */
+    private Date mtime;
 
     @Override
     public String toString() {
