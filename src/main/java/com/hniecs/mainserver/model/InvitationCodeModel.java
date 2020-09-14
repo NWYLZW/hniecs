@@ -23,6 +23,14 @@ public class InvitationCodeModel {
     private InvitationCodeDao invitationCodeDao;
 
     /**
+     * TODO lh 根据邀请码搜索数据库中能狗被使用的邀请码实体，没搜索到返回null
+     * @param invitationCode    邀请码
+     */
+    public InvitationCodeEntity findAbleUse(String invitationCode) {
+        return null;
+    }
+
+    /**
      * TODO lh 添加邀请码组
      * 一个用户对应一个邀请码，每个用户他的邀请码有效次数有限
      * @param user              用户实体

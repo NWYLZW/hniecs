@@ -50,7 +50,8 @@ public class UserBaseController {
     public CommonResult register(@RequestBody Map<String, String> registerData) {
         String msg = userBaseService.registerNewUser(
             registerData.get("userName"),
-            registerData.get("password")
+            registerData.get("password"),
+            registerData.get("invitationCode")
         );
         if (msg.equals("0")) {
             return CommonResult.success("注册成功");
