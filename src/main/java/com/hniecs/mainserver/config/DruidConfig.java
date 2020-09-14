@@ -14,12 +14,12 @@ import com.alibaba.druid.support.http.WebStatFilter;
 import javax.sql.DataSource;
 
 /**
- * 配置druid数据源
- * @program: main-server
- * @author: zerohua
- * @create: 2020-09-14 10:40
- **/
-
+ * @desc    配置druid数据源
+ * @author  zerohua
+ * @date    2020-09-14 10:40
+ * @logs[0] 2020-09-14 10:40 zerohua 创建了DruidConfig.java文件
+ * @logs[1] 2020-09-14 13:24 yijie 修改头部注释格式
+ */
 @Configuration
 public class DruidConfig {
 
