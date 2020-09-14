@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * @desc    InvitationCodeModel.java
@@ -34,18 +35,30 @@ public class InvitationCodeModel {
      * TODO lh 添加邀请码组
      * 一个用户对应一个邀请码，每个用户他的邀请码有效次数有限
      * @param user              用户实体
-     * @param canInviteCount    能邀请的用户个数
+     * @param availableInviteCount    能邀请的用户个数
      * @param invitationCodes   邀请码数组
      */
     public String addInvitationCodes(
         UserEntity user,
-        int canInviteCount,
+        int availableInviteCount,
         ArrayList<String> invitationCodes
     ) {
         for (String invitationCode : invitationCodes) {
-
+            InvitationCodeEntity entity = new InvitationCodeEntity();
+            entity.setMtime(new Date());
+            entity.setCtime(new Date());
+            entity.setCreateUserId(user.getId());
+            entity.setInvitationCode(invitationCode);
+            entity.setAvailableInviteCount(availableInviteCount);
+            entity.setStatus(0);
+            try {
+                invitationCodeDao.insert(entity);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return "插入失败,创建者:"+user.getUserName()+"执行时间:"+new Date();
+            }
         }
-        return "";
+        return "0";
     }
 
     /**
@@ -53,9 +66,11 @@ public class InvitationCodeModel {
      * @param invitationCode   邀请码实体
      */
     public String useInvitationCode(InvitationCodeEntity invitationCode) {
-        int count = invitationCode.getCanInviteCount();
+
+        invitationCodeDao.getAll(InvitationCodeDao.columnName.invitation_code,invitationCode.getInvitationCode());
+        int count = invitationCode.getAvailableInviteCount();
         if(count > 0) {
-            invitationCode.setCanInviteCount(count - 1);
+            invitationCode.setAvailableInviteCount(count - 1);
             return "使用成功";
         }else {
             return "可用次数已用尽,使用失败!";
