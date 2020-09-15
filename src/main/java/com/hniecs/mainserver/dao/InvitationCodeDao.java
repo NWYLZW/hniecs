@@ -1,31 +1,33 @@
 package com.hniecs.mainserver.dao;
 
-    import com.hniecs.mainserver.entity.InvitationCodeEntity;
-    import org.apache.ibatis.annotations.*;
+import com.hniecs.mainserver.entity.InvitationCodeEntity;
+import org.apache.ibatis.annotations.*;
 
-    import java.util.ArrayList;
+import java.util.ArrayList;
 
 /**
  * @desc    InvitationCodeDao.java
  * @author  yijie
  * @date    2020-09-13 19:01
- * @logs[0] 2020-09-13 19:01 yijie 创建了InvitationCodeDao.java文件
+ * @logs[0] 2020-09-13 19:01 yijie      创建了InvitationCodeDao.java文件
+ * @logs[1] 2020-09-13 19:01 zerohua    插入列名格式为 ${columnName}
  */
 @Mapper
 public interface InvitationCodeDao {
+
     // TODO czl 根据(创建用户id|邀请码id|邀请码状态) 查 邀请码
     // TODO czl 增 邀请码
     // TODO czl 根据(创建用户id|邀请码id|邀请码状态) 删 邀请码
     // TODO czl 根据(邀请码id) 改 邀请码 (邀请码状态|邀请码邀请次数|邀请码内容)
     public enum columnName{
-        create_user_id,id,status;
+        create_user_id,id,status,invitation_code;
     }
     /**
      * 搜索返回list集合数据
      * @param col 列名
      * @param condition 条件
      */
-    @Select("select * from invitation_code ${columnName} = #{condition}")
+    @Select("select * from invitation_code where ${columnName}=#{condition}")
     public ArrayList<InvitationCodeEntity> getAll(@Param("columnName") columnName col,@Param("condition") String condition);
 
     /**
@@ -35,6 +37,9 @@ public interface InvitationCodeDao {
      */
     @Select("select * from invitation_code ${columnName} = #{id}")
     public InvitationCodeEntity getOne(@Param("columnName")columnName col,@Param("condition") String condition);
+
+
+
 
     /**
      * 插入数据
@@ -47,8 +52,7 @@ public interface InvitationCodeDao {
 
     @Update("update invitation_code " +
         "SET create_user_id=#{createUserId}, invitation_code=#{invitationCode},status=#{status},canInviteCount=#{canInviteCount}, " +
-        "ctime=#{ctime},mtime=#{mtime} " +
-        "WHERE id =#{id}")
+        "values(#{createUserId},#{invitationCode},#{status},#{canInviteCount},#{ctime},#{mtime})")
     void update(InvitationCodeEntity invitationCodeEntity);
     /**
      *
