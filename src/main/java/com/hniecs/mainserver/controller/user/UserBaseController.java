@@ -1,4 +1,4 @@
-package com.hniecs.mainserver.controller;
+package com.hniecs.mainserver.controller.user;
 
 import com.hniecs.mainserver.service.UserBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
@@ -69,7 +69,7 @@ public class UserBaseController {
     }
 
     /**
-     * 用户注册信息
+     * 用户注册
      * @param registerData  注册信息字典
      * @bodyParam userName          Y   ""    用户名
      * @bodyParam password          Y   ""    密码
