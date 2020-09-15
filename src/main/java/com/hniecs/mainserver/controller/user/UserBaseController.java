@@ -1,5 +1,6 @@
 package com.hniecs.mainserver.controller.user;
 
+import com.hniecs.mainserver.annotation.NotNeedLogin;
 import com.hniecs.mainserver.service.UserBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;
@@ -19,6 +20,7 @@ import java.util.*;
  * @logs[0] 2020-09-13 00:00 yijie 创建了文件UserBaseController.java
  * @logs[1] 2020-09-13 00:00 yijie 修改了文件名
  * @logs[2] 2020-09-15 20:15 yijie 添加了登陆接口
+ * @logs[3] 2020-09-16 01:17 yijie 登陆与注册接口不被拦截器拦截
  */
 @RestController
 @Slf4j
@@ -34,6 +36,7 @@ public class UserBaseController {
      * @bodyParam userName    Y   ""    用户名
      * @bodyParam password    Y   ""    密码
      */
+    @NotNeedLogin
     @PostMapping("/user/base/login")
     public CommonResult login(@RequestBody Map<String, String> user, HttpSession session) {
         String msg = userBaseService.login(
@@ -75,6 +78,7 @@ public class UserBaseController {
      * @bodyParam password          Y   ""    密码
      * @bodyParam invitationCode    Y   ""    邀请码
      */
+    @NotNeedLogin
     @PostMapping("/user/base/register")
     public CommonResult register(@RequestBody Map<String, String> registerData) {
         String msg = userBaseService.registerNewUser(
