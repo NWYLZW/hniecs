@@ -3,7 +3,6 @@ package com.hniecs.mainserver.model;
 import com.hniecs.mainserver.dao.UserDao;
 import com.hniecs.mainserver.entity.UserEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -56,7 +55,7 @@ public class UserModel {
     public String addUser (UserEntity user) {
         if (have(user.getUserName())) return "该用户名用户已存在";
         try {
-            userDao.insert(user);
+            userDao.addNew(user);
             return "0";
         } catch (Exception e) {
             log.error("插入用户出现了错误：{}", e.getMessage(), e);

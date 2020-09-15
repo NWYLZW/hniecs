@@ -27,9 +27,9 @@ public class UserDaoTest {
 
     @Test
     public void testInsert() throws Exception {
-        userDao.insert(new UserEntity("aa1", "aa1"));
-        userDao.insert(new UserEntity("bb1", "bb1"));
-        userDao.insert(new UserEntity("cc1", "cc1"));
+        userDao.addNew(new UserEntity("aa1", "aa1"));
+        userDao.addNew(new UserEntity("bb1", "bb1"));
+        userDao.addNew(new UserEntity("cc1", "cc1"));
 
         Assert.assertEquals(3, userDao.getSimpleUsers().size());
     }
@@ -45,7 +45,7 @@ public class UserDaoTest {
         UserEntity user = userDao.getUserSimpleById(9L);
         System.out.println(user.toString());
         user.setUserName("neo");
-        userDao.update(user);
+        userDao.updateById(user);
         Assert.assertTrue(("neo".equals(userDao.getUserSimpleById(9L).getUserName())));
     }
 }
