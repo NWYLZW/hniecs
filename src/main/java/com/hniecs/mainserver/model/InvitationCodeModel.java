@@ -62,7 +62,7 @@ public class InvitationCodeModel {
         for (String invitationCode : invitationCodes) {
             ic.setInvitationCode(invitationCode);
             try {
-                invitationCodeDao.insert(ic);
+                invitationCodeDao.addNew(ic);
             } catch (Exception e) {
                 e.printStackTrace();
                 return "插入失败, 创建者:" + user.getUserName() + "创建时间:" + new Date();
