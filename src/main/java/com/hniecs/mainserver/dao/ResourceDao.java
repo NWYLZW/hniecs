@@ -42,7 +42,7 @@ public interface ResourceDao {
      * @param condition 搜索条件
      * @return
      */
-    @Select("select distinct * from resource where kind like %${condition}% or name like %${condition}% or introduce like %${condition}%")
+    @Select("select distinct * from resource where kind like \"%${condition}%\" or name like \"%${condition}%\" or introduce like \"%${condition}%\"")
     public ArrayList<ResourceEntity> getResourceByFuzzy(String condition);
 
     /***
@@ -57,14 +57,14 @@ public interface ResourceDao {
      * 通过id更新ResourceEntity
      * @param resourceEntity 要更新完的对象
      */
-    @Update("update resource" +
-        "set name=#{name},kind=#{kind},url=#{url},introduce=#{introduce},mtime=#{mtime},ctime=#{ctime}" +
-        "where id=#{id}")
+    @Update("update resource " +
+        "set name=#{name},kind=#{kind},url=#{url},introduce=#{introduce},mtime=#{mtime},ctime=#{ctime} " +
+        "where id =#{id}")
     public void update(ResourceEntity resourceEntity);
     /***
      * 通过用户id删除ResourceEntity
      * @param id 资源id
      */
-    @Delete("delete form resource where id=#{id}")
+    @Delete("delete from resource where id=#{id}")
     public void delete(long id);
 }
