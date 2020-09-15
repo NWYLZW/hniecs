@@ -4,12 +4,9 @@ import com.hniecs.mainserver.annotation.NotNeedLogin;
 import com.hniecs.mainserver.service.UserBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.*;
 
@@ -20,7 +17,7 @@ import java.util.*;
  * @logs[0] 2020-09-13 00:00 yijie 创建了文件UserBaseController.java
  * @logs[1] 2020-09-13 00:00 yijie 修改了文件名
  * @logs[2] 2020-09-15 20:15 yijie 添加了登陆接口
- * @logs[3] 2020-09-16 01:17 yijie 登陆与注册接口不被拦截器拦截
+ * @logs[3] 2020-09-16 01:17 yijie 登陆与注册接口不被拦截器拦截 预留一些TODO
  */
 @RestController
 @Slf4j
@@ -91,5 +88,41 @@ public class UserBaseController {
         } else {
             return CommonResult.validateFailed(msg);
         }
+    }
+
+    /**
+     * TODO 通过用户的id或用户名获取用户可公开信息
+     * @return 与搜索信息相关的用户列表
+     */
+    @GetMapping("/user/base/searchByIdOrUserName")
+    public CommonResult searchByIdOrUserName() {
+        return CommonResult.notFound("接口未完成");
+    }
+
+    /**
+     * TODO 获取某用户某年度的活跃信息 默认我 本年度信息
+     * @return 年度活跃信息
+     */
+    @GetMapping("/user/base/activeData")
+    public CommonResult getActiveData() {
+        return CommonResult.notFound("接口未完成");
+    }
+
+    /**
+     * TODO 获取某用户的积分信息  默认我的
+     * @return 各种积分的一个字典
+     */
+    @GetMapping("/user/base/integral")
+    public CommonResult getIntegral() {
+        return CommonResult.notFound("接口未完成");
+    }
+
+    /**
+     * TODO 获取我的详细信息
+     * @return 我的详情信息字典
+     */
+    @GetMapping("/user/base/myDetailData")
+    public CommonResult getMyDetailData() {
+        return CommonResult.notFound("接口未完成");
     }
 }
