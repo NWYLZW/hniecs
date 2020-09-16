@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
  * @author  yijie
  * @date    2020-09-13 22:14
  * @logs[0] 2020-09-13 22:14 yijie 创建了LoginInterceptor.java文件
+ * @logs[1] 2020-09-17 00:52 yijie 完成登陆拦截器
  */
 @Slf4j
 public class LoginInterceptor extends HandlerInterceptorAdapter {
@@ -34,9 +35,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         if (handler instanceof HandlerMethod) {
             HandlerMethod handlerMethod = (HandlerMethod) handler;
             if (handlerMethod.getMethodAnnotation(NotNeedLogin.class) != null) {
-                return this.deal(request, response, handler);
+                return true;
             }
         }
-        return false;
+        return this.deal(request, response, handler);
     }
 }
