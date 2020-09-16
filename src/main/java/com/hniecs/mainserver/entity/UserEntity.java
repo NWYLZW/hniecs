@@ -15,6 +15,7 @@ import java.util.Date;
  * @logs[1] 2020-09-13 01:47 yijie 添加了密码生成与校验
  * @logs[2] 2020-09-13 01:47 yijie 添加了创建时间与修改时间成员
  * @logs[3] 2020-09-16 22:37 yijie 设置全部属性全部可获取
+ * @logs[3] 2020-09-17 00:58 yijie 修改toString方法
  */
 @Data
 public class UserEntity {
@@ -48,9 +49,10 @@ public class UserEntity {
     public String toString() {
         return "UserEntity{" +
             "id=" + id +
-            ", ctime='" + ctime + '\'' +
-            ", mtime='" + mtime + '\'' +
             ", userName='" + userName + '\'' +
+            ", passwordSHA='" + passwordSHA + '\'' +
+            ", ctime=" + ctime +
+            ", mtime=" + mtime +
             '}';
     }
 
