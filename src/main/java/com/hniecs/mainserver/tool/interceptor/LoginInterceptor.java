@@ -1,12 +1,14 @@
 package com.hniecs.mainserver.tool.interceptor;
 
 import com.hniecs.mainserver.annotation.NotNeedLogin;
+import com.hniecs.mainserver.tool.sessionTool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  * @desc    登陆拦截器 LoginInterceptor.java
@@ -20,7 +22,9 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         HttpServletRequest request,
         HttpServletResponse response,
         Object handler) {
-        return true;
+        HttpSession session = request.getSession();
+        return sessionTool
+            .vertifyUserSessionToken(session);
     }
     @Override
     public boolean preHandle(
