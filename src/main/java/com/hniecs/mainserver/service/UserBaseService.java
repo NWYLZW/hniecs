@@ -27,6 +27,13 @@ public class UserBaseService {
     @Resource
     private InvitationCodeModel invitationCodeModel;
 
+    /**
+     * 登陆，将信息储存到session中
+     * @param userName      用户名
+     * @param password      密码
+     * @param session       HttpSession字典
+     * @param returnData    返回数据字典
+     */
     public String login(String userName, String password, HttpSession session, Hashtable returnData) {
         UserEntity getUserData = null;
         String msg = userModel.vertify(userName, password, getUserData);
