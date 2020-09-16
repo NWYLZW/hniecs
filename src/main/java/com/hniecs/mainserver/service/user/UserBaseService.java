@@ -1,4 +1,4 @@
-package com.hniecs.mainserver.service;
+package com.hniecs.mainserver.service.user;
 
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.UserEntity;

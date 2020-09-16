@@ -1,7 +1,7 @@
 package com.hniecs.mainserver.controller.user;
 
 import com.hniecs.mainserver.annotation.NotNeedLogin;
-import com.hniecs.mainserver.service.UserBaseService;
+import com.hniecs.mainserver.service.user.UserBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
