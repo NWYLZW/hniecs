@@ -4,10 +4,12 @@ import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.UserEntity;
 import com.hniecs.mainserver.model.InvitationCodeModel;
 import com.hniecs.mainserver.model.UserModel;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.hniecs.mainserver.tool.security.SHA256;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.util.Hashtable;
 
 /**
  * @desc      UserBaseService.java
@@ -15,6 +17,7 @@ import javax.annotation.Resource;
  * @date      2020-09-13 00:00
  * @logs[0]   2020-09-13 00:00 yijie 创建了文件UserBaseService.java
  * @logs[1]   2020-09-14 21:35 yijie 添加邀请码校验逻辑
+ * @logs[2]   2020-09-16 22:08 yijie 优化登陆逻辑
  */
 @Service
 public class UserBaseService {
@@ -24,8 +27,17 @@ public class UserBaseService {
     @Resource
     private InvitationCodeModel invitationCodeModel;
 
-    public String login(String userName, String password) {
-        return userModel.vertify(userName, password);
+    public String login(String userName, String password, HttpSession session, Hashtable returnData) {
+        String msg = userModel.vertify(userName, password);
+        if (msg.equals("0")) {
+            Object sessionToken = session.getAttribute("sessionToken");
+            if (sessionToken == null) {
+                sessionToken = SHA256.salt(userName + '&' + password, 10);
+                session.setAttribute("sessionToken", sessionToken);
+            }
+            returnData.put("sessionToken", sessionToken.toString());
+        }
+        return msg;
     }
     /**
      * 注册新用户
