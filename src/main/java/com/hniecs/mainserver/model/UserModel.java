@@ -10,8 +10,9 @@ import javax.annotation.Resource;
 /**
  * @desc    UserModel.java
  * @author  yijie
- * @date    2020-09-13
- * @logs[0] 2020-09-13 yijie 创建了文件UserModel.java
+ * @date    2020-09-13 00:00
+ * @logs[0] 2020-09-13 00:00 yijie 创建了文件UserModel.java
+ * @logs[1] 2020-09-16 22:39 yijie 添加 vertify 方法的多态，给userBaseService处理
  */
 @Slf4j
 @Repository
@@ -46,6 +47,23 @@ public class UserModel {
         UserEntity u = get(userName);
         if (u == null) return "该用户名用户不存在";
         return u.vertifyPWD(password)?"0":"密码错误";
+    }
+
+    /**
+     * 检查是否能够登录
+     * @param userName  用户名
+     * @param password  密码
+     * @param userData  用户接收到的信息
+     */
+    public String vertify(String userName, String password, UserEntity userData) {
+        UserEntity u = get(userName);
+        if (u == null) return "该用户名用户不存在";
+        if (u.vertifyPWD(password)) {
+            userData = u;
+            return "0";
+        } else {
+            return "密码错误";
+        }
     }
 
     /**
