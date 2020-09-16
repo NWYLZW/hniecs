@@ -41,6 +41,8 @@ spring:
 
 server:
   port: 10000
+  session:
+    timeout: 86400
 ---
 
 # pro-config
@@ -76,4 +78,6 @@ spring:
     #默认不起作用，需要配置
 server:
   port: 10018
+  session:
+    timeout: 86400
 ---
