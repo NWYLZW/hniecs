@@ -10,6 +10,7 @@ import java.util.Date;
  * @date    2020-09-13 18:37
  * @logs[0] 2020-09-13 18:37 yijie 创建了InvitationCodeEntity.java文件
  */
+
 @Data
 public class InvitationCodeEntity {
 
@@ -29,6 +30,11 @@ public class InvitationCodeEntity {
     private String invitationCode;
 
     /**
+     * 标签
+     */
+    private int tagName;
+
+    /**
      * 邀请码状态 0 未使用，1 已使用，2 禁止使用
      */
     private int status;
@@ -36,7 +42,7 @@ public class InvitationCodeEntity {
     /**
      * 剩余邀请次数 -1 无限邀请
      */
-    private int canInviteCount;
+    private int availableInviteCount;
 
     /**
      * 创建时间
@@ -55,7 +61,7 @@ public class InvitationCodeEntity {
             ", createUserId=" + createUserId +
             ", invitationCode='" + invitationCode + '\'' +
             ", status=" + status +
-            ", canInviteCount=" + canInviteCount +
+            ", canInviteCount=" + availableInviteCount +
             ", ctime=" + ctime +
             ", mtime=" + mtime +
             '}';

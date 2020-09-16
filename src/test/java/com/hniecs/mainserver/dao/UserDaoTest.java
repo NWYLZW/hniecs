@@ -1,11 +1,9 @@
-package com.hniecs.mainserver;
+package com.hniecs.mainserver.dao;
 
-import com.hniecs.mainserver.dao.UserDao;
 import com.hniecs.mainserver.entity.UserEntity;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -22,14 +20,13 @@ import java.util.List;
 @SpringBootTest
 public class UserDaoTest {
     @Resource
-    @Autowired
     private UserDao userDao;
 
     @Test
     public void testInsert() throws Exception {
-        userDao.insert(new UserEntity("aa1", "aa1"));
-        userDao.insert(new UserEntity("bb1", "bb1"));
-        userDao.insert(new UserEntity("cc1", "cc1"));
+        userDao.addNew(new UserEntity("aa1", "aa1"));
+        userDao.addNew(new UserEntity("bb1", "bb1"));
+        userDao.addNew(new UserEntity("cc1", "cc1"));
 
         Assert.assertEquals(3, userDao.getSimpleUsers().size());
     }
@@ -42,10 +39,10 @@ public class UserDaoTest {
 
     @Test
     public void testUpdate() throws Exception {
-        UserEntity user = userDao.getUserSimpleById(9L);
+        UserEntity user = userDao.getUserSimpleById(17L);
+        user.setPassword("yijie");
+        userDao.updateById(user);
         System.out.println(user.toString());
-        user.setUserName("neo");
-        userDao.update(user);
-        Assert.assertTrue(("neo".equals(userDao.getUserSimpleById(9L).getUserName())));
+        Assert.assertTrue(("yijie".equals(userDao.getUserSimpleById(17L).getUserName())));
     }
 }
