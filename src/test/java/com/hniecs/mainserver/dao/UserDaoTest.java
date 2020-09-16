@@ -1,11 +1,9 @@
-package com.hniecs.mainserver;
+package com.hniecs.mainserver.dao;
 
-import com.hniecs.mainserver.dao.UserDao;
 import com.hniecs.mainserver.entity.UserEntity;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -22,7 +20,6 @@ import java.util.List;
 @SpringBootTest
 public class UserDaoTest {
     @Resource
-    @Autowired
     private UserDao userDao;
 
     @Test
@@ -42,10 +39,10 @@ public class UserDaoTest {
 
     @Test
     public void testUpdate() throws Exception {
-        UserEntity user = userDao.getUserSimpleById(9L);
-        System.out.println(user.toString());
-        user.setUserName("neo");
+        UserEntity user = userDao.getUserSimpleById(17L);
+        user.setPassword("yijie");
         userDao.updateById(user);
-        Assert.assertTrue(("neo".equals(userDao.getUserSimpleById(9L).getUserName())));
+        System.out.println(user.toString());
+        Assert.assertTrue(("yijie".equals(userDao.getUserSimpleById(17L).getUserName())));
     }
 }
