@@ -1,7 +1,6 @@
 package com.hniecs.mainserver.entity;
 
 import com.hniecs.mainserver.tool.security.Password;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -17,15 +16,16 @@ import java.util.Date;
  * @logs[3] 2020-09-16 22:37 yijie 设置全部属性全部可获取
  * @logs[3] 2020-09-17 00:58 yijie 修改toString方法
  */
-@Data
 public class UserEntity {
     /**
      * 用户id
      */
+    @Getter@Setter
     private long id;
     /**
      * 用户名
      */
+    @Getter@Setter
     private String userName;
     /**
      * SHA算法加密后的密码
@@ -34,10 +34,12 @@ public class UserEntity {
     /**
      * 创建时间
      */
+    @Getter@Setter
     public Date ctime;
     /**
      * 修改时间
      */
+    @Getter@Setter
     public Date mtime;
 
     public UserEntity(String userName, String password) {
