@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
+import java.util.Hashtable;
 
 /**
  * @desc    UserModel.java
@@ -51,15 +52,15 @@ public class UserModel {
 
     /**
      * 检查是否能够登录
-     * @param userName  用户名
-     * @param password  密码
-     * @param userData  用户接收到的信息
+     * @param userName      用户名
+     * @param password      密码
+     * @param returnData    多余的返回值
      */
-    public String vertify(String userName, String password, UserEntity userData) {
+    public String vertify(String userName, String password, Hashtable returnData) {
         UserEntity u = get(userName);
         if (u == null) return "该用户名用户不存在";
         if (u.vertifyPWD(password)) {
-            userData = u;
+            returnData.put("userData", u);
             return "0";
         } else {
             return "密码错误";

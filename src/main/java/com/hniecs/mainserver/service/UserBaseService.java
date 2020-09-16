@@ -35,17 +35,18 @@ public class UserBaseService {
      * @param returnData    返回数据字典
      */
     public String login(String userName, String password, HttpSession session, Hashtable returnData) {
-        UserEntity getUserData = null;
-        String msg = userModel.vertify(userName, password, getUserData);
+        Hashtable getReturnData = new Hashtable();
+        String msg = userModel.vertify(userName, password, getReturnData);
         if (msg.equals("0")) {
+            UserEntity user = (UserEntity) getReturnData.get("userData");
             returnData.put(
                 "sessionToken",
                 sessionTool
                     .setUserSessionToken(
-                        session, getUserData
+                        session, user
                     ).toString()
             );
-            returnData.put("user", getUserData);
+            returnData.put("user", user);
         }
         return msg;
     }
