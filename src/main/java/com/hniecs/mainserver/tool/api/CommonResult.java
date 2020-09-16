@@ -18,6 +18,14 @@ public class CommonResult<T> {
         this.data = data;
     }
 
+    public String toJsonString() {
+        return "{" +
+            "\"code\":" + code +
+            ", \"messagex\":" + '"'+ message +'"' +
+            ", \"data\":" + data +
+            '}';
+    }
+
     /**
      * 成功返回结果
      * @param data 获取的数据
