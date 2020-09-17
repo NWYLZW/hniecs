@@ -1,6 +1,6 @@
-package com.hniecs.mainserver.tool.api;
+package com.hniecs.mainserver.tool.api.impl;
 
-import com.hniecs.mainserver.tool.api.itf.HErrorCode;
+import com.hniecs.mainserver.tool.api.IBaseErrorCode;
 import lombok.Getter;
 
 /**
@@ -9,7 +9,7 @@ import lombok.Getter;
  * @date    2020-09-12 15:46
  * @logs[0] 2020-09-12 15:46 yijie 创建了ResultCode.java文件
  */
-public enum ResultCode implements HErrorCode {
+public enum ResultCode implements IBaseErrorCode {
     VALIDATE_FAILED(1, "参数校验错误"),
 
     SUCCESS(200, "成功"),
