@@ -30,6 +30,11 @@ public class InvitationCodeEntity {
     private String invitationCode;
 
     /**
+     * 标签
+     */
+    private int tagName;
+
+    /**
      * 邀请码状态 0 未使用，1 已使用，2 禁止使用
      */
     private int status;

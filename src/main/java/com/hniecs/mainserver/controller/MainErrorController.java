@@ -30,7 +30,7 @@ public class MainErrorController implements ErrorController {
     /**
      * 处理响应码错误
      */
-    @RequestMapping(value = PATH ,  produces = {MediaType.APPLICATION_JSON_VALUE})
+    @RequestMapping(value = PATH,  produces = {MediaType.APPLICATION_JSON_VALUE})
     public CommonResult error(HttpServletRequest request) {
         // 获取响应码
         Integer statusCode = (Integer) request.getAttribute("javax.servlet.error.status_code");

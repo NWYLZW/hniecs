@@ -1,6 +1,6 @@
 package com.hniecs.mainserver.tool.api;
 
-import com.hniecs.mainserver.tool.api.itf.HErrorCode;
+import com.hniecs.mainserver.tool.api.impl.ResultCode;
 import lombok.Data;
 
 @Data
@@ -16,6 +16,14 @@ public class CommonResult<T> {
         this.code = code;
         this.message = message;
         this.data = data;
+    }
+
+    public String toJsonString() {
+        return "{" +
+            "\"code\":" + code +
+            ", \"messagex\":" + '"'+ message +'"' +
+            ", \"data\":" + data +
+            '}';
     }
 
     /**
@@ -39,7 +47,7 @@ public class CommonResult<T> {
      * 失败返回结果
      * @param errorCode 错误码
      */
-    public static <T> CommonResult<T> failed(HErrorCode errorCode) {
+    public static <T> CommonResult<T> failed(IBaseErrorCode errorCode) {
         return new CommonResult<T>(errorCode.getCode(), errorCode.getMessage(), null);
     }
 

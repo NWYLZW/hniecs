@@ -4,6 +4,12 @@ import com.hniecs.mainserver.tool.api.CommonResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Hashtable;
+import java.util.Map;
+import java.util.function.Predicate;
+
 /**
  * @desc    用户权限controller层 UserRoleController.java
  * @author  yijie
@@ -56,5 +62,35 @@ public class UserRoleController {
     public CommonResult setRoler() {
         return CommonResult.notFound("接口未完成");
     }
+
+    /**
+     * TODO 获取某个的权限组下的应用
+     */
+    @GetMapping("/user/Role/getAppsByRoler")
+    public CommonResult getAppsByRoler() {
+        return CommonResult.notFound("接口未完成");
+    }
+    /**
+     * TODO 给某个权限组添加应用
+     */
+    @GetMapping("/user/Role/addAppToRoler")
+    public CommonResult addAppToRoler() {
+        return CommonResult.notFound("接口未完成");
+    }
     /**------------------超级管理员------------------**/
+
+    /**
+     * TODO 获取自己的权限组下的应用
+     */
+    @GetMapping("/user/Role/getApps")
+    public CommonResult getApps() {
+//        ArrayList apps = new ArrayList();
+//        Predicate<HashMap> p = (String name, String iconUTF8) -> {
+//            HashMap<String, String> h = new HashMap<>();
+//            h.put("name", name);
+//            h.put("iconUTF8", iconUTF8);
+//            return h;
+//        };
+        return CommonResult.notFound("接口未完成");
+    }
 }
