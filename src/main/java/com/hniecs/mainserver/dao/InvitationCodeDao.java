@@ -39,7 +39,7 @@ public interface InvitationCodeDao {
     @Select(
         "select * " +
             "from invitation_code " +
-            "wehere ${columnName}=#{condition}"
+            "where ${columnName}=#{condition}"
     )
     public InvitationCodeEntity getOne(columnName col, String condition);
 
