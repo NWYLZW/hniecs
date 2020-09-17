@@ -4,7 +4,7 @@ import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.UserEntity;
 import com.hniecs.mainserver.model.InvitationCodeModel;
 import com.hniecs.mainserver.model.UserModel;
-import com.hniecs.mainserver.tool.SessionTool;
+import com.hniecs.mainserver.tool.security.session.SessionTool;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

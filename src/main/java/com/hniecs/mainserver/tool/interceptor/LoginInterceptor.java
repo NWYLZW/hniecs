@@ -2,7 +2,7 @@ package com.hniecs.mainserver.tool.interceptor;
 
 import com.hniecs.mainserver.annotation.NotNeedLogin;
 import com.hniecs.mainserver.tool.api.CommonResult;
-import com.hniecs.mainserver.tool.SessionTool;
+import com.hniecs.mainserver.tool.security.session.SessionTool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;

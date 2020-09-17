@@ -1,4 +1,4 @@
-package com.hniecs.mainserver.tool;
+package com.hniecs.mainserver.tool.security.session;
 
 import com.hniecs.mainserver.entity.UserEntity;
 import com.hniecs.mainserver.tool.security.SHA256;
