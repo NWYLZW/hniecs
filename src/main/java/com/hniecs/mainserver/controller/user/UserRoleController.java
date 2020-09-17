@@ -5,10 +5,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.function.Predicate;
+import java.util.function.Function;
 
 /**
  * @desc    用户权限controller层 UserRoleController.java
@@ -84,13 +83,44 @@ public class UserRoleController {
      */
     @GetMapping("/user/Role/getApps")
     public CommonResult getApps() {
-//        ArrayList apps = new ArrayList();
-//        Predicate<HashMap> p = (String name, String iconUTF8) -> {
-//            HashMap<String, String> h = new HashMap<>();
-//            h.put("name", name);
-//            h.put("iconUTF8", iconUTF8);
-//            return h;
-//        };
-        return CommonResult.notFound("接口未完成");
+        Function<String, Function<String, Function<String, Function<ArrayList
+            , HashMap>>>> generateApp = name -> iconUTF8 -> url -> menus -> {
+            HashMap<String, Object> h = new HashMap<>();
+            h.put("name", name);
+            h.put("iconUTF8", iconUTF8);
+            h.put("url", url);
+            if (menus != null) {
+                h.put("menus", menus);
+            }
+            return h;
+        };
+        return CommonResult.success(new ArrayList<>(
+            Arrays.asList(
+                generateApp
+                    .apply("后台管理").apply("&#xe76e;")
+                    .apply("/admin/manage/index")
+                    .apply(null),
+                generateApp
+                    .apply("我的消息").apply("&#xe6a2;")
+                    .apply("/message/my/index")
+                    .apply(new ArrayList<>(
+                            Arrays.asList(
+                                generateApp
+                                    .apply("公告").apply("&#xe6aa;")
+                                    .apply("/message/announcement/index")
+                                    .apply(null),
+                                generateApp
+                                    .apply("聊天").apply("&#xe6a9;")
+                                    .apply("/message/chat/index")
+                                    .apply(null),
+                                generateApp
+                                    .apply("看板").apply("&#xe6ab;")
+                                    .apply("/message/board/index")
+                                    .apply(null)
+                            )
+                        )
+                    )
+            )
+        ));
     }
 }
