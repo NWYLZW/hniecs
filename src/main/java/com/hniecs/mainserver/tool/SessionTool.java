@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
  * @logs[1] 2020-09-17 00:06 yijie 添加sessionToken帮助方法
  */
 @Slf4j
-public class sessionTool {
+public class SessionTool {
     /**
      * sessionToken的加密次数
      */
