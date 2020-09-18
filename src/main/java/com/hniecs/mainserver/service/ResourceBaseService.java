@@ -1,6 +1,5 @@
 package com.hniecs.mainserver.service;
 
-import com.hniecs.mainserver.dao.ResourceDao;
 import com.hniecs.mainserver.entity.ResourceEntity;
 import com.hniecs.mainserver.model.ResourceModel;
 import org.springframework.stereotype.Service;
@@ -24,10 +23,8 @@ public class ResourceBaseService {
      * @param kind
      * @return
      */
-    public ArrayList<ResourceEntity> getResourceByKind(String kind){
-        ArrayList<ResourceEntity> resourceList=resourceModel.getResourceEntityByKind(kind);
-        return resourceList;
-
+    public String getResourceByKind(String kind,ArrayList<ResourceEntity> resourceList){
+        return resourceModel.getByKind(kind,resourceList);
     }
 
     /**
@@ -35,9 +32,9 @@ public class ResourceBaseService {
      * @param condition 模糊搜索条件
      * @return
      */
-    public ArrayList<ResourceEntity> getResourceByFuzzy(String condition){
-        ArrayList<ResourceEntity> resourceList=resourceModel.getResourceFuzzy(condition);
-        return resourceList;
+    public String getByFuzzySearch(String condition, ArrayList<ResourceEntity> resourceList){
+        return resourceModel.getFuzzySearch(condition,resourceList);
+
     }
 
     /**
@@ -46,7 +43,7 @@ public class ResourceBaseService {
      * @return
      */
     public ResourceEntity getResourceById(long id){
-        ResourceEntity resource=resourceModel.getResourceEntityById(id);
+        ResourceEntity resource=resourceModel.getById(id);
         return resource;
     }
 
@@ -55,7 +52,10 @@ public class ResourceBaseService {
      * @param resourceEntity 资源对象
      * @return
      */
-    public int updateResource(ResourceEntity resourceEntity){
+    public String updateResource(ResourceEntity resourceEntity){
+        if(resourceModel.haveById(resourceEntity.getId())){
+            return "资源不存在";
+        }
         return resourceModel.updateResource(resourceEntity);
     }
 
@@ -64,7 +64,18 @@ public class ResourceBaseService {
      * @param id 资源id
      * @return
      */
-    public int deleteResource(long id){
+    public String deleteResource(long id){
+        if(resourceModel.haveById(id)){
+            return "资源不存在";
+        }
         return resourceModel.deleteResource(id);
+    }
+
+    /**
+     *
+     */
+    public String addResource(String kind, String introduce, String name, String url){
+        ResourceEntity resourceEntity=new ResourceEntity(name, url, introduce, kind);
+        return resourceModel.addNew(resourceEntity);
     }
 }

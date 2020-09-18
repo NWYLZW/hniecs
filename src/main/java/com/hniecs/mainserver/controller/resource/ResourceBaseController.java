@@ -1,7 +1,6 @@
 package com.hniecs.mainserver.controller.resource;
 
 import com.hniecs.mainserver.annotation.NotNeedLogin;
-import com.hniecs.mainserver.dao.ResourceDao;
 import com.hniecs.mainserver.entity.ResourceEntity;
 import com.hniecs.mainserver.service.ResourceBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
@@ -9,11 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.naming.Name;
-import javax.servlet.http.HttpSession;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -27,7 +23,16 @@ import java.util.Map;
 public class ResourceBaseController {
     @Resource
     ResourceBaseService resource;
-
+    @PostMapping("/resource/base/addResource")
+    public CommonResult addResource(@RequestBody Map<String, String> resourceDate){
+        String msg=resource.addResource(
+            resourceDate.get("kind"),
+            resourceDate.get("introduce"),
+            resourceDate.get("name"),
+            resourceDate.get("url")
+        );
+        return CommonResult.success(null,msg);
+    }
     /***
      * 设置一个resourceEntity
      * @param name 资源名
@@ -35,7 +40,7 @@ public class ResourceBaseController {
      * @param kind 资源种类
      * @param introduce 资源介绍
      */
-    private void setResourceEntity(String name,String url,String kind,String introduce,ResourceEntity resourceEntity){
+    private void setResourceEntity(String name, String url, String kind, String introduce, ResourceEntity resourceEntity){
         if(kind!=null){
             resourceEntity.setKind(kind);
         }
@@ -52,26 +57,21 @@ public class ResourceBaseController {
     /***
      *
      * @param condition 搜索条件
-     * @param session
      * @return
      */
     @NotNeedLogin
     @GetMapping("/resource/base/getResourceByFuzzy")
-    public CommonResult getResourceByFuzzy(@RequestBody Map<String,String> condition, HttpSession session){
-        ArrayList<ResourceEntity> resourceList = resource.getResourceByFuzzy(condition.get("condition"));
-        if(resourceList==null&&resourceList.size()==0){
-            return CommonResult.success(null,"未找到资源");
-        }
-        return CommonResult.success(resourceList,"成功找到资源");
+    public CommonResult getResourceByFuzzy(@RequestBody Map<String, String> condition){
+        ArrayList<ResourceEntity> resourceList = new ArrayList<>();
+        String msg=resource.getByFuzzySearch(condition.get("condition"),resourceList);
+        return CommonResult.success(resourceList,msg);
     }
     @NotNeedLogin
     @GetMapping("/resource/base/getResourceByKind")
     public CommonResult getResourceByKind(@RequestBody String kind){
-        ArrayList<ResourceEntity> resourceList = resource.getResourceByKind(kind);
-        if(resourceList==null&&resourceList.size()==0){
-            return CommonResult.success(null,"未找到资源");
-        }
-        return CommonResult.success(resourceList,"成功找到资源");
+        ArrayList<ResourceEntity> resourceList = new ArrayList<>();
+        String msg=resource.getResourceByKind(kind,resourceList);
+        return CommonResult.success(resourceList, msg);
     }
 
     /***
@@ -84,26 +84,18 @@ public class ResourceBaseController {
      * @return
      */
     @PostMapping("/resource/base/updateResource")
-    public CommonResult updateResource(@RequestBody Map<String,String> resourceDate) {
+    public CommonResult updateResource(@RequestBody Map<String, String> resourceDate) {
         long id = Integer.parseInt(resourceDate.get("id"));
         ResourceEntity resourceEntity = resource.getResourceById(id);
         resourceEntity.setCtime(new Date());
         setResourceEntity(resourceDate.get("name"), resourceDate.get("url")
             , resourceDate.get("kind"), resourceDate.get("introduce"), resourceEntity);
-        int msg = resource.updateResource(resourceEntity);
-        if(msg==200){
-            return CommonResult.success(null,"资源更新成功");
-        }else{
-            return CommonResult.failed("资源更新失败");
-        }
+        String msg = resource.updateResource(resourceEntity);
+        return CommonResult.success(null,msg);
     }
     @GetMapping("/resource/base/deleteResource")
     public CommonResult deleteResource(@RequestParam long id){
-        int result=resource.deleteResource(id);
-        if(result==200){
-            return CommonResult.success(null,"资源删除成功");
-        }else {
-            return CommonResult.failed("资源删除失败");
-        }
+        String result=resource.deleteResource(id);
+        return CommonResult.success(null, result);
     }
 }
