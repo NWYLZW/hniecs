@@ -31,7 +31,10 @@ public class ResourceBaseController {
             resourceDate.get("name"),
             resourceDate.get("url")
         );
-        return CommonResult.success(null,msg);
+        if(msg.equals("0")){
+            return CommonResult.success(null,"资源查找成功");
+        }
+        return CommonResult.failed(msg);
     }
     /***
      * 设置一个resourceEntity
@@ -64,14 +67,20 @@ public class ResourceBaseController {
     public CommonResult getResourceByFuzzy(@RequestBody Map<String, String> condition){
         ArrayList<ResourceEntity> resourceList = new ArrayList<>();
         String msg=resource.getByFuzzySearch(condition.get("condition"),resourceList);
-        return CommonResult.success(resourceList,msg);
+        if(msg.equals("0")){
+            return CommonResult.success(resourceList,"资源查找成功");
+        }
+        return CommonResult.failed(msg);
     }
     @NotNeedLogin
     @GetMapping("/resource/base/getResourceByKind")
     public CommonResult getResourceByKind(@RequestBody String kind){
         ArrayList<ResourceEntity> resourceList = new ArrayList<>();
         String msg=resource.getResourceByKind(kind,resourceList);
-        return CommonResult.success(resourceList, msg);
+        if(msg.equals("0")){
+            return CommonResult.success(resourceList,"资源查找成功");
+        }
+        return CommonResult.failed(msg);
     }
 
     /***
@@ -91,11 +100,17 @@ public class ResourceBaseController {
         setResourceEntity(resourceDate.get("name"), resourceDate.get("url")
             , resourceDate.get("kind"), resourceDate.get("introduce"), resourceEntity);
         String msg = resource.updateResource(resourceEntity);
-        return CommonResult.success(null,msg);
+        if(msg.equals("0")){
+            return CommonResult.success(null, "资源更新成功");
+        }
+        return CommonResult.failed(msg);
     }
     @GetMapping("/resource/base/deleteResource")
     public CommonResult deleteResource(@RequestParam long id){
         String result=resource.deleteResource(id);
-        return CommonResult.success(null, result);
+        if(result.equals("0")){
+            return CommonResult.success(null, "资源删除成功");
+        }
+        return CommonResult.success(result);
     }
 }

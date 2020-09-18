@@ -30,7 +30,7 @@ public class ResourceModel {
             for (ResourceEntity x : resourceDao.getResourceByFuzzy(condition)) {
                 resourceList.add(x);
             }
-            return "查找资源成功";
+            return "0";
         }catch (Exception e){
             log.warn(e.getMessage());
             return "服务器出错";
@@ -47,7 +47,7 @@ public class ResourceModel {
           for (ResourceEntity x:resourceDao.getResourceByKind(kind)) {
               resourceList.add(x);
           }
-          return "资源查找成功";
+          return "0";
       }catch (Exception e){
           log.warn(e.getMessage());
           return "服务器出错";
@@ -62,7 +62,7 @@ public class ResourceModel {
     public String updateResource(ResourceEntity resourceEntity){
         try{
             resourceDao.update(resourceEntity);
-            return "资源更新成功";
+            return "0";
         }catch (Exception e){
             log.warn(e.getMessage());
             return "服务器出错";
@@ -88,7 +88,7 @@ public class ResourceModel {
     public String deleteResource(long id) {
         try {
             resourceDao.delete(id);
-            return "资源删除成功";
+            return "0";
         }catch (Exception e){
             log.warn(e.getMessage());
             return "服务器出错";
@@ -98,7 +98,7 @@ public class ResourceModel {
     public String addNew(ResourceEntity resourceEntity) {
         try {
             resourceDao.insert(resourceEntity);
-            return "插入资源成功";
+            return "0";
         }catch (Exception e){
             return "服务器出错";
         }
