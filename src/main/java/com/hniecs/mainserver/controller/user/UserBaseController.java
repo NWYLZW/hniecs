@@ -43,7 +43,7 @@ public class UserBaseController {
         String pattern="\\W";
         Pattern pt=Pattern.compile(pattern);
         Matcher matcher=pt.matcher(userName);
-        if(userName.length()<4||userName.length()>12){
+        if(userName.length()<4 || userName.length()>12){
             return false;
         }
         while(matcher.find()){
@@ -59,7 +59,7 @@ public class UserBaseController {
     }
 
     /**
-     * TODO czl 校验用户名格式是否正确 6-20位 字母或数字 只能包含 '-', '_', '.', '@' 四种字符，不能在开头
+     * TODO czl 校验密码格式是否正确 5-20位 字母或数字 只能包含 '-', '_', '.', '@' 四种字符，不能在开头
      * @param password  密码
      * @return  密码格式是否正确
      */
@@ -73,7 +73,7 @@ public class UserBaseController {
                 return false;
             }
         }
-        if(password.length()<6||password.length()>20){
+        if(password.length()<5 || password.length()>20){
             return false;
         }
         return true;
