@@ -53,16 +53,19 @@ public class ResourceEntity {
         this.ctime=null;
         this.name=name;
         this.url=url;
-        this.introduce=introduce;
         this.kind=kind;
+        if(introduce==null){
+            introduce="无";
+        }
+        this.introduce=introduce;
     }
     @Override
     public String toString(){
         return "ResourceEntity{" +
             "id=" +id+
-            "downloadName="+name+
+            "name="+name+
             "kind="+kind+
-            "fileIntroduce="+introduce+
+            "introduce="+introduce+
             "url="+url+
             "}";
     }

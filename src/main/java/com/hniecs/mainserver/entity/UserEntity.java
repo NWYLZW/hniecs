@@ -1,6 +1,7 @@
 package com.hniecs.mainserver.entity;
 
 import com.hniecs.mainserver.tool.security.Password;
+import com.hniecs.mainserver.tool.security.SHA256;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -58,10 +59,12 @@ public class UserEntity {
             '}';
     }
 
+    public String getUserToken (int saltCount) {
+        return SHA256.salt(id + '&' + userName + '&' + passwordSHA, saltCount);
+    }
     public void setPassword (String password) {
         this.passwordSHA = Password.generatePasswordHash(password);
     }
-
     /**
      * 校验密码是否正确
      * @param password 待校验密码

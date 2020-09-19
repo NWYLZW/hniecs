@@ -1,9 +1,8 @@
 package com.hniecs.mainserver.tool.interceptor;
 
-import cn.hutool.json.JSONObject;
 import com.hniecs.mainserver.annotation.NotNeedLogin;
 import com.hniecs.mainserver.tool.api.CommonResult;
-import com.hniecs.mainserver.tool.sessionTool;
+import com.hniecs.mainserver.tool.security.session.SessionTool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
@@ -11,7 +10,6 @@ import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.io.PrintWriter;
 
 /**
@@ -29,7 +27,7 @@ public class LoginInterceptor extends HandlerInterceptorAdapter {
         Object handler) throws Exception {
         // 校验session是否正确
         HttpSession session = request.getSession();
-        boolean isRightSession = sessionTool
+        boolean isRightSession = SessionTool
             .vertifyUserSessionToken(session);
         if (!isRightSession) {
             response.setStatus(401);

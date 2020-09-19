@@ -10,11 +10,13 @@ import com.hniecs.mainserver.tool.security.SHA256;
  * @logs[1] 2020-09-16 21:30 yijie 抽离了字符串的加密算法
  */
 public class Password {
+    public static final int SALT_COUNT = 5;
     public static boolean checkPasswordHash(String pwdHash,String pwd){
         // 校验是否为对应加密后的密码
-        return SHA256.salt(pwd, 5).equals(pwdHash);
+        // 客户端已经进行过一次数据加密
+        return SHA256.salt(pwd, SALT_COUNT - 1).equals(pwdHash);
     }
     public static String generatePasswordHash(String pwd){
-        return SHA256.salt(pwd, 5);
+        return SHA256.salt(pwd, SALT_COUNT);
     }
 }

@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * @desc    UserBaseController.java
@@ -23,22 +26,44 @@ import java.util.*;
 @RestController
 @Slf4j
 public class UserBaseController {
+    private boolean verifyChar(char a){
+        char allowChar[]={'-','_','.','@'};
+        for (char x: allowChar) {
+            if(a==x){
+                return true;
+            }
+        }
+        return false;
+    }
     /**
-     * TODO czl 校验用户名格式是否正确 4-12位 字母或数字非数字开头 只能包含 '-', '_', '.', '@' 四种字符，不能在开头
+     * 校验用户名格式是否正确 字母|中文|数字|-|_|.|@ (不能以 数字，特殊字符，中文 开头) 4-12位
      * @param userName  用户名
      * @return  用户名格式是否正确
      */
-    private boolean vertifyUserName (String userName) {
-        return true;
+    private boolean verifyUserName(String userName) {
+        int min = 3;
+        int max = 12;
+        String specialCharPattern = "[-|_|.|@]";
+        String zhPattern = "[\u4E00-\u9FA5]";
+        String letterPattern = "[[a-z]|[A-Z]]";
+
+        String pattern = "^" + letterPattern + "[" + zhPattern + "|" + letterPattern + "|\\d|" + specialCharPattern + "]{" + min + "," + max + "}";
+        return Pattern.matches(pattern, userName);
     }
 
     /**
-     * TODO czl 校验用户名格式是否正确 6-20位 字母或数字 只能包含 '-', '_', '.', '@' 四种字符，不能在开头
+     * 校验用户名格式是否正确 字母|数字|-|_|.|@ 5-20位
      * @param password  密码
      * @return  密码格式是否正确
      */
-    private boolean vertifyPassword (String password) {
-        return true;
+    private boolean verifyPassword(String password) {
+        int min = 5;
+        int max = 20;
+        String specialCharPattern = "[-|_|.|@]";
+        String letterPattern = "[[a-z]|[A-Z]]";
+        String pattern = "^[" + letterPattern + "|\\d|" + specialCharPattern + "]{" + min + "," + max + "}";
+
+        return Pattern.matches(pattern, password);
     }
 
     @Resource
@@ -57,7 +82,8 @@ public class UserBaseController {
         String
             userName = user.get("userName"),
             password = user.get("password");
-        if (!vertifyUserName(userName) || !vertifyPassword(password)) {
+        // 密码已加密过一遍，不需要校验
+        if (!verifyUserName(userName)) {
             return CommonResult.validateFailed();
         }
         Hashtable data = new Hashtable();
@@ -96,7 +122,7 @@ public class UserBaseController {
             userName = registerData.get("userName"),
             password = registerData.get("password"),
             invitationCode = registerData.get("invitationCode");
-        if (!vertifyUserName(userName) || !vertifyPassword(password)) {
+        if (!verifyUserName(userName) || !verifyPassword(password)) {
             return CommonResult.validateFailed();
         }
         String msg = userBaseService.registerNewUser(

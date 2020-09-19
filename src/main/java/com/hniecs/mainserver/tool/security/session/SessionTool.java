@@ -1,4 +1,4 @@
-package com.hniecs.mainserver.tool;
+package com.hniecs.mainserver.tool.security.session;
 
 import com.hniecs.mainserver.entity.UserEntity;
 import com.hniecs.mainserver.tool.security.SHA256;
@@ -14,11 +14,11 @@ import javax.servlet.http.HttpSession;
  * @logs[1] 2020-09-17 00:06 yijie 添加sessionToken帮助方法
  */
 @Slf4j
-public class sessionTool {
+public class SessionTool {
     /**
      * sessionToken的加密次数
      */
-    public static final int sessionTokenSaltCount = 10;
+    public static final int SESSION_TOKEN_SALT_COUNT = 10;
     /**
      * 设置覆盖用户sessionToken信息
      * @param session   HttpSession对象
@@ -26,7 +26,7 @@ public class sessionTool {
      * @return  sessionToken对象
      */
     public static Object setUserSessionToken (HttpSession session, UserEntity user) {
-        String sessionToken = SHA256.salt(user.getId() + '&' + user.getUserName(), sessionTokenSaltCount);
+        String sessionToken = user.getUserToken(SESSION_TOKEN_SALT_COUNT);
         session.setAttribute("sessionToken", sessionToken);
         session.setAttribute("currentUser", user);
         return sessionToken;
@@ -47,7 +47,7 @@ public class sessionTool {
         try {
             UserEntity user = (UserEntity) session.getAttribute("currentUser");
             if (sessionToken != null && user != null) {
-                String vertifiedToken = SHA256.salt(user.getId() + '&' + user.getUserName(), sessionTokenSaltCount);
+                String vertifiedToken = user.getUserToken(SESSION_TOKEN_SALT_COUNT);
                 if (vertifiedToken.equals(sessionToken)) {
                     return true;
                 }

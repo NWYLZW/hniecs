@@ -4,6 +4,11 @@ import com.hniecs.mainserver.tool.api.CommonResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.function.Function;
+
 /**
  * @desc    用户权限controller层 UserRoleController.java
  * @author  yijie
@@ -56,5 +61,66 @@ public class UserRoleController {
     public CommonResult setRoler() {
         return CommonResult.notFound("接口未完成");
     }
+
+    /**
+     * TODO 获取某个的权限组下的应用
+     */
+    @GetMapping("/user/Role/getAppsByRoler")
+    public CommonResult getAppsByRoler() {
+        return CommonResult.notFound("接口未完成");
+    }
+    /**
+     * TODO 给某个权限组添加应用
+     */
+    @GetMapping("/user/Role/addAppToRoler")
+    public CommonResult addAppToRoler() {
+        return CommonResult.notFound("接口未完成");
+    }
     /**------------------超级管理员------------------**/
+
+    /**
+     * TODO 获取自己的权限组下的应用
+     */
+    @GetMapping("/user/Role/getApps")
+    public CommonResult getApps() {
+        Function<String, Function<String, Function<String, Function<ArrayList
+            , HashMap>>>> generateApp = name -> iconUTF8 -> url -> menus -> {
+            HashMap<String, Object> h = new HashMap<>();
+            h.put("name", name);
+            h.put("iconUTF8", iconUTF8);
+            h.put("url", url);
+            if (menus != null) {
+                h.put("menus", menus);
+            }
+            return h;
+        };
+        return CommonResult.success(new ArrayList<>(
+            Arrays.asList(
+                generateApp
+                    .apply("后台管理").apply("&#xe76e;")
+                    .apply("/admin/manage/index")
+                    .apply(null),
+                generateApp
+                    .apply("我的消息").apply("&#xe6a2;")
+                    .apply("/message/my/index")
+                    .apply(new ArrayList<>(
+                            Arrays.asList(
+                                generateApp
+                                    .apply("公告").apply("&#xe6aa;")
+                                    .apply("/message/announcement/index")
+                                    .apply(null),
+                                generateApp
+                                    .apply("聊天").apply("&#xe6a9;")
+                                    .apply("/message/chat/index")
+                                    .apply(null),
+                                generateApp
+                                    .apply("看板").apply("&#xe6ab;")
+                                    .apply("/message/board/index")
+                                    .apply(null)
+                            )
+                        )
+                    )
+            )
+        ));
+    }
 }
