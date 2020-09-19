@@ -17,10 +17,8 @@ import java.util.ArrayList;
  */
 @Service
 public class InvitationCodeService implements IInvitationCodeService {
-
     @Resource
     private InvitationCodeModel invitationCodeModel;
-
 
     @Override
     public CommonResult addInvitationCodes(UserEntity userEntity,
