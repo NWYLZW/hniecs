@@ -64,8 +64,8 @@ public class InvitationCodeModel {
             try {
                 invitationCodeDao.addNew(ic);
             } catch (Exception e) {
-                e.printStackTrace();
-                return "插入失败, 创建者:" + user.getUserName() + "创建时间:" + new Date();
+                log.error("插入失败, 创建者:" + user.getUserName() + "创建时间:" + new Date());
+                return "服务器错误";
             }
         }
         return "0";
