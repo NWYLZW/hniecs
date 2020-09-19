@@ -41,35 +41,29 @@ public class UserBaseController {
      * @return  用户名格式是否正确
      */
     private boolean verifyUserName(String userName) {
-        int min = 4, max = 12;
-        String
-            specialCharPattern = "[-|_|.|@]",
-            zhPattern = "[\u4E00-\u9FA5]",
-            letterPattern = "[[a-z]|[A-Z]]",
+        int min = 3;
+        int max = 12;
+        String specialCharPattern = "[-|_|.|@]";
+        String zhPattern = "[\u4E00-\u9FA5]";
+        String letterPattern = "[[a-z]|[A-Z]]";
 
-            pattern = "^" + letterPattern + "[" + zhPattern + "|" + letterPattern + "|\\d|" + specialCharPattern + "]{" + min + "," + max + "}";
+        String pattern = "^" + letterPattern + "[" + zhPattern + "|" + letterPattern + "|\\d|" + specialCharPattern + "]{" + min + "," + max + "}";
         return Pattern.matches(pattern, userName);
     }
 
     /**
-     * TODO czl 校验密码格式是否正确 5-20位 字母或数字 只能包含 '-', '_', '.', '@' 四种字符，不能在开头
+     * 校验用户名格式是否正确 字母|数字|-|_|.|@ 5-20位
      * @param password  密码
      * @return  密码格式是否正确
      */
     private boolean verifyPassword(String password) {
-        String pattern="\\W";
-        Pattern pt=Pattern.compile(pattern);
-        Matcher matcher=pt.matcher(password);
-        while(matcher.find()){
-            int point=matcher.end()-1;
-            if(verifyChar(password.charAt(point))){
-                return false;
-            }
-        }
-        if(password.length()<5 || password.length()>20){
-            return false;
-        }
-        return true;
+        int min = 5;
+        int max = 20;
+        String specialCharPattern = "[-|_|.|@]";
+        String letterPattern = "[[a-z]|[A-Z]]";
+        String pattern = "^[" + letterPattern + "|\\d|" + specialCharPattern + "]{" + min + "," + max + "}";
+
+        return Pattern.matches(pattern, password);
     }
 
     @Resource
@@ -88,7 +82,8 @@ public class UserBaseController {
         String
             userName = user.get("userName"),
             password = user.get("password");
-        if (!verifyUserName(userName) || !verifyPassword(password)) {
+        // 密码已加密过一遍，不需要校验
+        if (!verifyUserName(userName)) {
             return CommonResult.validateFailed();
         }
         Hashtable data = new Hashtable();
