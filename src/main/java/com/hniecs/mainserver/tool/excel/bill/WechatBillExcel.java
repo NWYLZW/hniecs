@@ -1,11 +1,7 @@
-package com.hniecs.mainserver.tool.exceltool.bill;
+package com.hniecs.mainserver.tool.excel.bill;
 
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.alibaba.excel.metadata.BaseRowModel;
 import lombok.Data;
-
-import java.io.Serializable;
-import java.math.BigDecimal;
 
 /**
  * @desc     BillExcel.java
@@ -15,7 +11,7 @@ import java.math.BigDecimal;
  */
 
 @Data
-public class WechatBillExcel implements  IBillExcel{
+public class WechatBillExcel extends BillExcel implements  IBillExcel{
 
     @ExcelProperty(value = "商户单号", index = 9)
     private String transactionNumber;
