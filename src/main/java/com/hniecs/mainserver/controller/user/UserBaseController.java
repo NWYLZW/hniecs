@@ -11,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 /**
  * @desc    UserBaseController.java
@@ -35,27 +36,19 @@ public class UserBaseController {
         return false;
     }
     /**
-     * TODO czl 校验用户名格式是否正确 4-12位 字母或数字非数字开头 只能包含 '-', '_', '.', '@' 四种字符，不能在开头
+     * 校验用户名格式是否正确 字母|中文|数字|-|_|.|@ (不能以 数字，特殊字符，中文 开头) 4-12位
      * @param userName  用户名
      * @return  用户名格式是否正确
      */
     private boolean verifyUserName(String userName) {
-        String pattern="\\W";
-        Pattern pt=Pattern.compile(pattern);
-        Matcher matcher=pt.matcher(userName);
-        if(userName.length()<4 || userName.length()>12){
-            return false;
-        }
-        while(matcher.find()){
-            int point=matcher.end()-1;
-            if(point==0){
-                return false;
-            }
-            if(!verifyChar(userName.charAt(point))){
-                return false;
-            }
-        }
-        return true;
+        int min = 4, max = 12;
+        String
+            specialCharPattern = "[-|_|.|@]",
+            zhPattern = "[\u4E00-\u9FA5]",
+            letterPattern = "[[a-z]|[A-Z]]",
+
+            pattern = "^" + letterPattern + "[" + zhPattern + "|" + letterPattern + "|\\d|" + specialCharPattern + "]{" + min + "," + max + "}";
+        return Pattern.matches(pattern, userName);
     }
 
     /**
