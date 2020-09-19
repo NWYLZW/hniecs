@@ -10,13 +10,13 @@ import javax.annotation.Resource;
 import java.util.ArrayList;
 
 /**
- * @desc    InvitationCodeServiceImpl.java
+ * @desc    InvitationCodeService.java
  * @author  zerohua
  * @date    2020-09-17 20:18
- * @logs[0] 2020-09-17 20:18 zerohua 创建了InvitationCodeServiceImpl.java文件
+ * @logs[0] 2020-09-17 20:18 zerohua 创建了InvitationCodeService.java文件
  */
 @Service
-public class InvitationCodeServiceImpl implements IInvitationCodeService {
+public class InvitationCodeService implements IInvitationCodeService {
 
     @Resource
     private InvitationCodeModel invitationCodeModel;
