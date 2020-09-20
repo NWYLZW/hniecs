@@ -4,6 +4,7 @@ import com.hniecs.mainserver.entity.UserEntity;
 import com.hniecs.mainserver.service.admin.InvitationCodeService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Hashtable;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -36,7 +38,8 @@ public class AdminInvitationCodeController {
     public CommonResult addInvitationCode(
         @RequestBody Map<String, Object> invitationCodeMap,
         HttpServletRequest request) {
-        ArrayList<String> invitationCodes = null;
+
+        List<String> invitationCodes = null;
         String tagName = null;
         Integer availableCount = null;
         try {
@@ -49,8 +52,10 @@ public class AdminInvitationCodeController {
 
         UserEntity currentUser = (UserEntity) request.getSession().getAttribute("currentUser");
         Hashtable data = new Hashtable();
+
         String msg = invitationCodeService
-            .addInvitationCodes(currentUser, availableCount, tagName, invitationCodes, data);
+            .addInvitationCodes(currentUser, availableCount,
+                invitationCodes, tagName,data);
         if (msg.equals("0")) {
             return CommonResult.success(data);
         } else {
@@ -64,9 +69,10 @@ public class AdminInvitationCodeController {
      */
     @PostMapping("/admin/invitationCode/importFromExcel")
     public CommonResult importInvitationCodes(
-        MultipartFile excel,
+        @Param("excel-file") MultipartFile excel,
         @RequestBody Map<String, Object> invitationCodeMap,
         HttpServletRequest request) {
+
         String tagName = null;
         Integer availableCount = null;
         try {
