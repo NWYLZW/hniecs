@@ -7,8 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @desc    InvitationCodeModel.java
@@ -51,24 +50,78 @@ public class InvitationCodeModel {
     public String addInvitationCodes(
         UserEntity user,
         int availableInviteCount,
-        ArrayList<String> invitationCodes
-    ) {
+        List<String> invitationCodes,
+        String tagName,
+        Hashtable returnData) {
+
+        List<InvitationCodeEntity> entities = assembleEntity(user,availableInviteCount,
+            invitationCodes,tagName);
+
+        return insertList(entities,returnData);
+    }
+
+    /**
+     * 将验证码插入数据库，需要统计成功，失败次数
+     * @param list 验证码集合
+     * @param data 结果数据
+     */
+    private String insertList(List<InvitationCodeEntity> list, Hashtable data ) {
+
+        int succeedCount = 0;
+        int failureCount = 0;
+        List<InvitationCodeEntity> entities = new ArrayList<>();
+
+        for (InvitationCodeEntity entity : list) {
+            try {
+                invitationCodeDao.addNew(entity);
+                entities.add(entity);
+                succeedCount++;
+            } catch (Exception e) {
+                failureCount++;
+                e.printStackTrace();
+            }
+        }
+
+        //加入结果
+        data.put("successCount", 0);
+        data.put("count", 0);
+        data.put("successAddList", entities);
+
+        if(succeedCount == 0) {
+            return "验证码全部无效";
+        }else {
+            return "0";
+        }
+    }
+
+    /**
+     * 组装 InvitationCodeEntity
+     * @param user
+     * @param availableInviteCount
+     * @param invitationCodes
+     * @param tagName
+     * @return
+     */
+    private List<InvitationCodeEntity> assembleEntity(
+        UserEntity user,
+        int availableInviteCount,
+        List<String> invitationCodes,
+        String tagName) {
+
+        List<InvitationCodeEntity> entities = new ArrayList<>();
         InvitationCodeEntity ic = new InvitationCodeEntity();
+
         ic.setMtime(new Date());
         ic.setCtime(new Date());
         ic.setCreateUserId(user.getId());
         ic.setAvailableInviteCount(availableInviteCount);
+        ic.setTagName(tagName);
         ic.setStatus(0);
         for (String invitationCode : invitationCodes) {
             ic.setInvitationCode(invitationCode);
-            try {
-                invitationCodeDao.addNew(ic);
-            } catch (Exception e) {
-                log.error("插入失败, 创建者:" + user.getUserName() + "创建时间:" + new Date());
-                return "服务器错误";
-            }
         }
-        return "0";
+
+        return entities;
     }
 
     /**
@@ -83,4 +136,5 @@ public class InvitationCodeModel {
             return "邀请码可用次数已用尽, 使用失败!";
         }
     }
+
 }
