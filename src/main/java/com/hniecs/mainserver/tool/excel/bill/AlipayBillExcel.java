@@ -11,13 +11,15 @@ import com.alibaba.excel.annotation.ExcelProperty;
  * @logs[2] 2020-09-20 13:18 yijie 基于继承实现
  */
 public class AlipayBillExcel extends BillExcel {
+
     @ExcelProperty(value = "支付宝交易号", index = 4)
     public String transactionNumber;
+
     @ExcelProperty(value = "订单金额(元)", index = 7)
     public String money;
 
     public String type = "收入";
-    public String tagName = "支付宝";
 
-    public String moneyMatchesStr = "\\d*\\.\\d*";
+    public final String tagName = "支付宝";
+
 }

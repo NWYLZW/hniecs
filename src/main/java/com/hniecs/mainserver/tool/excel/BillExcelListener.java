@@ -27,7 +27,6 @@ public class BillExcelListener extends AnalysisEventListener<IBillExcel> {
     @Override
     public void invoke(IBillExcel excel, AnalysisContext analysisContext) {
         String data = excel.verify();
-        log.debug(excel.toString());
         if(data != null) {
             list.add(excel);
         }
