@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * @desc     ResourceBaseService.java
@@ -49,14 +50,15 @@ public class ResourceBaseService {
 
     /***
      * 更新对象
-     * @param resourceEntity 资源对象
+     * @param resourceDate 资源对象
      * @return
      */
-    public String updateResource(ResourceEntity resourceEntity){
-        if(resourceModel.haveById(resourceEntity.getId())){
+    public String updateResource(Map<String, String> resourceDate){
+        long id=Integer.parseInt(resourceDate.get("id"));
+        if(resourceModel.haveById(id)){
             return "资源不存在";
         }
-        return resourceModel.updateResource(resourceEntity);
+        return resourceModel.updateResource(resourceDate,id);
     }
 
     /**

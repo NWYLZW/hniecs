@@ -46,27 +46,7 @@ public class ResourceBaseController {
         }
         return CommonResult.failed(msg);
     }
-    /***
-     * 设置一个resourceEntity
-     * @param name 资源名
-     * @param url 资源地址
-     * @param kind 资源种类
-     * @param introduce 资源介绍
-     */
-    private void setEntity(String name, String url, String kind, String introduce, ResourceEntity resourceEntity){
-        if(kind!=null){
-            resourceEntity.setKind(kind);
-        }
-        if(name!=null){
-            resourceEntity.setName(name);
-        }
-        if(url!=null){
-            resourceEntity.setUrl(url);
-        }
-        if(introduce!=null){
-            resourceEntity.setIntroduce(introduce);
-        }
-    }
+
     /***
      *
      * @param condition 搜索条件
@@ -110,12 +90,7 @@ public class ResourceBaseController {
      */
     @PostMapping("/resource/base/updateResource")
     public CommonResult updateMapping(@RequestBody Map<String, String> resourceDate) {
-        long id = Integer.parseInt(resourceDate.get("id"));
-        ResourceEntity resourceEntity = resource.getResourceById(id);
-        resourceEntity.setCtime(new Date());
-        setEntity(resourceDate.get("name"), resourceDate.get("url")
-            , resourceDate.get("kind"), resourceDate.get("introduce"), resourceEntity);
-        String msg = resource.updateResource(resourceEntity);
+        String msg = resource.updateResource(resourceDate);
         if(msg.equals("0")){
             return CommonResult.success(null, "资源更新成功");
         }

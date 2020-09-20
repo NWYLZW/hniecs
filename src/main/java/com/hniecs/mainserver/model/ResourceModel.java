@@ -7,7 +7,9 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Map;
 
+import com.hniecs.mainserver.tool.ObjectTool;
 /**
  * @desc     ResourceModel.java
  * @author  陈桢梁
@@ -56,12 +58,19 @@ public class ResourceModel {
 
     /**
      * 更新资源
-     * @param resourceEntity
+     * @param resourceMap resource数据
      * @return
      */
-    public String updateResource(ResourceEntity resourceEntity){
+    public String updateResource(Map<String, String> resourceMap,long id){
+        String name=resourceMap.get("name");
+        String url=resourceMap.get("url");
+        String kind=resourceMap.get("kind");
+        String introduce=resourceMap.get("introduce");
         try{
-            resourceDao.update(resourceEntity);
+            ResourceEntity resource=new ResourceEntity(name,url,introduce,kind);
+            ResourceEntity resourceEntity=resourceDao.getResourceById(id);
+            ResourceEntity temp = ObjectTool.combineEntity(resourceEntity,resource);
+            resourceDao.update(temp);
             return "0";
         }catch (Exception e){
             log.warn(e.getMessage());
