@@ -30,7 +30,7 @@ public class ResourceModel {
         try {
             resourceList.addAll(resourceDao.getResourceByFuzzy(condition));
             return "0";
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             return "服务器出错";
         }
@@ -40,34 +40,34 @@ public class ResourceModel {
      * 按资源种类返回资源
      * @param kind 资源种类名当为null时返回所有资源
      */
-    public String getByKind(String kind, ArrayList<ResourceEntity> resourceList){
-      try{
-          resourceList.addAll(resourceDao.getResourceByKind(kind));
-          return "0";
-      }catch (Exception e){
-          log.error(e.getMessage());
-          return "服务器错误";
-      }
+    public String getByKind(String kind, ArrayList<ResourceEntity> resourceList) {
+        try {
+            resourceList.addAll(resourceDao.getResourceByKind(kind));
+            return "0";
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return "服务器错误";
+        }
     }
 
     /**
      * 更新资源
-     * @param id 资源id
-     * @param name 资源名
-     * @param url 资源百度网盘链接
+     * @param id        资源id
+     * @param name      资源名
+     * @param url       资源百度网盘链接
      * @param introduce 资源介绍
-     * @param kind 资源种类
+     * @param kind      资源种类
      */
-    public String updateResourceById(long id, String name, String url, String introduce, String kind){
-        try{
-            ResourceEntity resource = new ResourceEntity(name,url,introduce,kind);
+    public String updateResourceById(long id, String name, String url, String introduce, String kind) {
+        try {
+            ResourceEntity resource = new ResourceEntity(name, url, introduce, kind);
             ResourceEntity resourceEntity = resourceDao.getResourceById(id);
             resource.setMtime(new Date());
             resource.setCtime(resourceEntity.getCtime());
-            ResourceEntity temp = ObjectTool.combineEntity(resourceEntity,resource);
+            ResourceEntity temp = ObjectTool.combineEntity(resourceEntity, resource);
             resourceDao.update(temp);
             return "0";
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             return "服务器错误";
         }
@@ -81,11 +81,12 @@ public class ResourceModel {
     public ResourceEntity getById(long id) {
         try {
             return resourceDao.getResourceById(id);
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             return null;
         }
     }
+
     /**
      * 删除资源
      * @param id 资源id
@@ -94,21 +95,20 @@ public class ResourceModel {
         try {
             resourceDao.delete(id);
             return "0";
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             return "服务器错误";
         }
     }
 
     /**
-     *
      * @param resourceEntity 资源实体
      */
     public String addNew(ResourceEntity resourceEntity) {
         try {
             resourceDao.insert(resourceEntity);
             return "0";
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             return "服务器错误";
         }
@@ -119,7 +119,7 @@ public class ResourceModel {
      * @param id 资源id
      * @return 资源是否存在
      */
-    public boolean haveById(long id){
+    public boolean haveById(long id) {
         return resourceDao.getResourceById(id) != null;
     }
 

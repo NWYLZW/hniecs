@@ -14,59 +14,61 @@ import java.util.Date;
 public class ResourceEntity {
     /**
      * 资源id
-     * */
+     */
     private long id;
 
     /**
      * 资源名
-     * */
+     */
     private String name;
 
     /**
      * 资源种类
-     * */
+     */
     private String kind;
 
     /**
      * 资源介绍
-     * */
+     */
     private String introduce;
 
     /**
      * 资源url
-     * */
+     */
     private String url;
 
     /**
      * 资源创建时间
-     * */
+     */
     private Date mtime;
 
     /**
      * 资源修改时间
-     * */
+     */
     private Date ctime;
-    public ResourceEntity(String name,String url,String introduce,String kind){
-        if(mtime==null){
-            mtime=new Date();
+
+    public ResourceEntity(String name, String url, String introduce, String kind) {
+        if (mtime == null) {
+            mtime = new Date();
         }
-        this.ctime=null;
-        this.name=name;
-        this.url=url;
-        this.kind=kind;
-        if(introduce==null){
-            introduce="无";
+        this.ctime = null;
+        this.name = name;
+        this.url = url;
+        this.kind = kind;
+        if (introduce == null) {
+            introduce = "无";
         }
-        this.introduce=introduce;
+        this.introduce = introduce;
     }
+
     @Override
-    public String toString(){
+    public String toString() {
         return "ResourceEntity{" +
-            "id=" +id+
-            "name="+name+
-            "kind="+kind+
-            "introduce="+introduce+
-            "url="+url+
+            "id=" + id +
+            "name=" + name +
+            "kind=" + kind +
+            "introduce=" + introduce +
+            "url=" + url +
             "}";
     }
 }

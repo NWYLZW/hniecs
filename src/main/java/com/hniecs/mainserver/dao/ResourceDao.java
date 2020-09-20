@@ -30,6 +30,7 @@ public interface ResourceDao {
     @Select("select * " +
         "from resource")
     public ArrayList<ResourceEntity> getAllResource();
+
     /***
      * 通过资源名字查找资源ResourceEntity
      * @param name 资源名字
@@ -77,6 +78,7 @@ public interface ResourceDao {
         "set name=#{name},kind=#{kind},url=#{url},introduce=#{introduce},mtime=#{mtime},ctime=#{ctime} " +
         "where id =#{id}")
     public void update(ResourceEntity resourceEntity);
+
     /***
      * 通过用户id删除ResourceEntity
      * @param id 资源id
