@@ -30,7 +30,7 @@ public class ResourceBaseController {
      * @bodyParm introduce 资源介绍
      * @bodyParm name 资源名
      * @bodyParm url 资源链接
-     * @return
+
      */
     @PostMapping("/resource/base/addResource")
     public CommonResult addMapping(@RequestBody Map<String, String> resourceDate){
@@ -85,7 +85,6 @@ public class ResourceBaseController {
      * @bodyParam kind 修改后资源种类
      * @bodyParam url 修改后资源url
      * @bodyParam introduce 修改后资源介绍
-     * @return
      */
     @PostMapping("/resource/base/updateResource")
     public CommonResult updateMapping(@RequestBody Map<String, String> resourceDate) {
@@ -99,7 +98,6 @@ public class ResourceBaseController {
     /**
      * 删除资源
      * @param id 资源id
-     * @return
      */
     @GetMapping("/resource/base/deleteResource")
     public CommonResult deleteMapping(@RequestParam long id){

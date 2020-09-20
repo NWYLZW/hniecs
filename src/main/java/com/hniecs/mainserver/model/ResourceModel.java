@@ -31,7 +31,7 @@ public class ResourceModel {
             resourceList.addAll(resourceDao.getResourceByFuzzy(condition));
             return "0";
         }catch (Exception e){
-            log.warn(e.getMessage());
+            log.error(e.getMessage());
             return "服务器出错";
         }
     }
@@ -45,7 +45,7 @@ public class ResourceModel {
           resourceList.addAll(resourceDao.getResourceByKind(kind));
           return "0";
       }catch (Exception e){
-          log.warn(e.getMessage());
+          log.error(e.getMessage());
           return "服务器错误";
       }
     }
@@ -58,7 +58,7 @@ public class ResourceModel {
      * @param introduce 资源介绍
      * @param kind 资源种类
      */
-    public String updateResourceById(long id,String name,String url,String introduce,String kind){
+    public String updateResourceById(long id, String name, String url, String introduce, String kind){
         try{
             ResourceEntity resource = new ResourceEntity(name,url,introduce,kind);
             ResourceEntity resourceEntity = resourceDao.getResourceById(id);
@@ -68,7 +68,7 @@ public class ResourceModel {
             resourceDao.update(temp);
             return "0";
         }catch (Exception e){
-            log.warn(e.getMessage());
+            log.error(e.getMessage());
             return "服务器错误";
         }
 
@@ -78,10 +78,14 @@ public class ResourceModel {
      * 根据id返回资源
      * @param id 资源id
      */
-    public ResourceEntity getById(long id){
-        return resourceDao.getResourceById(id);
+    public ResourceEntity getById(long id) {
+        try {
+            return resourceDao.getResourceById(id);
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return null;
+        }
     }
-
     /**
      * 删除资源
      * @param id 资源id
@@ -91,7 +95,7 @@ public class ResourceModel {
             resourceDao.delete(id);
             return "0";
         }catch (Exception e){
-            log.warn(e.getMessage());
+            log.error(e.getMessage());
             return "服务器错误";
         }
     }
@@ -105,6 +109,7 @@ public class ResourceModel {
             resourceDao.insert(resourceEntity);
             return "0";
         }catch (Exception e){
+            log.error(e.getMessage());
             return "服务器错误";
         }
     }
