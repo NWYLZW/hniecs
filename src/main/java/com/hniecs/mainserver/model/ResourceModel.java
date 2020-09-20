@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
 
 import com.hniecs.mainserver.tool.ObjectTool;
@@ -67,8 +68,10 @@ public class ResourceModel {
         String kind=resourceMap.get("kind");
         String introduce=resourceMap.get("introduce");
         try{
-            ResourceEntity resource=new ResourceEntity(name,url,introduce,kind);
-            ResourceEntity resourceEntity=resourceDao.getResourceById(id);
+            ResourceEntity resource = new ResourceEntity(name,url,introduce,kind);
+            ResourceEntity resourceEntity = resourceDao.getResourceById(id);
+            resource.setMtime(new Date());
+            resource.setCtime(resourceEntity.getCtime());
             ResourceEntity temp = ObjectTool.combineEntity(resourceEntity,resource);
             resourceDao.update(temp);
             return "0";
