@@ -20,7 +20,7 @@ public interface ResourceDao {
      */
     @Select("select * " +
         "from resource " +
-        "where id =#{id}")
+        "where id = #{id}")
     public ResourceEntity getResourceById(long id);
 
     /**

@@ -2,15 +2,13 @@ package com.hniecs.mainserver.model;
 
 import com.hniecs.mainserver.dao.ResourceDao;
 import com.hniecs.mainserver.entity.ResourceEntity;
+import com.hniecs.mainserver.tool.ObjectTool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Map;
-
-import com.hniecs.mainserver.tool.ObjectTool;
 /**
  * @desc     ResourceModel.java
  * @author  陈桢梁
@@ -30,9 +28,7 @@ public class ResourceModel {
      */
     public String getFuzzySearch(String condition, ArrayList<ResourceEntity> resourceList) {
         try {
-            for (ResourceEntity x : resourceDao.getResourceByFuzzy(condition)) {
-                resourceList.add(x);
-            }
+            resourceList.addAll(resourceDao.getResourceByFuzzy(condition));
             return "0";
         }catch (Exception e){
             log.warn(e.getMessage());
@@ -43,30 +39,26 @@ public class ResourceModel {
     /**
      * 按资源种类返回资源
      * @param kind 资源种类名当为null时返回所有资源
-     * @return
      */
     public String getByKind(String kind, ArrayList<ResourceEntity> resourceList){
       try{
-          for (ResourceEntity x:resourceDao.getResourceByKind(kind)) {
-              resourceList.add(x);
-          }
+          resourceList.addAll(resourceDao.getResourceByKind(kind));
           return "0";
       }catch (Exception e){
           log.warn(e.getMessage());
-          return "服务器出错";
+          return "服务器错误";
       }
     }
 
     /**
      * 更新资源
-     * @param resourceMap resource数据
-     * @return
+     * @param id 资源id
+     * @param name 资源名
+     * @param url 资源百度网盘链接
+     * @param introduce 资源介绍
+     * @param kind 资源种类
      */
-    public String updateResource(Map<String, String> resourceMap,long id){
-        String name=resourceMap.get("name");
-        String url=resourceMap.get("url");
-        String kind=resourceMap.get("kind");
-        String introduce=resourceMap.get("introduce");
+    public String updateResourceById(long id,String name,String url,String introduce,String kind){
         try{
             ResourceEntity resource = new ResourceEntity(name,url,introduce,kind);
             ResourceEntity resourceEntity = resourceDao.getResourceById(id);
@@ -77,25 +69,22 @@ public class ResourceModel {
             return "0";
         }catch (Exception e){
             log.warn(e.getMessage());
-            return "服务器出错";
+            return "服务器错误";
         }
 
     }
 
     /***
      * 根据id返回资源
-     * @param id
-     * @return
+     * @param id 资源id
      */
     public ResourceEntity getById(long id){
-        ResourceEntity resource=resourceDao.getResourceById(id);
-        return resource;
+        return resourceDao.getResourceById(id);
     }
 
     /**
      * 删除资源
-     * @param id
-     * @return
+     * @param id 资源id
      */
     public String deleteResource(long id) {
         try {
@@ -103,16 +92,20 @@ public class ResourceModel {
             return "0";
         }catch (Exception e){
             log.warn(e.getMessage());
-            return "服务器出错";
+            return "服务器错误";
         }
     }
 
+    /**
+     *
+     * @param resourceEntity 资源实体
+     */
     public String addNew(ResourceEntity resourceEntity) {
         try {
             resourceDao.insert(resourceEntity);
             return "0";
         }catch (Exception e){
-            return "服务器出错";
+            return "服务器错误";
         }
     }
 
@@ -122,11 +115,7 @@ public class ResourceModel {
      * @return 资源是否存在
      */
     public boolean haveById(long id){
-        if(resourceDao.getResourceById(id)==null)
-        {
-            return false;
-        }
-        return true;
+        return resourceDao.getResourceById(id) != null;
     }
 
 }
