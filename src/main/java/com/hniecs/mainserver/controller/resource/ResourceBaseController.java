@@ -23,6 +23,16 @@ import java.util.Map;
 public class ResourceBaseController {
     @Resource
     ResourceBaseService resource;
+
+    /**
+     *创建资源
+     * @param resourceDate
+     * @bodyParm kind 资源种类
+     * @bodyParm introduce 资源介绍
+     * @bodyParm name 资源名
+     * @bodyParm url 资源链接
+     * @return
+     */
     @PostMapping("/resource/base/addResource")
     public CommonResult addResource(@RequestBody Map<String, String> resourceDate){
         String msg=resource.addResource(
@@ -105,6 +115,12 @@ public class ResourceBaseController {
         }
         return CommonResult.failed(msg);
     }
+
+    /**
+     * 删除资源
+     * @param id 资源id
+     * @return
+     */
     @GetMapping("/resource/base/deleteResource")
     public CommonResult deleteResource(@RequestParam long id){
         String result=resource.deleteResource(id);
