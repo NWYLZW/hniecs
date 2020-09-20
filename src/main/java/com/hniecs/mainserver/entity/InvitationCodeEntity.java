@@ -32,7 +32,7 @@ public class InvitationCodeEntity {
     /**
      * 标签
      */
-    private int tagName;
+    private String tagName;
 
     /**
      * 邀请码状态 0 未使用，1 已使用，2 禁止使用
