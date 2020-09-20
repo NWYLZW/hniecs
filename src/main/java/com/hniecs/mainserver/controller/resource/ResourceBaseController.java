@@ -34,7 +34,7 @@ public class ResourceBaseController {
      * @return
      */
     @PostMapping("/resource/base/addResource")
-    public CommonResult addResource(@RequestBody Map<String, String> resourceDate){
+    public CommonResult addMapping(@RequestBody Map<String, String> resourceDate){
         String msg=resource.addResource(
             resourceDate.get("kind"),
             resourceDate.get("introduce"),
@@ -53,7 +53,7 @@ public class ResourceBaseController {
      * @param kind 资源种类
      * @param introduce 资源介绍
      */
-    private void setResourceEntity(String name, String url, String kind, String introduce, ResourceEntity resourceEntity){
+    private void setEntity(String name, String url, String kind, String introduce, ResourceEntity resourceEntity){
         if(kind!=null){
             resourceEntity.setKind(kind);
         }
@@ -74,7 +74,7 @@ public class ResourceBaseController {
      */
     @NotNeedLogin
     @GetMapping("/resource/base/getResourceByFuzzy")
-    public CommonResult getResourceByFuzzy(@RequestBody Map<String, String> condition){
+    public CommonResult getByFuzzy(@RequestBody Map<String, String> condition){
         ArrayList<ResourceEntity> resourceList = new ArrayList<>();
         String msg=resource.getByFuzzySearch(condition.get("condition"),resourceList);
         if(msg.equals("0")){
@@ -82,9 +82,15 @@ public class ResourceBaseController {
         }
         return CommonResult.failed(msg);
     }
+
+    /**
+     *
+     * @param kind 资源种类
+     * @return
+     */
     @NotNeedLogin
     @GetMapping("/resource/base/getResourceByKind")
-    public CommonResult getResourceByKind(@RequestBody String kind){
+    public CommonResult getByKind(@RequestBody String kind){
         ArrayList<ResourceEntity> resourceList = new ArrayList<>();
         String msg=resource.getResourceByKind(kind,resourceList);
         if(msg.equals("0")){
@@ -96,18 +102,18 @@ public class ResourceBaseController {
     /***
      * 更新资源
      * @param resourceDate
-     * @badyParam name 修改后资源名字
+     * @bodyParam name 修改后资源名字
      * @bodyParam kind 修改后资源种类
      * @bodyParam url 修改后资源url
      * @bodyParam introduce 修改后资源介绍
      * @return
      */
     @PostMapping("/resource/base/updateResource")
-    public CommonResult updateResource(@RequestBody Map<String, String> resourceDate) {
+    public CommonResult updateMapping(@RequestBody Map<String, String> resourceDate) {
         long id = Integer.parseInt(resourceDate.get("id"));
         ResourceEntity resourceEntity = resource.getResourceById(id);
         resourceEntity.setCtime(new Date());
-        setResourceEntity(resourceDate.get("name"), resourceDate.get("url")
+        setEntity(resourceDate.get("name"), resourceDate.get("url")
             , resourceDate.get("kind"), resourceDate.get("introduce"), resourceEntity);
         String msg = resource.updateResource(resourceEntity);
         if(msg.equals("0")){
@@ -122,11 +128,11 @@ public class ResourceBaseController {
      * @return
      */
     @GetMapping("/resource/base/deleteResource")
-    public CommonResult deleteResource(@RequestParam long id){
-        String result=resource.deleteResource(id);
-        if(result.equals("0")){
+    public CommonResult deleteMapping(@RequestParam long id){
+        String msg =resource.deleteResource(id);
+        if(msg.equals("0")){
             return CommonResult.success(null, "资源删除成功");
         }
-        return CommonResult.success(result);
+        return CommonResult.success(msg);
     }
 }
