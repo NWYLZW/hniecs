@@ -1,5 +1,6 @@
 package com.hniecs.mainserver.tool.excel.bill;
 
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 
 /**
@@ -10,16 +11,27 @@ import com.alibaba.excel.annotation.ExcelProperty;
  * @logs[1] 2020-09-18 01:44 yijie 优化代码
  * @logs[2] 2020-09-20 13:18 yijie 基于继承实现
  */
+@ExcelIgnoreUnannotated
 public class AlipayBillExcel extends BillExcel {
 
-    @ExcelProperty(value = "支付宝交易号", index = 4)
-    public String transactionNumber;
+    /**
+     * 支付宝交易号
+     */
+    @ExcelProperty(index=4)
+    private String transactionNumber;
 
-    @ExcelProperty(value = "订单金额(元)", index = 7)
-    public String money;
+    /**
+     * 订单金额(元)
+     */
+    @ExcelProperty(index=7)
+    private String money;
 
-    public String type = "收入";
+    /**
+     * 收/支
+     */
+    private String type;
 
-    public final String tagName = "支付宝";
-
+    public AlipayBillExcel() {
+        super.tag = "支付宝";
+    }
 }

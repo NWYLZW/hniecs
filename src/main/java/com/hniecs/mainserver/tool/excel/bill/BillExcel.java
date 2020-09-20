@@ -9,15 +9,20 @@ import lombok.Data;
  * @logs[0] 2020-09-20 13:09 yijie 创建了BillExcel.java文件
  */
 @Data
-public abstract class BillExcel implements IBillExcel {
-    public String transactionNumber = null;
-    public String money = null;
-    public String type = null;
-    public String tagName = null;
+public class BillExcel{
 
-    @Override
+    private String transactionNumber;
+
+    private String money;
+
+    private String type = "收入";
+
+    public String tag;
+
+    private static final String MONEY_MATCHES_STR = "\\d*\\.\\d*";
+
     public String verify() {
-        if( money != null && money.matches(IBillExcel.MONEY_MATCHES_STR)) {
+        if( money != null && money.matches(MONEY_MATCHES_STR)) {
             return money;
         }
         return null;
