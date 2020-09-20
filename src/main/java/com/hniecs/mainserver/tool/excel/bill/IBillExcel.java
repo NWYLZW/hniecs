@@ -12,9 +12,10 @@ public interface IBillExcel {
     String type = null;
     String tagName = null;
 
+    public final static String MONEY_MATCHES_STR = "\\d*\\.\\d*";
+
     /**
      * 校验金额类型
-     * @return
      */
     String verify();
 }

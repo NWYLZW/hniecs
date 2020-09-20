@@ -4,7 +4,6 @@ import com.alibaba.excel.EasyExcel;
 import com.hniecs.mainserver.tool.excel.bill.BillExcel;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -35,7 +34,7 @@ public class ExcelRader<T> {
         ) {
             throw new ClassNotFoundException("classSupplier 返回值未继承 BillExcel.class抽象类");
         }
-        EasyExcel.read(in, classSupplier.get(), listener).sheet().doRead();
+        EasyExcel.read(in, billExcelClass, listener).sheet().doRead();
         List<T> billExcels = (List<T>) listener.list;
         return billExcels;
     }

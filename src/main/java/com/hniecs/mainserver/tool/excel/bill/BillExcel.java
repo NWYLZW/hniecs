@@ -10,10 +10,14 @@ import lombok.Data;
  */
 @Data
 public abstract class BillExcel implements IBillExcel {
-    public String moneyMatchesStr;
+    public String transactionNumber = null;
+    public String money = null;
+    public String type = null;
+    public String tagName = null;
+
     @Override
     public String verify() {
-        if( money != null && money.matches(moneyMatchesStr)) {
+        if( money != null && money.matches(IBillExcel.MONEY_MATCHES_STR)) {
             return money;
         }
         return null;
