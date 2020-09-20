@@ -49,8 +49,8 @@ public interface InvitationCodeDao {
      */
     @Insert(
         "insert into " +
-            "invitation_code(create_user_id, invitation_code, status,can_invite_count, ctime, mtime)" +
-            "value(#{createUserId}, #{invitationCode}, #{status}, #{canInviteCount}, #{ctime}, #{mtime})"
+            "invitation_code(create_user_id, invitation_code, tag, status,can_invite_count, ctime, mtime)" +
+            "value(#{createUserId}, #{invitationCode}, #{tag}, #{status}, #{canInviteCount}, #{ctime}, #{mtime})"
     )
     void addNew(InvitationCodeEntity invitationCode);
 
