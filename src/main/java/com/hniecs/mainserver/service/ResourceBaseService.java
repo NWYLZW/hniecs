@@ -75,6 +75,11 @@ public class ResourceBaseService {
 
     /**
      *
+     * @param kind 资源种类
+     * @param introduce 资源介绍
+     * @param name 资源名
+     * @param url 资源链接
+     * @param table 获取返回值的table
      */
     public String addResource(String kind, String introduce, String name, String url, Hashtable table){
         ResourceEntity resourceEntity=new ResourceEntity(name, url, introduce, kind);
