@@ -34,16 +34,16 @@ public class ResourceBaseController {
      */
     @PostMapping("/resource/base/addResource")
     public CommonResult addMapping(@RequestBody Map<String, String> resourceDate) {
-        Hashtable table = new Hashtable();
+        Hashtable data = new Hashtable();
         String msg = resource.addResource(
             resourceDate.get("kind"),
             resourceDate.get("introduce"),
             resourceDate.get("name"),
             resourceDate.get("url"),
-            table
+            data
         );
         if (msg.equals("0")) {
-            return CommonResult.success(table, "资源查找成功");
+            return CommonResult.success(data, "资源查找成功");
         }
         return CommonResult.failed(msg);
     }
