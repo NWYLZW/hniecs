@@ -8,6 +8,7 @@ import com.hniecs.mainserver.tool.excel.bill.AlipayBillExcel;
 import com.hniecs.mainserver.tool.excel.bill.BillExcel;
 import com.hniecs.mainserver.tool.excel.bill.WechatBillExcel;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.io.InputStream;
@@ -21,6 +22,7 @@ import java.util.Hashtable;
  * @logs[0] 2020-09-20 12:52 yijie 创建了InvitationCodeService.java文件
  */
 @Slf4j
+@Service
 public class InvitationCodeService {
     private final int INVITATIONCODE_THRESHOLD_MONEY = 30;
     @Resource
