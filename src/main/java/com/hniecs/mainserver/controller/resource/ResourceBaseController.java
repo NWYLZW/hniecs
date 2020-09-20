@@ -25,16 +25,15 @@ public class ResourceBaseController {
     ResourceBaseService resource;
 
     /**
-     *创建资源
+     * 创建资源
      * @param resourceDate
      * @bodyParm kind 资源种类
      * @bodyParm introduce 资源介绍
      * @bodyParm name 资源名
      * @bodyParm url 资源链接
-
      */
     @PostMapping("/resource/base/addResource")
-    public CommonResult addMapping(@RequestBody Map<String, String> resourceDate){
+    public CommonResult addMapping(@RequestBody Map<String, String> resourceDate) {
         Hashtable table = new Hashtable();
         String msg = resource.addResource(
             resourceDate.get("kind"),
@@ -43,7 +42,7 @@ public class ResourceBaseController {
             resourceDate.get("url"),
             table
         );
-        if(msg.equals("0")){
+        if (msg.equals("0")) {
             return CommonResult.success(table, "资源查找成功");
         }
         return CommonResult.failed(msg);
@@ -56,31 +55,30 @@ public class ResourceBaseController {
      */
     @NotNeedLogin
     @GetMapping("/resource/base/getResourceByFuzzy")
-    public CommonResult getByFuzzy(@RequestBody Map<String, String> condition){
+    public CommonResult getByFuzzy(@RequestBody Map<String, String> condition) {
         String Condition = condition.get("condition");
-        if(condition==null){
+        if (condition == null) {
             return CommonResult.failed("搜索条件不能为空");
         }
         ArrayList<ResourceEntity> resourceList = new ArrayList<>();
-        String msg=resource.getByFuzzySearch(Condition,resourceList);
-        if(msg.equals("0")){
-            return CommonResult.success(resourceList,"资源查找成功");
+        String msg = resource.getByFuzzySearch(Condition, resourceList);
+        if (msg.equals("0")) {
+            return CommonResult.success(resourceList, "资源查找成功");
         }
         return CommonResult.failed(msg);
     }
 
     /**
-     *
      * @param kind 资源种类
      * @return
      */
     @NotNeedLogin
     @GetMapping("/resource/base/getResourceByKind")
-    public CommonResult getByKind(@RequestBody String kind){
+    public CommonResult getByKind(@RequestBody String kind) {
         ArrayList<ResourceEntity> resourceList = new ArrayList<>();
-        String msg=resource.getResourceByKind(kind,resourceList);
-        if(msg.equals("0")){
-            return CommonResult.success(resourceList,"资源查找成功");
+        String msg = resource.getResourceByKind(kind, resourceList);
+        if (msg.equals("0")) {
+            return CommonResult.success(resourceList, "资源查找成功");
         }
         return CommonResult.failed(msg);
     }
@@ -96,7 +94,7 @@ public class ResourceBaseController {
     @PostMapping("/resource/base/updateResource")
     public CommonResult updateMapping(@RequestBody Map<String, String> resourceDate) {
         String msg = resource.updateResource(resourceDate);
-        if(msg.equals("0")){
+        if (msg.equals("0")) {
             return CommonResult.success(null, "资源更新成功");
         }
         return CommonResult.failed(msg);
@@ -107,9 +105,9 @@ public class ResourceBaseController {
      * @param id 资源id
      */
     @GetMapping("/resource/base/deleteResource")
-    public CommonResult deleteMapping(@RequestParam long id){
-        String msg =resource.deleteResource(id);
-        if(msg.equals("0")){
+    public CommonResult deleteMapping(@RequestParam long id) {
+        String msg = resource.deleteResource(id);
+        if (msg.equals("0")) {
             return CommonResult.success(null, "资源删除成功");
         }
         return CommonResult.success(msg);
