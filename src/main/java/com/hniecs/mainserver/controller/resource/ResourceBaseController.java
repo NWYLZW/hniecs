@@ -54,8 +54,12 @@ public class ResourceBaseController {
     @NotNeedLogin
     @GetMapping("/resource/base/getResourceByFuzzy")
     public CommonResult getByFuzzy(@RequestBody Map<String, String> condition){
+        String Condition = condition.get("condition");
+        if(condition==null){
+            return CommonResult.failed("搜索条件不能为空");
+        }
         ArrayList<ResourceEntity> resourceList = new ArrayList<>();
-        String msg=resource.getByFuzzySearch(condition.get("condition"),resourceList);
+        String msg=resource.getByFuzzySearch(Condition,resourceList);
         if(msg.equals("0")){
             return CommonResult.success(resourceList,"资源查找成功");
         }
