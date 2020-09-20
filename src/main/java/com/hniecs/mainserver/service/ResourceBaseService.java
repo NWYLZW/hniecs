@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -75,8 +76,9 @@ public class ResourceBaseService {
     /**
      *
      */
-    public String addResource(String kind, String introduce, String name, String url){
+    public String addResource(String kind, String introduce, String name, String url, Hashtable table){
         ResourceEntity resourceEntity=new ResourceEntity(name, url, introduce, kind);
+        table.put("资源实体",resourceEntity);
         return resourceModel.addNew(resourceEntity);
     }
 }

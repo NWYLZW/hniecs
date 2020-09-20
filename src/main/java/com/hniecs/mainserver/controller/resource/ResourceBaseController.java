@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.Map;
 
 /**
@@ -34,14 +35,16 @@ public class ResourceBaseController {
      */
     @PostMapping("/resource/base/addResource")
     public CommonResult addMapping(@RequestBody Map<String, String> resourceDate){
-        String msg=resource.addResource(
+        Hashtable table = new Hashtable();
+        String msg = resource.addResource(
             resourceDate.get("kind"),
             resourceDate.get("introduce"),
             resourceDate.get("name"),
-            resourceDate.get("url")
+            resourceDate.get("url"),
+            table
         );
         if(msg.equals("0")){
-            return CommonResult.success(null,"资源查找成功");
+            return CommonResult.success(table, "资源查找成功");
         }
         return CommonResult.failed(msg);
     }
