@@ -2,7 +2,7 @@ package com.hniecs.mainserver.tool.excel;
 
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.event.AnalysisEventListener;
-import com.hniecs.mainserver.tool.excel.bill.IBillExcel;
+import com.hniecs.mainserver.tool.excel.bill.BillExcel;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -16,16 +16,17 @@ import java.util.List;
  * @logs[1] 2020-09-18 01:44 yijie 优化代码
  */
 @Slf4j
-public class BillExcelListener extends AnalysisEventListener<IBillExcel> {
-    List<IBillExcel> list = new ArrayList<>();
+public class BillExcelListener extends AnalysisEventListener<BillExcel> {
+
+    List<BillExcel> list = new ArrayList<>();
 
     /**
      * 每行数据的转化与获取
-     * @param excel             表格实体
+     * @param excel    表格实体
      * @param analysisContext
      */
     @Override
-    public void invoke(IBillExcel excel, AnalysisContext analysisContext) {
+    public void invoke(BillExcel excel, AnalysisContext analysisContext) {
         String data = excel.verify();
         if(data != null) {
             list.add(excel);

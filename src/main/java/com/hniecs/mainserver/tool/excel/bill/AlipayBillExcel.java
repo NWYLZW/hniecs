@@ -17,13 +17,13 @@ public class AlipayBillExcel extends BillExcel {
     /**
      * 支付宝交易号
      */
-    @ExcelProperty(index=4)
+    @ExcelProperty(index = 4)
     private String transactionNumber;
 
     /**
      * 订单金额(元)
      */
-    @ExcelProperty(index=7)
+    @ExcelProperty(index = 7)
     private String money;
 
     /**
