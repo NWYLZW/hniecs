@@ -11,9 +11,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Hashtable;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @desc    管理员邀请码操作 AdminInvitationCodeController.java
@@ -25,6 +23,7 @@ import java.util.Map;
 @RestController
 @Slf4j
 public class AdminInvitationCodeController {
+
     @Resource
     private InvitationCodeService invitationCodeService;
 
@@ -32,11 +31,12 @@ public class AdminInvitationCodeController {
      * 添加单个邀请码
      * @return
      */
-    @PostMapping("/admin/invitationCode/add")
+    @PostMapping("/admin/invitationCode/addList")
     public CommonResult addInvitationCode(
         @RequestBody Map<String, Object> invitationCodeMap,
         HttpServletRequest request) {
-        ArrayList<String> invitationCodes = null;
+
+        List<String> invitationCodes = null;
         String tagName = null;
         Integer availableCount = null;
         try {
@@ -49,8 +49,10 @@ public class AdminInvitationCodeController {
 
         UserEntity currentUser = (UserEntity) request.getSession().getAttribute("currentUser");
         Hashtable data = new Hashtable();
+
         String msg = invitationCodeService
-            .addInvitationCodes(currentUser, availableCount, tagName, invitationCodes, data);
+            .addInvitationCodes(currentUser, availableCount,
+                invitationCodes, tagName,data);
         if (msg.equals("0")) {
             return CommonResult.success(data);
         } else {
@@ -64,11 +66,13 @@ public class AdminInvitationCodeController {
      */
     @PostMapping("/admin/invitationCode/importFromExcel")
     public CommonResult importInvitationCodes(
-        MultipartFile excel,
+        @RequestParam(value = "excelFile",required = true) MultipartFile excel,
         @RequestBody Map<String, Object> invitationCodeMap,
-        HttpServletRequest request) {
+        HttpServletRequest request){
+
         String tagName = null;
         Integer availableCount = null;
+
         try {
             tagName = (String) invitationCodeMap.get("tagName");
             availableCount = (Integer) invitationCodeMap.get("availableCount");
@@ -78,6 +82,7 @@ public class AdminInvitationCodeController {
 
         UserEntity currentUser = (UserEntity) request.getSession().getAttribute("currentUser");
         InputStream excelIS = null;
+
         try {
             excelIS = excel.getInputStream();
         } catch (IOException e) {
@@ -97,10 +102,14 @@ public class AdminInvitationCodeController {
 
     /**
      * 获取邀请码列表 根据多种筛选条件筛选 例如状态，内容，等等
+     *
      * @return
      */
-    @GetMapping("/")
-    public CommonResult getInvitationCodesByCondition() {
+    @GetMapping("/admin/invitationCode")
+    public CommonResult getInvitationCodesByCondition(
+        @RequestParam Map<String, Object> dataMap) {
+
+
         return null;
     }
 

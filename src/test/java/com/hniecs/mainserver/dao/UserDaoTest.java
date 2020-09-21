@@ -1,6 +1,7 @@
 package com.hniecs.mainserver.dao;
 
 import com.hniecs.mainserver.entity.UserEntity;
+import org.apache.ibatis.annotations.Param;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -9,6 +10,8 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @desc      用户dao层测试类 UserDaoTest.java
@@ -44,5 +47,14 @@ public class UserDaoTest {
         userDao.updateById(user);
         System.out.println(user.toString());
         Assert.assertTrue(("yijie".equals(userDao.getUserSimpleById(17L).getUserName())));
+    }
+
+    public static void main(String[] args) {
+        String pattern="\\W";
+        String string="1@*23a1s5d6a4s56d1a3";
+        Pattern pa= Pattern.compile(pattern);
+        Matcher matcher=pa.matcher(string);
+        matcher.find();
+        System.out.println(matcher.end());
     }
 }

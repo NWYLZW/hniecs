@@ -7,8 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 
 /**
  * @desc    InvitationCodeModel.java
@@ -51,24 +50,64 @@ public class InvitationCodeModel {
     public String addInvitationCodes(
         UserEntity user,
         int availableInviteCount,
-        ArrayList<String> invitationCodes
-    ) {
+        List<String> invitationCodes,
+        String tagName,
+        Hashtable data
+        ) {
+
+        return insertIntoDataBase(user,
+        availableInviteCount,
+        invitationCodes,
+        tagName, data);
+    }
+
+    /**
+     * 组装 InvitationCodeEntity
+     * @param user
+     * @param availableInviteCount
+     * @param invitationCodes
+     * @param tagName
+     * @return
+     */
+    private String insertIntoDataBase(
+        UserEntity user,
+        int availableInviteCount,
+        List<String> invitationCodes,
+        String tagName,
+        Hashtable data) {
+
+        //操作信息
+        int succeedCount = 0;
+        int failureCount = 0;
+
         InvitationCodeEntity ic = new InvitationCodeEntity();
         ic.setMtime(new Date());
         ic.setCtime(new Date());
         ic.setCreateUserId(user.getId());
         ic.setAvailableInviteCount(availableInviteCount);
+        ic.setTagName(tagName);
         ic.setStatus(0);
+
         for (String invitationCode : invitationCodes) {
             ic.setInvitationCode(invitationCode);
             try {
                 invitationCodeDao.addNew(ic);
+                succeedCount++;
             } catch (Exception e) {
-                log.error("插入失败, 创建者:" + user.getUserName() + "创建时间:" + new Date());
-                return "服务器错误";
+                failureCount++;
+                log.error("插入失败！");
             }
         }
-        return "0";
+
+        //加入结果
+        data.put("successCount", succeedCount);
+        data.put("failureCount", failureCount);
+
+        if(succeedCount == 0) {
+            return "验证码全部生成失败";
+        }else {
+            return "0";
+        }
     }
 
     /**
@@ -83,4 +122,5 @@ public class InvitationCodeModel {
             return "邀请码可用次数已用尽, 使用失败!";
         }
     }
+
 }

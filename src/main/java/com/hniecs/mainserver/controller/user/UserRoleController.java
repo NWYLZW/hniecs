@@ -98,7 +98,7 @@ public class UserRoleController {
             Arrays.asList(
                 generateApp
                     .apply("后台管理").apply("&#xe76e;")
-                    .apply("/admin/manage/index")
+                    .apply("/admin/manage/user")
                     .apply(null),
                 generateApp
                     .apply("我的消息").apply("&#xe6a2;")

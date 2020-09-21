@@ -10,7 +10,7 @@ import lombok.Getter;
  * @logs[0] 2020-09-12 15:46 yijie 创建了ResultCode.java文件
  */
 public enum ResultCode implements IBaseErrorCode {
-    VALIDATE_FAILED(1, "参数校验错误"),
+    VALIDATE_FAILED(1, "参数错误"),
 
     SUCCESS(200, "成功"),
 
