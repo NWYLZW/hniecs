@@ -1,6 +1,6 @@
 package com.hniecs.mainserver.tool.interceptor;
 
-import com.hniecs.mainserver.annotation.NotNeedLogin;
+import com.hniecs.mainserver.annotation.method.NotNeedLogin;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import com.hniecs.mainserver.tool.security.session.SessionTool;
 import lombok.extern.slf4j.Slf4j;

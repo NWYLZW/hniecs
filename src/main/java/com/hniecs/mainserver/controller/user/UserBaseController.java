@@ -1,6 +1,6 @@
 package com.hniecs.mainserver.controller.user;
 
-import com.hniecs.mainserver.annotation.NotNeedLogin;
+import com.hniecs.mainserver.annotation.method.NotNeedLogin;
 import com.hniecs.mainserver.service.user.UserBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 /**
  * @desc    UserBaseController.java

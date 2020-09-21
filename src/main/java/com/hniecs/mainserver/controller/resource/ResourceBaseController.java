@@ -1,6 +1,6 @@
 package com.hniecs.mainserver.controller.resource;
 
-import com.hniecs.mainserver.annotation.NotNeedLogin;
+import com.hniecs.mainserver.annotation.method.NotNeedLogin;
 import com.hniecs.mainserver.entity.ResourceEntity;
 import com.hniecs.mainserver.service.ResourceBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
