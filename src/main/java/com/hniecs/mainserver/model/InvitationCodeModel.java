@@ -52,46 +52,13 @@ public class InvitationCodeModel {
         int availableInviteCount,
         List<String> invitationCodes,
         String tagName,
-        Hashtable returnData) {
+        Hashtable data
+        ) {
 
-        List<InvitationCodeEntity> entities = assembleEntity(user,availableInviteCount,
-            invitationCodes,tagName);
-
-        return insertList(entities,returnData);
-    }
-
-    /**
-     * 将验证码插入数据库，需要统计成功，失败次数
-     * @param list 验证码集合
-     * @param data 结果数据
-     */
-    private String insertList(List<InvitationCodeEntity> list, Hashtable data ) {
-
-        int succeedCount = 0;
-        int failureCount = 0;
-        List<InvitationCodeEntity> entities = new ArrayList<>();
-
-        for (InvitationCodeEntity entity : list) {
-            try {
-                invitationCodeDao.addNew(entity);
-                entities.add(entity);
-                succeedCount++;
-            } catch (Exception e) {
-                failureCount++;
-                e.printStackTrace();
-            }
-        }
-
-        //加入结果
-        data.put("successCount", 0);
-        data.put("count", 0);
-        data.put("successAddList", entities);
-
-        if(succeedCount == 0) {
-            return "验证码全部无效";
-        }else {
-            return "0";
-        }
+        return insertIntoDataBase(user,
+        availableInviteCount,
+        invitationCodes,
+        tagName, data);
     }
 
     /**
@@ -102,26 +69,45 @@ public class InvitationCodeModel {
      * @param tagName
      * @return
      */
-    private List<InvitationCodeEntity> assembleEntity(
+    private String insertIntoDataBase(
         UserEntity user,
         int availableInviteCount,
         List<String> invitationCodes,
-        String tagName) {
+        String tagName,
+        Hashtable data) {
 
-        List<InvitationCodeEntity> entities = new ArrayList<>();
+        //操作信息
+        int succeedCount = 0;
+        int failureCount = 0;
+
         InvitationCodeEntity ic = new InvitationCodeEntity();
-
         ic.setMtime(new Date());
         ic.setCtime(new Date());
         ic.setCreateUserId(user.getId());
         ic.setAvailableInviteCount(availableInviteCount);
         ic.setTagName(tagName);
         ic.setStatus(0);
+
         for (String invitationCode : invitationCodes) {
             ic.setInvitationCode(invitationCode);
+            try {
+                invitationCodeDao.addNew(ic);
+                succeedCount++;
+            } catch (Exception e) {
+                failureCount++;
+                log.error("插入失败！");
+            }
         }
 
-        return entities;
+        //加入结果
+        data.put("successCount", succeedCount);
+        data.put("failureCount", failureCount);
+
+        if(succeedCount == 0) {
+            return "验证码全部生成失败";
+        }else {
+            return "0";
+        }
     }
 
     /**

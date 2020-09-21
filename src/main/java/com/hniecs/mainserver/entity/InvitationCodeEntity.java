@@ -61,7 +61,7 @@ public class InvitationCodeEntity {
             ", createUserId=" + createUserId +
             ", invitationCode='" + invitationCode + '\'' +
             ", status=" + status +
-            ", canInviteCount=" + availableInviteCount +
+            ", availableInviteCount=" + availableInviteCount +
             ", ctime=" + ctime +
             ", mtime=" + mtime +
             '}';

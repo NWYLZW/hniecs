@@ -8,9 +8,9 @@ import com.hniecs.mainserver.tool.excel.bill.BillExcel;
 import com.hniecs.mainserver.tool.excel.bill.WechatBillExcel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.Resource;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -21,6 +21,7 @@ import java.util.List;
  * @date    2020-09-20 12:52
  * @logs[0] 2020-09-20 12:52 yijie 创建了InvitationCodeService.java文件
  */
+
 @Slf4j
 @Service
 public class InvitationCodeService {
@@ -28,7 +29,7 @@ public class InvitationCodeService {
     /**
      * 金额有效阈值
      */
-    private final int INVITATIONCODE_THRESHOLD_MONEY = 30;
+    private final BigDecimal INVITATION_CODE_THRESHOLD_MONEY = new BigDecimal(30);
 
     @Resource
     private InvitationCodeModel invitationCodeModel;
@@ -38,13 +39,12 @@ public class InvitationCodeService {
         List<String> invitationCodes,String tagName,
         Hashtable returnData) {
 
-        String msg = invitationCodeModel.addInvitationCodes(
+        return invitationCodeModel.addInvitationCodes(
             creator,availableCount,
             invitationCodes,
             tagName,
             returnData
         );
-        return msg;
     }
 
     /**
@@ -79,9 +79,9 @@ public class InvitationCodeService {
         List<String> list = new ArrayList<>();
         for (BillExcel billExcel : billExcels) {
             //字符变成钱
-            String moneyStr = billExcel.getMoney();
-            Long money = Long.valueOf(moneyStr);
-            if (money == INVITATIONCODE_THRESHOLD_MONEY) {
+            BigDecimal money = new BigDecimal( billExcel.getMoney());
+            // 建议用compareTo进行比较，0 等于 1 大于 -1 小于
+            if (  money.compareTo(INVITATION_CODE_THRESHOLD_MONEY) == 0  ) {
                 list.add(billExcel.getTransactionNumber());
             }
         }

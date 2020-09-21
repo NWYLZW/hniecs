@@ -49,8 +49,8 @@ public interface InvitationCodeDao {
      */
     @Insert(
         "insert into " +
-            "invitation_code(create_user_id, invitation_code, tag, status,can_invite_count, ctime, mtime)" +
-            "value(#{createUserId}, #{invitationCode}, #{tag}, #{status}, #{canInviteCount}, #{ctime}, #{mtime})"
+            "invitation_code(create_user_id, invitation_code, tag_name, status,available_invite_count, ctime, mtime)" +
+            "values(#{createUserId}, #{invitationCode}, #{tagName}, #{status}, #{availableInviteCount}, #{ctime}, #{mtime})"
     )
     void addNew(InvitationCodeEntity invitationCode);
 
@@ -60,7 +60,7 @@ public interface InvitationCodeDao {
      */
     @Update(
         "update invitation_code " +
-            "set invitation_code=#{invitationCode}, status=#{status}, available_invite_count=#{canInviteCount}, mtime=#{mtime}" +
+            "set invitation_code=#{invitationCode}, status=#{status}, available_invite_count=#{availableInviteCount}, mtime=#{mtime}" +
             "where id=#{id}"
     )
     void update(InvitationCodeEntity invitationCodeEntity);
