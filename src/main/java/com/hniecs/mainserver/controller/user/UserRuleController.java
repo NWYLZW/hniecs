@@ -1,5 +1,7 @@
 package com.hniecs.mainserver.controller.user;
 
+import com.hniecs.mainserver.annotation.method.PermissionRequired;
+import com.hniecs.mainserver.entity.permission.AdminPermission;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -10,70 +12,71 @@ import java.util.HashMap;
 import java.util.function.Function;
 
 /**
- * @desc    用户权限controller层 UserRoleController.java
+ * @desc    用户权限controller层 UserRuleController.java
  * @author  yijie
  * @date    2020-09-15 20:19
- * @logs[0] 2020-09-15 20:19 yijie 创建了UserRoleController.java文件
+ * @logs[0] 2020-09-15 20:19 yijie 创建了UserRuleController.java文件
  * @logs[1] 2020-09-16 01:30 yijie 预留权限接口待完成
  */
 @RestController
-public class UserRoleController {
+public class UserRuleController {
     /**------------------超级管理员------------------**/
     /**
      * TODO 获取已有的权限列表
      */
-    @GetMapping("/user/Role/getRoles")
-    public CommonResult getRoles() {
+    @PermissionRequired(permission = AdminPermission.SEARCH_ALL_USER)
+    @GetMapping("/user/Rule/getRules")
+    public CommonResult getRules() {
         return CommonResult.notFound("接口未完成");
     }
     /**
      * TODO 获取已有的权限组列表
      */
-    @GetMapping("/user/Role/getRolers")
-    public CommonResult getRolers() {
+    @GetMapping("/user/Rule/getRulers")
+    public CommonResult getRulers() {
         return CommonResult.notFound("接口未完成");
     }
     /**
      * TODO 新增权限组
      */
-    @GetMapping("/user/Role/addRoler")
-    public CommonResult addRoler() {
+    @GetMapping("/user/Rule/addRuler")
+    public CommonResult addRuler() {
         return CommonResult.notFound("接口未完成");
     }
     /**
      * TODO 重命名某个权限组
      */
-    @GetMapping("/user/Role/renameRoler")
-    public CommonResult renameRoler() {
+    @GetMapping("/user/Rule/renameRuler")
+    public CommonResult renameRuler() {
         return CommonResult.notFound("接口未完成");
     }
     /**
      * TODO 将某个权限添加到某个权限组
      */
-    @GetMapping("/user/Role/addRoleToRoler")
-    public CommonResult addRoleToRoler() {
+    @GetMapping("/user/Rule/addRuleToRuler")
+    public CommonResult addRuleToRuler() {
         return CommonResult.notFound("接口未完成");
     }
     /**
      * TODO 设置某个用户为某个权限组
      */
-    @GetMapping("/user/Role/setRoler")
-    public CommonResult setRoler() {
+    @GetMapping("/user/Rule/setRuler")
+    public CommonResult setRuler() {
         return CommonResult.notFound("接口未完成");
     }
 
     /**
      * TODO 获取某个的权限组下的应用
      */
-    @GetMapping("/user/Role/getAppsByRoler")
-    public CommonResult getAppsByRoler() {
+    @GetMapping("/user/Rule/getAppsByRuler")
+    public CommonResult getAppsByRuler() {
         return CommonResult.notFound("接口未完成");
     }
     /**
      * TODO 给某个权限组添加应用
      */
-    @GetMapping("/user/Role/addAppToRoler")
-    public CommonResult addAppToRoler() {
+    @GetMapping("/user/Rule/addAppToRuler")
+    public CommonResult addAppToRuler() {
         return CommonResult.notFound("接口未完成");
     }
     /**------------------超级管理员------------------**/
@@ -81,7 +84,7 @@ public class UserRoleController {
     /**
      * TODO 获取自己的权限组下的应用
      */
-    @GetMapping("/user/Role/getApps")
+    @GetMapping("/user/Rule/getApps")
     public CommonResult getApps() {
         Function<String, Function<String, Function<String, Function<ArrayList
             , HashMap>>>> generateApp = name -> iconUTF8 -> url -> menus -> {
