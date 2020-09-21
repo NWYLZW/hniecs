@@ -1,7 +1,7 @@
 package com.hniecs.mainserver.controller.user;
 
 import com.hniecs.mainserver.annotation.method.PermissionRequired;
-import com.hniecs.mainserver.entity.permission.AdminPermission;
+import com.hniecs.mainserver.entity.permission.AdminPermissions;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -24,7 +24,10 @@ public class UserRuleController {
     /**
      * TODO 获取已有的权限列表
      */
-    @PermissionRequired(permission = AdminPermission.SEARCH_ALL_USER)
+    @PermissionRequired(
+        scope = AdminPermissions.NAME,
+        permission = AdminPermissions.SEARCH_ALL_USER
+    )
     @GetMapping("/user/Rule/getRules")
     public CommonResult getRules() {
         return CommonResult.notFound("接口未完成");
