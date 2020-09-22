@@ -89,43 +89,37 @@ public class UserRuleController {
      */
     @GetMapping("/user/rule/getApps")
     public CommonResult getApps() {
-        Function<String, Function<String, Function<String, Function<ArrayList
-            , HashMap>>>> generateApp = name -> iconUTF8 -> url -> menus -> {
-            HashMap<String, Object> h = new HashMap<>();
-            h.put("name", name);
-            h.put("iconUTF8", iconUTF8);
-            h.put("url", url);
-            if (menus != null) {
-                h.put("menus", menus);
-            }
-            return h;
-        };
         return CommonResult.success(new ArrayList<>(
             Arrays.asList(
-                generateApp
-                    .apply("后台管理").apply("&#xe76e;")
-                    .apply("/admin/manage/user")
-                    .apply(null),
-                generateApp
-                    .apply("我的消息").apply("&#xe6a2;")
-                    .apply("/message/my/index")
-                    .apply(new ArrayList<>(
-                            Arrays.asList(
-                                generateApp
-                                    .apply("公告").apply("&#xe6aa;")
-                                    .apply("/message/announcement/index")
-                                    .apply(null),
-                                generateApp
-                                    .apply("聊天").apply("&#xe6a9;")
-                                    .apply("/message/chat/index")
-                                    .apply(null),
-                                generateApp
-                                    .apply("看板").apply("&#xe6ab;")
-                                    .apply("/message/board/index")
-                                    .apply(null)
-                            )
+                new HashMap<String, Object>() {{
+                    put("name", "后台管理");
+                    put("iconUTF8", "&#xe76e;");
+                    put("url", "/admin/manage/user");
+                }},
+                new HashMap<String, Object>() {{
+                    put("name", "我的消息");
+                    put("iconUTF8", "&#xe6a2;");
+                    put("url", "/message/my/index");
+                    put("menus", new ArrayList<>(
+                        Arrays.asList(
+                            new HashMap<String, Object>() {{
+                                put("name", "公告");
+                                put("iconUTF8", "&#xe6aa;");
+                                put("url", "/admin/announcement/index");
+                            }},
+                            new HashMap<String, Object>() {{
+                                put("name", "聊天");
+                                put("iconUTF8", "&#xe6a9;");
+                                put("url", "/admin/chat/index");
+                            }},
+                            new HashMap<String, Object>() {{
+                                put("name", "看板");
+                                put("iconUTF8", "&#xe6ab;");
+                                put("url", "/admin/board/index");
+                            }}
                         )
-                    )
+                    ));
+                }}
             )
         ));
     }
