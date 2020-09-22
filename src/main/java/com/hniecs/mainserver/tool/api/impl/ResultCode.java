@@ -20,7 +20,7 @@ public enum ResultCode implements IBaseErrorCode {
     FORBIDDEN(403, "接口无权限"),
     NOT_FOUND(404, "接口不存在"),
 
-    FAILED(500, "失败");
+    FAILED(500, "服务器出现了错误");
 
     @Getter
     private long code;

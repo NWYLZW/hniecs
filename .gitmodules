@@ -1,0 +1,3 @@
+[submodule "webs/vue-main"]
+	path = webs/vue-main
+	url = git@gitlab.fengzli.cn:hniecs/vue-main.git
