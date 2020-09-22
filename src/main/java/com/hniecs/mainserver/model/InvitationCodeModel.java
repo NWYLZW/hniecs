@@ -2,7 +2,7 @@ package com.hniecs.mainserver.model;
 
 import com.hniecs.mainserver.dao.InvitationCodeDao;
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
-import com.hniecs.mainserver.entity.UserEntity;
+import com.hniecs.mainserver.entity.user.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 

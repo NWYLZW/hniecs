@@ -1,7 +1,6 @@
 package com.hniecs.mainserver.tool.security.session;
 
-import com.hniecs.mainserver.entity.UserEntity;
-import com.hniecs.mainserver.tool.security.SHA256;
+import com.hniecs.mainserver.entity.user.UserEntity;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.servlet.http.HttpSession;

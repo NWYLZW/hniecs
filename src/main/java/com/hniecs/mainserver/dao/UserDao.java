@@ -1,6 +1,6 @@
 package com.hniecs.mainserver.dao;
 
-import com.hniecs.mainserver.entity.UserEntity;
+import com.hniecs.mainserver.entity.user.UserEntity;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.hniecs.mainserver.entity;
+package com.hniecs.mainserver.entity.user;
 
 import com.hniecs.mainserver.tool.security.Password;
 import com.hniecs.mainserver.tool.security.SHA256;
@@ -16,7 +16,8 @@ import java.util.Date;
  * @logs[1] 2020-09-13 01:47 yijie 添加了密码生成与校验
  * @logs[2] 2020-09-13 01:47 yijie 添加了创建时间与修改时间成员
  * @logs[3] 2020-09-16 22:37 yijie 设置全部属性全部可获取
- * @logs[3] 2020-09-17 00:58 yijie 修改toString方法
+ * @logs[4] 2020-09-17 00:58 yijie 修改toString方法
+ * @logs[5] 2020-09-22 17:10 yijie 移动实体至user包下
  */
 @NoArgsConstructor
 public class UserEntity {
@@ -60,9 +61,19 @@ public class UserEntity {
             '}';
     }
 
+    /**
+     * 获取用户的SessionToken信息
+     * @param saltCount 加密次数
+     * @return  sessionToken
+     */
     public String getUserToken (int saltCount) {
         return SHA256.salt(id + '&' + userName + '&' + passwordSHA, saltCount);
     }
+
+    /**
+     * 设置用户密码
+     * @param password  新密码
+     */
     public void setPassword (String password) {
         this.passwordSHA = Password.generatePasswordHash(password);
     }
