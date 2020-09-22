@@ -1,9 +1,11 @@
 package com.hniecs.mainserver.dao;
 
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
+import com.hniecs.mainserver.entity.UserEntity;
 import org.apache.ibatis.annotations.*;
 
 import java.util.ArrayList;
+import java.util.Map;
 
 /**
  * @desc    InvitationCodeDao.java
@@ -15,7 +17,8 @@ import java.util.ArrayList;
  */
 @Mapper
 public interface InvitationCodeDao {
-    public enum columnName{
+
+    enum columnName{
         create_user_id, id, status, invitation_code;
     }
 
@@ -29,7 +32,7 @@ public interface InvitationCodeDao {
             "from invitation_code " +
             "where ${columnName}=#{condition}"
     )
-    public ArrayList<InvitationCodeEntity> getAll(columnName col, String condition);
+   ArrayList<InvitationCodeEntity> getAll(columnName col, String condition);
 
     /**
      * 根据(创建用户id|邀请码id|邀请码状态|邀请码内容) 获取符合条件的某个邀请码
@@ -41,7 +44,55 @@ public interface InvitationCodeDao {
             "from invitation_code " +
             "where ${columnName}=#{condition}"
     )
-    public InvitationCodeEntity getOne(columnName col, String condition);
+    InvitationCodeEntity getOne(columnName col, String condition);
+
+
+    /**
+     * select c.*, u.* from invitation_code as c, user as u
+     * where
+     * -- # 通过 验证码 查
+     * (c.invitation_code = '#{invitationCode}'
+     * and u.id = c.create_user_id)
+     * or
+     * -- # 通过 标签、名字 查
+     * (c.tag_name = '#{tagName}'
+     * and u.id = c.create_user_id
+     * and u.user_name = '#{userName}')
+     * or
+     * -- # 通过 名字 查
+     * (u.id = c.create_user_id
+     * and u.user_name = '#{userName}'
+     * and '#{tagName}' is null)
+     * or
+     * -- # 通过 标签 查
+     * (u.id = c.create_user_id
+     * and c.tag_name = '#{}'
+     * and '#{userName}' is null);
+     * @param tagName         标签名
+     * @param creatorName     创建者名
+     * @param invitationCode  内容
+     * @return
+     */
+    @Select("select c.*, u.* " +
+        "from invitation_code as c, user as u " +
+        "where " +
+        "(c.invitation_code = #{invitationCode} " +
+        "and u.id = c.create_user_id) " +
+        "or  " +
+        "(c.tag_name = #{tagName} " +
+        "and u.id = c.create_user_id "  +
+        "and u.user_name = #{creatorName}) " +
+        "or " +
+        "(u.id = c.create_user_id " +
+        "and u.user_name = #{creatorName} " +
+        "and #{tagName} is null) " +
+        "or " +
+        "(u.id = c.create_user_id " +
+        "and c.tag_name = #{tagName} " +
+        "and #{creatorName} is null);")
+    @ResultMap("未封装")
+    Map<UserEntity,InvitationCodeEntity> getInvitationCodeList(
+        String tagName, String creatorName, String invitationCode);
 
     /**
      * 新增一条邀请码
