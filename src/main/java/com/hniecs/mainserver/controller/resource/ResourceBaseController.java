@@ -5,6 +5,7 @@ import com.hniecs.mainserver.entity.ResourceEntity;
 import com.hniecs.mainserver.service.ResourceBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
@@ -67,8 +68,8 @@ public class ResourceBaseController {
     }
 
     /**
+     * 通过资源种类查找资源
      * @param kind 资源种类
-     * @return
      */
     @NotNeedLogin
     @GetMapping("/resource/base/getResourceByKind")
@@ -77,6 +78,17 @@ public class ResourceBaseController {
         String msg = resource.getResourceByKind(kind, resourceList);
         if (msg.equals("0")) {
             return CommonResult.success(resourceList, "资源查找成功");
+        }
+        return CommonResult.failed(msg);
+    }
+
+    @NotNeedLogin
+    @GetMapping("/resource/base/getResource")
+    public CommonResult get(@RequestParam String condition, @RequestParam String kind, @RequestParam long num, @RequestParam long page){
+        ArrayList<ResourceEntity> resourceList = new ArrayList<>();
+        String msg = resource.getResource(resourceList,kind,condition,num,page);
+        if(msg.equals("0")){
+            return CommonResult.success(resourceList,"资源查找成功");
         }
         return CommonResult.failed(msg);
     }

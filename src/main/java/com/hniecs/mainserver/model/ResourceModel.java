@@ -21,6 +21,25 @@ public class ResourceModel {
     @Resource
     ResourceDao resourceDao;
 
+    /**
+     * 根据kind和模糊搜索匹配资源
+     * @param resourceList 赋值的列表
+     * @param kind 资源种类
+     * @param condition 模糊搜索条件
+     * @param num 每页个数
+     * @param point 从那个元素开始
+     * @return
+     */
+    public String getResource(ArrayList<ResourceEntity> resourceList, String kind, String condition, long num, long point){
+        try{
+            ArrayList<ResourceEntity> temp=resourceDao.getResourceByCondition(kind, condition, num, point);
+            resourceList.addAll(temp);
+            return "0";
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return "服务器出错";
+        }
+    }
     /***
      * 模糊搜索资源
      * @param condition 资源可能的名字，介绍，种类
@@ -61,11 +80,9 @@ public class ResourceModel {
     public String updateResourceById(long id, String name, String url, String introduce, String kind) {
         try {
             ResourceEntity resource = new ResourceEntity(name, url, introduce, kind);
-            ResourceEntity resourceEntity = resourceDao.getResourceById(id);
             resource.setMtime(new Date());
-            resource.setCtime(resourceEntity.getCtime());
-            ResourceEntity temp = ObjectTool.combineEntity(resourceEntity, resource);
-            resourceDao.update(temp);
+            resource.setId(id);
+            resourceDao.update(resource);
             return "0";
         } catch (Exception e) {
             log.error(e.getMessage());

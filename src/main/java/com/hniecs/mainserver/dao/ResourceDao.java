@@ -13,7 +13,24 @@ import java.util.ArrayList;
  */
 @Mapper
 public interface ResourceDao {
-    /***
+    /**
+     * 根据kind和模糊搜索匹配资源
+     * @param kind 资源种类
+     * @param condition 资源条件
+     * @param num 每页个数
+     * @param point 资源起始
+     * @return
+     */
+    @Select("<script>"+
+    "select * " +
+        "from resource " +
+        "where <if test='kind != null'>kind = #{kind} and</if>" +
+        "<if test = 'condition != null'> name like \"%${condition}%\" or introduce like \"%${condition}%\"</if>" +
+        "limit #{num} offset #{point}" +
+        "</script>")
+    public ArrayList<ResourceEntity> getResourceByCondition(@Param("kind") String kind, @Param("condition") String condition,
+                                                            @Param("num") long num, @Param("point") long point);
+    /**
      * 通过资源id查找ResourceEntity
      * @param id 资源id
      * @return
@@ -75,9 +92,16 @@ public interface ResourceDao {
      * 通过id更新ResourceEntity
      * @param resourceEntity 要更新完的对象
      */
-    @Update("update resource " +
-        "set name=#{name},kind=#{kind},url=#{url},introduce=#{introduce},mtime=#{mtime},ctime=#{ctime} " +
-        "where id =#{id}")
+    @Update("<script>"+
+        "update resource set" +
+        "<if test = 'name != null'>name=#{name},</if>" +
+        "<if test = 'kind != null'>kind=#{kind},</if>" +
+        "<if test = 'url != null'>url=#{url},</if>" +
+        "<if test = 'introduce = null'>introduce=#{introduce},</if>" +
+        "<if test = 'mtime != null'>mtime=#{mtime},</if>" +
+        "<if test = 'ctime != null'>ctime=#{ctime},</if>" +
+        "id = #{id} where id =#{id}" +
+        "</script>")
     public void update(ResourceEntity resourceEntity);
 
     /***
