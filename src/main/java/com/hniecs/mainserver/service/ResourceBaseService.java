@@ -23,16 +23,17 @@ public class ResourceBaseService {
 
     /**
      * 根据kind和模糊搜索匹配资源
-     * @param kind 资源种类
+     * @param kind      资源种类
      * @param condition 资源条件
-     * @param num 每页个数
-     * @param page 资源页数
+     * @param num       每页个数
+     * @param page      资源页数
      * @return
      */
-    public String getResource(ArrayList<ResourceEntity> resourceList, String kind, String condition, long num, long page){
-        long point = (page-1)*num;
-        return resourceModel.getResource(resourceList,kind,condition,num,point);
+    public String getResource(ArrayList<ResourceEntity> resourceList, String kind, String condition, long num, long page) {
+        long point = (page - 1) * num;
+        return resourceModel.getResource(resourceList, kind, condition, num, point);
     }
+
     /**
      * 通过类型返回ResourceEntity数组
      * @param kind 资源种类

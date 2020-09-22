@@ -24,22 +24,23 @@ public class ResourceModel {
     /**
      * 根据kind和模糊搜索匹配资源
      * @param resourceList 赋值的列表
-     * @param kind 资源种类
-     * @param condition 模糊搜索条件
-     * @param num 每页个数
-     * @param point 从那个元素开始
+     * @param kind         资源种类
+     * @param condition    模糊搜索条件
+     * @param num          每页个数
+     * @param point        从那个元素开始
      * @return
      */
-    public String getResource(ArrayList<ResourceEntity> resourceList, String kind, String condition, long num, long point){
-        try{
-            ArrayList<ResourceEntity> temp=resourceDao.getResourceByCondition(kind, condition, num, point);
+    public String getResource(ArrayList<ResourceEntity> resourceList, String kind, String condition, long num, long point) {
+        try {
+            ArrayList<ResourceEntity> temp = resourceDao.getResourceByCondition(kind, condition, num, point);
             resourceList.addAll(temp);
             return "0";
-        }catch (Exception e){
+        } catch (Exception e) {
             log.error(e.getMessage());
             return "服务器出错";
         }
     }
+
     /***
      * 模糊搜索资源
      * @param condition 资源可能的名字，介绍，种类

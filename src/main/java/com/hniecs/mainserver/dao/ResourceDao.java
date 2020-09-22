@@ -15,14 +15,14 @@ import java.util.ArrayList;
 public interface ResourceDao {
     /**
      * 根据kind和模糊搜索匹配资源
-     * @param kind 资源种类
+     * @param kind      资源种类
      * @param condition 资源条件
-     * @param num 每页个数
-     * @param point 资源起始
+     * @param num       每页个数
+     * @param point     资源起始
      * @return
      */
-    @Select("<script>"+
-    "select * " +
+    @Select("<script>" +
+        "select * " +
         "from resource " +
         "where <if test='kind != null'>kind = #{kind} and</if>" +
         "<if test = 'condition != null'> name like \"%${condition}%\" or introduce like \"%${condition}%\"</if>" +
@@ -30,6 +30,7 @@ public interface ResourceDao {
         "</script>")
     public ArrayList<ResourceEntity> getResourceByCondition(@Param("kind") String kind, @Param("condition") String condition,
                                                             @Param("num") long num, @Param("point") long point);
+
     /**
      * 通过资源id查找ResourceEntity
      * @param id 资源id
@@ -92,7 +93,7 @@ public interface ResourceDao {
      * 通过id更新ResourceEntity
      * @param resourceEntity 要更新完的对象
      */
-    @Update("<script>"+
+    @Update("<script>" +
         "update resource set" +
         "<if test = 'name != null'>name=#{name},</if>" +
         "<if test = 'kind != null'>kind=#{kind},</if>" +

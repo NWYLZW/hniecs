@@ -84,11 +84,11 @@ public class ResourceBaseController {
 
     @NotNeedLogin
     @GetMapping("/resource/base/getResource")
-    public CommonResult get(@RequestParam String condition, @RequestParam String kind, @RequestParam long num, @RequestParam long page){
+    public CommonResult get(@RequestParam String condition, @RequestParam String kind, @RequestParam long num, @RequestParam long page) {
         ArrayList<ResourceEntity> resourceList = new ArrayList<>();
-        String msg = resource.getResource(resourceList,kind,condition,num,page);
-        if(msg.equals("0")){
-            return CommonResult.success(resourceList,"资源查找成功");
+        String msg = resource.getResource(resourceList, kind, condition, num, page);
+        if (msg.equals("0")) {
+            return CommonResult.success(resourceList, "资源查找成功");
         }
         return CommonResult.failed(msg);
     }
