@@ -22,6 +22,66 @@ public interface InvitationCodeDao {
         create_user_id, id, status, invitation_code;
     }
 
+    String ALL_SEARCH = "select c.*, u.* from invitation_code as c, user as u where";
+
+    /**
+     * -- 通过 验证码模糊、名字、标签 查
+     */
+    String SEARCH_BY_ALL =
+        "(u.id = c.create_user_id " +
+            "c.invitation_code like %#{invitationCode}% " +
+            "and u.user_name = #{creatorName} " +
+            "and c.tag_name = #{tagName}) ";
+
+    /**
+     * -- 通过 标签、名字 查
+     */
+    String SEARCH_BY_TAG_AND_NAME =
+        "(u.id = c.create_user_id " +
+            "and c.tag_name = #{tagName} " +
+            "and u.user_name = #{creatorName} " +
+            "and #{invitationCode} is null) ";
+
+    /**
+     * -- 通过 验证码模糊、名字 查
+     */
+    String SEARCH_BY_INVITATION_AND_NAME =
+        "(u.id = c.create_user_id "+
+            "and u.user_name = #{creatorName} "+
+            "and #{invitationCode} like %#{invitationCode}% "+
+            "and #{tagName} is null) ";
+
+    /**
+     * -- 通过 验证码模糊、标签 查
+     */
+    String SEARCH_BY_INVITATION_AND_TAG =
+        "(u.id = c.create_user_id " +
+            "and c.tag_name = #{tagName} " +
+            "and #{invitationCode} like %#{invitationCode}% " +
+            "and #{creatorName} is null) ";
+
+    String SEARCH_BY_INVITATION =
+        "(u.id = c.create_user_id " +
+            "and c.invitation_code like %#{invitationCode}% " +
+            "and #{tagName} is null " +
+            "and #{creatorName} is null) ";
+
+    /**
+     * -- 通过 标签 查
+     */
+    String SEARCH_BY_TAG = "(u.id = c.create_user_id " +
+        "and c.tag_name = #{tagName} " +
+        "and #{creatorName} is null " +
+        "and #{invitationCode} is null) ";
+
+    /**
+     * -- 通过 名字 查
+     */
+    String SEARCH_BY_NAME = "(u.id = c.create_user_id " +
+        "and u.user_name = #{creatorName} " +
+        "and #{tagName} is null " +
+        "and #{invitationCode} is null) ";
+
     /**
      * 根据(创建用户id|邀请码id|邀请码状态|邀请码内容) 获取符合条件的邀请码数组
      * @param col       列名
@@ -48,49 +108,28 @@ public interface InvitationCodeDao {
 
 
     /**
-     * select c.*, u.* from invitation_code as c, user as u
-     * where
-     * -- # 通过 验证码 查
-     * (c.invitation_code = '#{invitationCode}'
-     * and u.id = c.create_user_id)
-     * or
-     * -- # 通过 标签、名字 查
-     * (c.tag_name = '#{tagName}'
-     * and u.id = c.create_user_id
-     * and u.user_name = '#{userName}')
-     * or
-     * -- # 通过 名字 查
-     * (u.id = c.create_user_id
-     * and u.user_name = '#{userName}'
-     * and '#{tagName}' is null)
-     * or
-     * -- # 通过 标签 查
-     * (u.id = c.create_user_id
-     * and c.tag_name = '#{}'
-     * and '#{userName}' is null);
+     * 来呀，查老子啊！！！！
      * @param tagName         标签名
      * @param creatorName     创建者名
      * @param invitationCode  内容
      * @return
      */
-    @Select("select c.*, u.* " +
-        "from invitation_code as c, user as u " +
+    @Select(
+        "select * " +
+        "   from invitation_code " +
         "where " +
-        "(c.invitation_code = #{invitationCode} " +
-        "and u.id = c.create_user_id) " +
-        "or  " +
-        "(c.tag_name = #{tagName} " +
-        "and u.id = c.create_user_id "  +
-        "and u.user_name = #{creatorName}) " +
-        "or " +
-        "(u.id = c.create_user_id " +
-        "and u.user_name = #{creatorName} " +
-        "and #{tagName} is null) " +
-        "or " +
-        "(u.id = c.create_user_id " +
-        "and c.tag_name = #{tagName} " +
-        "and #{creatorName} is null);")
-    @ResultMap("未封装")
+        "(invitation_code like #{invitationCode}) " +
+        "and ( " +
+        "   select user_name " +
+        "       from user " +
+        "   where user.id = create_user_id " +
+        ") like #{creatorName} " +
+        "and tag_name = #{tagName};")
+    @Results({
+        @Result(property = "creator", column = "create_user_id",
+            one=@One(select = "package com.hniecs.mainserver.dao.UserDao.getUserSimpleById")
+        )
+    })
     Map<UserEntity,InvitationCodeEntity> getInvitationCodeList(
         String tagName, String creatorName, String invitationCode);
 
