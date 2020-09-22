@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.Map;
 
@@ -56,7 +57,7 @@ public class ResourceBaseService {
         String introduce = resourceDate.get("introduce");
         String name = resourceDate.get("name");
         String url = resourceDate.get("url");
-        if (resourceModel.haveById(id)) {
+        if (!resourceModel.haveById(id)) {
             return "资源不存在";
         }
         return resourceModel.updateResourceById(id, name, url, introduce, kind);
@@ -67,7 +68,7 @@ public class ResourceBaseService {
      * @param id 资源id
      */
     public String deleteResource(long id) {
-        if (resourceModel.haveById(id)) {
+        if (!resourceModel.haveById(id)) {
             return "资源不存在";
         }
         return resourceModel.deleteResource(id);
@@ -82,6 +83,7 @@ public class ResourceBaseService {
      */
     public String addResource(String kind, String introduce, String name, String url, Hashtable table) {
         ResourceEntity resourceEntity = new ResourceEntity(name, url, introduce, kind);
+        resourceEntity.setCtime(new Date());
         table.put("资源实体", resourceEntity);
         return resourceModel.addNew(resourceEntity);
     }
