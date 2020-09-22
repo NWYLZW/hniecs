@@ -16,7 +16,7 @@ import java.lang.reflect.Field;
 @Slf4j
 public class ObjectTool{
     /**
-     *合并俩个相同类型的对象
+     * 合并俩个相同类型的对象
      * @param sourceEntity 被覆盖的类
      * @param targetEntity 以这个类的值为准，如果值为空则保留原值
      * @return 返回合并的值
@@ -31,16 +31,16 @@ public class ObjectTool{
                 sourceField.setAccessible(true);
                 targetField.setAccessible(true);
                 Object obj;
-                if(targetField.get(targetEntity).equals(Long.valueOf(-1))){
+                if (targetField.get(targetEntity).equals(Long.valueOf(-1))) {
                     continue;
                 }
-                if ((obj=targetField.get(targetEntity)) == null) {
+                if ((obj = targetField.get(targetEntity)) == null) {
                     continue;
                 }
-                sourceField.set(sourceEntity,obj);
+                sourceField.set(sourceEntity, obj);
             }
             return sourceEntity;
-        }catch (IllegalAccessException e){
+        } catch (IllegalAccessException e) {
             log.warn(e.getMessage());
             return null;
         }
