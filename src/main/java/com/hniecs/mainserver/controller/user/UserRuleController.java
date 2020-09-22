@@ -28,42 +28,42 @@ public class UserRuleController {
         scope = AdminPermissions.NAME,
         permission = AdminPermissions.SEARCH_ALL_USER
     )
-    @GetMapping("/user/Rule/getRules")
+    @GetMapping("/user/rule/getRules")
     public CommonResult getRules() {
         return CommonResult.notFound("接口未完成");
     }
     /**
      * TODO 获取已有的权限组列表
      */
-    @GetMapping("/user/Rule/getRulers")
+    @GetMapping("/user/rule/getRulers")
     public CommonResult getRulers() {
         return CommonResult.notFound("接口未完成");
     }
     /**
      * TODO 新增权限组
      */
-    @GetMapping("/user/Rule/addRuler")
+    @GetMapping("/user/rule/addRuler")
     public CommonResult addRuler() {
         return CommonResult.notFound("接口未完成");
     }
     /**
      * TODO 重命名某个权限组
      */
-    @GetMapping("/user/Rule/renameRuler")
+    @GetMapping("/user/rule/renameRuler")
     public CommonResult renameRuler() {
         return CommonResult.notFound("接口未完成");
     }
     /**
      * TODO 将某个权限添加到某个权限组
      */
-    @GetMapping("/user/Rule/addRuleToRuler")
+    @GetMapping("/user/rule/addRuleToRuler")
     public CommonResult addRuleToRuler() {
         return CommonResult.notFound("接口未完成");
     }
     /**
      * TODO 设置某个用户为某个权限组
      */
-    @GetMapping("/user/Rule/setRuler")
+    @GetMapping("/user/rule/setRuler")
     public CommonResult setRuler() {
         return CommonResult.notFound("接口未完成");
     }
@@ -71,14 +71,14 @@ public class UserRuleController {
     /**
      * TODO 获取某个的权限组下的应用
      */
-    @GetMapping("/user/Rule/getAppsByRuler")
+    @GetMapping("/user/rule/getAppsByRuler")
     public CommonResult getAppsByRuler() {
         return CommonResult.notFound("接口未完成");
     }
     /**
      * TODO 给某个权限组添加应用
      */
-    @GetMapping("/user/Rule/addAppToRuler")
+    @GetMapping("/user/rule/addAppToRuler")
     public CommonResult addAppToRuler() {
         return CommonResult.notFound("接口未完成");
     }
@@ -87,7 +87,7 @@ public class UserRuleController {
     /**
      * TODO 获取自己的权限组下的应用
      */
-    @GetMapping("/user/Rule/getApps")
+    @GetMapping("/user/rule/getApps")
     public CommonResult getApps() {
         Function<String, Function<String, Function<String, Function<ArrayList
             , HashMap>>>> generateApp = name -> iconUTF8 -> url -> menus -> {

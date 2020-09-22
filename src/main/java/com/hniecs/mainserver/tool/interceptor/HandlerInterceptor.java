@@ -69,10 +69,10 @@ public class HandlerInterceptor extends HandlerInterceptorAdapter {
                 return true;
             } else {
                 // 如果未登陆 拦截
-//                boolean isLogin = this.isLogin(request, response);
-//                if (!isLogin) {
-//                    return false;
-//                }
+                boolean isLogin = this.isLogin(request, response);
+                if (!isLogin) {
+                    return false;
+                }
                 // 添加了权限拦截的注解，判断是否有权限
                 PermissionRequired pr = handlerMethod.getMethodAnnotation(PermissionRequired.class);
                 if (pr != null) {
@@ -80,6 +80,6 @@ public class HandlerInterceptor extends HandlerInterceptorAdapter {
                 }
             }
         }
-        return false;
+        return true;
     }
 }
