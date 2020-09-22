@@ -9,6 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -27,9 +28,9 @@ public class UserDaoTest {
 
     @Test
     public void testInsert() throws Exception {
-        userDao.addNew(new UserEntity("aa1", "aa1"));
-        userDao.addNew(new UserEntity("bb1", "bb1"));
-        userDao.addNew(new UserEntity("cc1", "cc1"));
+        UserEntity userEntity=new UserEntity("chenmou","123456789");
+        userEntity.setCtime(new Date());
+        userDao.addNew(userEntity);
 
         Assert.assertEquals(3, userDao.getSimpleUsers().size());
     }

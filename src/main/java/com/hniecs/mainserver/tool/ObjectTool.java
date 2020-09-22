@@ -1,8 +1,10 @@
 package com.hniecs.mainserver.tool;
 
 import com.hniecs.mainserver.entity.ResourceEntity;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 
 /**
@@ -13,6 +15,12 @@ import java.lang.reflect.Field;
  */
 @Slf4j
 public class ObjectTool{
+    /**
+     *合并俩个相同类型的对象
+     * @param sourceEntity 被覆盖的类
+     * @param targetEntity 以这个类的值为准，如果值为空则保留原值
+     * @return 返回合并的值
+     */
     public static <T> T combineEntity(T sourceEntity, T targetEntity) {
         Field[] sourceFields = sourceEntity.getClass().getDeclaredFields();
         Field[] targetFields = targetEntity.getClass().getDeclaredFields();
@@ -23,6 +31,9 @@ public class ObjectTool{
                 sourceField.setAccessible(true);
                 targetField.setAccessible(true);
                 Object obj;
+                if(targetField.get(targetEntity).equals(Long.valueOf(-1))){
+                    continue;
+                }
                 if ((obj=targetField.get(targetEntity)) == null) {
                     continue;
                 }
@@ -34,6 +45,5 @@ public class ObjectTool{
             return null;
         }
     }
-
 
 }

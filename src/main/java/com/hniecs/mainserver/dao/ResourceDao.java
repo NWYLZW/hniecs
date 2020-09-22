@@ -66,8 +66,8 @@ public interface ResourceDao {
      * @param resourceEntity 插入的对象
      */
     @Insert("insert into " +
-        "resource(name,kind,url,mtime,ctime) " +
-        "value(#{name},#{kind},#{url},#{mtime},#{ctime})")
+        "resource(name,kind,introduce,url,mtime,ctime) " +
+        "value(#{name},#{kind},#{introduce},#{url},#{mtime},#{ctime})")
     public void insert(ResourceEntity resourceEntity);
 
     /***
