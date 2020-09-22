@@ -19,7 +19,6 @@ public interface ResourceDao {
      * @param condition 资源条件
      * @param num       每页个数
      * @param point     资源起始
-     * @return
      */
     @Select("<script>" +
         "select * " +
@@ -34,7 +33,6 @@ public interface ResourceDao {
     /**
      * 通过资源id查找ResourceEntity
      * @param id 资源id
-     * @return
      */
     @Select("select * " +
         "from resource " +
@@ -43,7 +41,6 @@ public interface ResourceDao {
 
     /**
      * 获取所有ResourceEntity
-     * @return
      */
     @Select("select * " +
         "from resource order by id " +
@@ -53,7 +50,6 @@ public interface ResourceDao {
     /***
      * 通过资源名字查找资源ResourceEntity
      * @param name 资源名字
-     * @return
      */
     @Select("select * " +
         "from resource " +
@@ -63,7 +59,6 @@ public interface ResourceDao {
     /***
      * 通过资源种类搜索ResourceEntity
      * @param kind 资源种类
-     * @return
      */
     @Select("select * " +
         "from resource " +
@@ -73,7 +68,6 @@ public interface ResourceDao {
     /***
      * 模糊搜索
      * @param condition 搜索条件
-     * @return
      */
     @Select("select distinct * " +
         "from resource " +

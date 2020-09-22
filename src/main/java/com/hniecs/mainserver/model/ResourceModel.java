@@ -28,7 +28,6 @@ public class ResourceModel {
      * @param condition    模糊搜索条件
      * @param num          每页个数
      * @param point        从那个元素开始
-     * @return
      */
     public String getResource(ArrayList<ResourceEntity> resourceList, String kind, String condition, long num, long point) {
         try {

@@ -27,7 +27,6 @@ public class ResourceBaseService {
      * @param condition 资源条件
      * @param num       每页个数
      * @param page      资源页数
-     * @return
      */
     public String getResource(ArrayList<ResourceEntity> resourceList, String kind, String condition, long num, long page) {
         long point = (page - 1) * num;
