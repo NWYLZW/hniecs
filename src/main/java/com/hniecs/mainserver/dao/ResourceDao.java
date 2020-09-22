@@ -28,8 +28,9 @@ public interface ResourceDao {
      * @return
      */
     @Select("select * " +
-        "from resource")
-    public ArrayList<ResourceEntity> getAllResource();
+        "from resource order by id " +
+        "limit #{limit} offset #{point}")
+    public ArrayList<ResourceEntity> getAllResource(long limit, long point);
 
     /***
      * 通过资源名字查找资源ResourceEntity

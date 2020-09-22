@@ -16,11 +16,13 @@ public class RuleEntity {
             "超级管理员",
             AdminPermissions.SEARCH_ALL_USER
         );
+
         Rules(String name, long permissions) {
         }
     }
+
     public static void main(String[] args) {
-        Long SCOPE = 0X1001L<<20;
+        Long SCOPE = 0X1001L << 20;
         Long SCOPE_UNIT_PERMISSION = 0X00002L;
         Long UNIT_PERMISSION = SCOPE + SCOPE_UNIT_PERMISSION;
         System.out.println(

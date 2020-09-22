@@ -34,16 +34,16 @@ public class ResourceBaseController {
      */
     @PostMapping("/resource/base/addResource")
     public CommonResult addMapping(@RequestBody Map<String, String> resourceDate) {
-        Hashtable data = new Hashtable();
+        Hashtable table = new Hashtable();
         String msg = resource.addResource(
             resourceDate.get("kind"),
             resourceDate.get("introduce"),
             resourceDate.get("name"),
             resourceDate.get("url"),
-            data
+            table
         );
         if (msg.equals("0")) {
-            return CommonResult.success(data, "资源查找成功");
+            return CommonResult.success(table, "资源创建成功");
         }
         return CommonResult.failed(msg);
     }
@@ -51,17 +51,15 @@ public class ResourceBaseController {
     /***
      *
      * @param condition 搜索条件
-     * @return
      */
     @NotNeedLogin
     @GetMapping("/resource/base/getResourceByFuzzy")
-    public CommonResult getByFuzzy(@RequestBody Map<String, String> condition) {
-        String Condition = condition.get("condition");
+    public CommonResult getByFuzzy(@RequestParam String condition) {
         if (condition == null) {
             return CommonResult.failed("搜索条件不能为空");
         }
         ArrayList<ResourceEntity> resourceList = new ArrayList<>();
-        String msg = resource.getByFuzzySearch(Condition, resourceList);
+        String msg = resource.getByFuzzySearch(condition, resourceList);
         if (msg.equals("0")) {
             return CommonResult.success(resourceList, "资源查找成功");
         }
@@ -74,7 +72,7 @@ public class ResourceBaseController {
      */
     @NotNeedLogin
     @GetMapping("/resource/base/getResourceByKind")
-    public CommonResult getByKind(@RequestBody String kind) {
+    public CommonResult getByKind(@RequestParam String kind) {
         ArrayList<ResourceEntity> resourceList = new ArrayList<>();
         String msg = resource.getResourceByKind(kind, resourceList);
         if (msg.equals("0")) {
