@@ -93,6 +93,9 @@ public class ResourceBaseController {
     @GetMapping("/resource/base/getResource")
     public CommonResult get(@RequestParam String condition, @RequestParam String kind, @RequestParam long num, @RequestParam long page){
         ArrayList<ResourceEntity> resourceList = new ArrayList<>();
+        if(condition == null){
+            return CommonResult.failed("搜索条件不能为空");
+        }
         String msg = resource.getResource(resourceList,kind,condition,num,page);
         if(msg.equals("0")){
             return CommonResult.success(resourceList,"资源查找成功");

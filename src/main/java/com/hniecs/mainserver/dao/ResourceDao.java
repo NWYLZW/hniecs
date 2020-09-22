@@ -24,7 +24,7 @@ public interface ResourceDao {
         "select * " +
         "from resource " +
         "where <if test='kind != null'>kind = #{kind} and</if>" +
-        "<if test = 'condition != null'> name like \"%${condition}%\" or introduce like \"%${condition}%\"</if>" +
+        "name like \"%${condition}%\" or introduce like \"%${condition}%\"" +
         "limit #{num} offset #{point}" +
         "</script>")
     public ArrayList<ResourceEntity> getResourceByCondition(@Param("kind") String kind, @Param("condition") String condition,
