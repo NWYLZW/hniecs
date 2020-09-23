@@ -1,12 +1,10 @@
 package com.hniecs.mainserver.dao;
 
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
-import com.hniecs.mainserver.entity.UserEntity;
 import org.apache.ibatis.annotations.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @desc    InvitationCodeDao.java
@@ -22,66 +20,6 @@ public interface InvitationCodeDao {
     enum columnName{
         create_user_id, id, status, invitation_code;
     }
-
-    String ALL_SEARCH = "select c.*, u.* from invitation_code as c, user as u where";
-
-    /**
-     * -- 通过 验证码模糊、名字、标签 查
-     */
-    String SEARCH_BY_ALL =
-        "(u.id = c.create_user_id " +
-            "c.invitation_code like %#{invitationCode}% " +
-            "and u.user_name = #{creatorName} " +
-            "and c.tag_name = #{tagName}) ";
-
-    /**
-     * -- 通过 标签、名字 查
-     */
-    String SEARCH_BY_TAG_AND_NAME =
-        "(u.id = c.create_user_id " +
-            "and c.tag_name = #{tagName} " +
-            "and u.user_name = #{creatorName} " +
-            "and #{invitationCode} is null) ";
-
-    /**
-     * -- 通过 验证码模糊、名字 查
-     */
-    String SEARCH_BY_INVITATION_AND_NAME =
-        "(u.id = c.create_user_id "+
-            "and u.user_name = #{creatorName} "+
-            "and #{invitationCode} like %#{invitationCode}% "+
-            "and #{tagName} is null) ";
-
-    /**
-     * -- 通过 验证码模糊、标签 查
-     */
-    String SEARCH_BY_INVITATION_AND_TAG =
-        "(u.id = c.create_user_id " +
-            "and c.tag_name = #{tagName} " +
-            "and #{invitationCode} like %#{invitationCode}% " +
-            "and #{creatorName} is null) ";
-
-    String SEARCH_BY_INVITATION =
-        "(u.id = c.create_user_id " +
-            "and c.invitation_code like %#{invitationCode}% " +
-            "and #{tagName} is null " +
-            "and #{creatorName} is null) ";
-
-    /**
-     * -- 通过 标签 查
-     */
-    String SEARCH_BY_TAG = "(u.id = c.create_user_id " +
-        "and c.tag_name = #{tagName} " +
-        "and #{creatorName} is null " +
-        "and #{invitationCode} is null) ";
-
-    /**
-     * -- 通过 名字 查
-     */
-    String SEARCH_BY_NAME = "(u.id = c.create_user_id " +
-        "and u.user_name = #{creatorName} " +
-        "and #{tagName} is null " +
-        "and #{invitationCode} is null) ";
 
     /**
      * 根据(创建用户id|邀请码id|邀请码状态|邀请码内容) 获取符合条件的邀请码数组
@@ -125,7 +63,8 @@ public interface InvitationCodeDao {
         "from user " +
         "where user.id = create_user_id) " +
         "like #{creatorName} " +
-        "and tag_name = #{tagName};")
+        "and tag_name = #{tagName} " +
+        "and status != -1;")
     @Result(property = "creator", column = "create_user_id",
             one=@One(select = "com.hniecs.mainserver.dao.UserDao.getUserSimpleById"))
     List<InvitationCodeEntity> getInvitationCodeList(
@@ -145,15 +84,27 @@ public interface InvitationCodeDao {
     void addNew(InvitationCodeEntity invitationCode);
 
     /**
+     * 通过id假删除
+     * @param id
+     * @return
+     */
+    @Update("update invitation_code set status = -1 where id = #{id}")
+    int falseDeleteById(Long id);
+
+    /**
      * 通过邀请码id 更新一条邀请码的数据
      * @param invitationCodeEntity  邀请码实体对象
      */
     @Update(
         "update invitation_code " +
-            "set invitation_code=#{invitationCode}, status=#{status}, available_invite_count=#{availableInviteCount}, mtime=#{mtime}" +
+            "set " +
+            "invitation_code=#{invitationCode}, " +
+            "status=#{status}, " +
+            "available_invite_count=#{availableInviteCount}, " +
+            "mtime=#{mtime} " +
             "where id=#{id}"
     )
-    void update(InvitationCodeEntity invitationCodeEntity);
+    int update(InvitationCodeEntity invitationCodeEntity);
 
     /**
      * 通过邀请码id 删除一个邀请码

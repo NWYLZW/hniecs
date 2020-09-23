@@ -23,37 +23,6 @@ public class InvitationCodeModel {
     @Resource
     private InvitationCodeDao invitationCodeDao;
 
-
-    /**
-     * 超级无敌随便查
-     * @param tagName
-     * @param creatorName
-     * @param invitationCode
-     * @return 满足条件的集合
-     */
-    public List<InvitationCodeEntity> getInvitationCodeList(
-        String tagName, String creatorName, String invitationCode) {
-        return invitationCodeDao.getInvitationCodeList(tagName,creatorName,invitationCode);
-    }
-
-    /**
-     * 查询此邀请码是否能用
-     * @param invitationCode    邀请码
-     */
-    public InvitationCodeEntity findAbleUse(String invitationCode) {
-        InvitationCodeEntity ic = invitationCodeDao
-            .getOne(
-                InvitationCodeDao.columnName.invitation_code,
-                invitationCode
-            );
-
-        if( ic != null && ic.getStatus() != 2 && ic.getAvailableInviteCount() > 0) {
-            return ic;
-        }else {
-            return null;
-        }
-    }
-
     /**
      * 一个用户对应一个邀请码，每个用户他的邀请码有效次数有限
      * @param user                  用户实体
@@ -111,6 +80,56 @@ public class InvitationCodeModel {
             return "0";
         }else {
             return "邀请码可用次数已用尽, 使用失败!";
+        }
+    }
+
+
+    /**
+     * 假删除
+     * @param id
+     * @return
+     */
+    public int falseDeleteById(Long id) {
+        return invitationCodeDao.falseDeleteById(id);
+    }
+
+    /**
+     * 更新用户
+     * @param invitationCode
+     * @return 执行结果 > 0 代表成功
+     */
+    public int updateInvitationCode(InvitationCodeEntity invitationCode) {
+        return invitationCodeDao.update(invitationCode);
+    }
+
+    /**
+     * 超级无敌随便查
+     * @param tagName
+     * @param creatorName
+     * @param invitationCode
+     * @return 满足条件的集合
+     */
+    public List<InvitationCodeEntity> getInvitationCodeList(
+        String tagName, String creatorName, String invitationCode) {
+        System.out.println("=========>");
+        return invitationCodeDao.getInvitationCodeList(tagName,creatorName,invitationCode);
+    }
+
+    /**
+     * 查询此邀请码是否能用
+     * @param invitationCode    邀请码
+     */
+    public InvitationCodeEntity findAbleUse(String invitationCode) {
+        InvitationCodeEntity ic = invitationCodeDao
+            .getOne(
+                InvitationCodeDao.columnName.invitation_code,
+                invitationCode
+            );
+
+        if( ic != null && ic.getStatus() != 2 && ic.getAvailableInviteCount() > 0) {
+            return ic;
+        }else {
+            return null;
         }
     }
 

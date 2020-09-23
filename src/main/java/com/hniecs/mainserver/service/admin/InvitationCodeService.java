@@ -31,7 +31,7 @@ public class InvitationCodeService {
     /**
      * 金额有效阈值
      */
-    private final BigDecimal INVITATION_CODE_THRESHOLD_MONEY = new BigDecimal(30);
+    private BigDecimal targetMoney;
 
     @Resource
     private InvitationCodeModel invitationCodeModel;
@@ -47,19 +47,22 @@ public class InvitationCodeService {
      */
     public Page<InvitationCodeEntity> getInvitationCodePage(
         String tagName, String creatorName, String invitationCode) {
-            if(tagName == null) {
-                tagName = "%";
-            }
-            if(creatorName == null) {
-                creatorName = "%";
-            }
-            if(invitationCode == null) {
-                invitationCode = "%";
-            }
+                tagName += "%";
+                creatorName += "%";
+                invitationCode += "%";
         return (Page<InvitationCodeEntity>)
             invitationCodeModel.getInvitationCodeList(tagName,creatorName,invitationCode);
     }
 
+    /**
+     * 文以文件方式或者单手动添加形式最终都会调用这个方法
+     * @param creator
+     * @param availableCount
+     * @param invitationCodes
+     * @param tagName
+     * @param returnData
+     * @return
+     */
     public String addInvitationCodes(
         UserEntity creator, int availableCount,
         List<String> invitationCodes,String tagName,
@@ -83,14 +86,50 @@ public class InvitationCodeService {
     public String addInvitationCodes(
         UserEntity creator, int availableCount, String tagName,
         InputStream excelIn,
-        Hashtable returnData) {
+        Hashtable returnData,
+        String targetMoney) {
+
+        this.targetMoney = new BigDecimal(targetMoney);
 
         List<String> invitationCodeStr = getInvitationCodeStrList(excelIn,tagName);
         return this.addInvitationCodes(creator, availableCount,
             invitationCodeStr, tagName, returnData);
-
     }
 
+    /**
+     * 假删除
+     * @param id
+     * @return
+     */
+    public String falseDeleteById(Long id) {
+        int result = invitationCodeModel.falseDeleteById(id);
+        if(result == 0){
+            return "操作失败!";
+        }else {
+            return "0";
+        }
+    }
+
+    /**
+     * 修改
+     * @param invitationCode
+     * @return
+     */
+    public String updateInvitationCode(InvitationCodeEntity invitationCode) {
+
+        int result = invitationCodeModel.updateInvitationCode(invitationCode);
+        if(result == 0 ){
+            return "操作失败!";
+        }else {
+            return "0";
+        }
+    }
+
+    /**
+     * @param excelIn 文件输入流
+     * @param tagName
+     * @return 验证码集合
+     */
     private List<String> getInvitationCodeStrList(InputStream excelIn,String tagName) {
         List<BillExcel> billExcels = getBillExcel(excelIn, tagName);
         return checkAndTransToList(billExcels);
@@ -107,7 +146,7 @@ public class InvitationCodeService {
             //字符变成钱
             BigDecimal money = new BigDecimal( billExcel.getMoney());
             // 建议用compareTo进行比较，0 等于 1 大于 -1 小于
-            if (  money.compareTo(INVITATION_CODE_THRESHOLD_MONEY) == 0  ) {
+            if (  money.compareTo(targetMoney) == 0  ) {
                 list.add(billExcel.getTransactionNumber());
             }
         }

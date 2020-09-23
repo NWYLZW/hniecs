@@ -30,7 +30,7 @@ public class AdminInvitationCodeController {
     private InvitationCodeService invitationCodeService;
 
     /**
-     * 添加单个邀请码
+     * 手动添加邀请码
      * @return
      */
     @PostMapping("/admin/invitationCode/addList")
@@ -45,16 +45,20 @@ public class AdminInvitationCodeController {
             invitationCodes = (ArrayList<String>) invitationCodeMap.get("invitationCodes");
             tagName = (String) invitationCodeMap.get("tagName");
             availableCount = (Integer) invitationCodeMap.get("availableCount");
-        } catch (Exception e) {
+        } catch (NullPointerException e) {
+            log.error("属性值不存在!",e);
             return CommonResult.validateFailed();
         }
 
-        UserEntity currentUser = (UserEntity) request.getSession().getAttribute("currentUser");
+//        UserEntity currentUser = (UserEntity) request.getSession().getAttribute("currentUser");
+        UserEntity currentUser =  new UserEntity();
+        currentUser.setId(1);
+
         Hashtable data = new Hashtable();
 
         String msg = invitationCodeService
             .addInvitationCodes(currentUser, availableCount,
-                invitationCodes, tagName,data);
+                invitationCodes, tagName, data);
         if (msg.equals("0")) {
             return CommonResult.success(data);
         } else {
@@ -74,11 +78,13 @@ public class AdminInvitationCodeController {
 
         String tagName = null;
         Integer availableCount = null;
-
+        String targetMoney = null;
         try {
             tagName = (String) invitationCodeMap.get("tagName");
             availableCount = (Integer) invitationCodeMap.get("availableCount");
-        } catch (Exception e) {
+            targetMoney = (String) invitationCodeMap.get("targetMoney");
+        } catch (NullPointerException e) {
+            log.error("属性值不存在!",e);
             return CommonResult.validateFailed();
         }
 
@@ -93,7 +99,7 @@ public class AdminInvitationCodeController {
         }
         Hashtable data = new Hashtable();
         String msg = invitationCodeService
-            .addInvitationCodes(currentUser, availableCount, tagName, excelIS, data);
+            .addInvitationCodes(currentUser, availableCount, tagName, excelIS, data,targetMoney);
         if (msg.equals("0")) {
             return CommonResult.success(data);
         } else {
@@ -101,6 +107,35 @@ public class AdminInvitationCodeController {
         }
     }
 
+    /**
+     * 假删除
+     * @param id
+     * @return
+     */
+    @DeleteMapping("/admin/invitationCode/{id}")
+    public CommonResult falseDeleteById(@PathVariable Long id) {
+        String message = invitationCodeService.falseDeleteById(id);
+        if(message.equals("0")) {
+            return CommonResult.success(message);
+        }else {
+            return CommonResult.failed(message);
+        }
+    }
+
+    /**
+     * 修改
+     * 修改邀请码内容 禁用邀请码 添加标签 修改使用次数
+     * @return
+     */
+    @PutMapping("/admin/invitationCode")
+    public CommonResult updateInvitationCode(InvitationCodeEntity entity) {
+        String message = invitationCodeService.updateInvitationCode(entity);
+        if(message.equals("0")) {
+            return CommonResult.success(message);
+        }else {
+            return CommonResult.failed(message);
+        }
+    }
 
     /**
      * 获取邀请码列表 根据多种筛选条件筛选 例如状态，内容，等等
@@ -109,30 +144,30 @@ public class AdminInvitationCodeController {
      */
     @GetMapping("/admin/invitationCode")
     public CommonResult getInvitationCodesByCondition(
-        @RequestParam Map<String, Object> dataMap) {
+        @RequestBody Map<String, Object> dataMap) {
 
-        //获取查询信息
         String tagName = (String) dataMap.get("tagName");
         String invitationCode = (String) dataMap.get("InvitationCode");
         String creatorName = (String) dataMap.get("creatorName");
-        Integer page = (Integer) dataMap.get("page");
-        Integer size = (Integer) dataMap.get("size");
+        Integer page = null;
+        Integer size = null;
+
+        try {
+            page = (Integer) dataMap.get("page");
+            size = (Integer) dataMap.get("size");
+        } catch (NullPointerException e) {
+            log.error("属性值不存在!");
+            return CommonResult.failed();
+        }
         //设置分页规则
         PageHelper.startPage(page,size);
 
         List<InvitationCodeEntity> data = invitationCodeService
             .getInvitationCodePage(tagName,creatorName,invitationCode);
+        for (InvitationCodeEntity datum : data) {
+            System.out.println(datum);
+        }
         return CommonResult.success(data);
-    }
-
-
-    /**
-     * 通过邀请码id 修改邀请码内容 禁用邀请码 添加标签 修改使用次数
-     * @return
-     */
-    @PutMapping("")
-    public CommonResult updateInvitationCode() {
-        return null;
     }
 
 }
