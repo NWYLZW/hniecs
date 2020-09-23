@@ -23,6 +23,19 @@ public class InvitationCodeModel {
     @Resource
     private InvitationCodeDao invitationCodeDao;
 
+
+    /**
+     * 超级无敌随便查
+     * @param tagName
+     * @param creatorName
+     * @param invitationCode
+     * @return 满足条件的集合
+     */
+    public List<InvitationCodeEntity> getInvitationCodeList(
+        String tagName, String creatorName, String invitationCode) {
+        return invitationCodeDao.getInvitationCodeList(tagName,creatorName,invitationCode);
+    }
+
     /**
      * 查询此邀请码是否能用
      * @param invitationCode    邀请码
@@ -48,28 +61,6 @@ public class InvitationCodeModel {
      * @param invitationCodes       邀请码数组
      */
     public String addInvitationCodes(
-        UserEntity user,
-        int availableInviteCount,
-        List<String> invitationCodes,
-        String tagName,
-        Hashtable data
-        ) {
-
-        return insertIntoDataBase(user,
-        availableInviteCount,
-        invitationCodes,
-        tagName, data);
-    }
-
-    /**
-     * 组装 InvitationCodeEntity
-     * @param user
-     * @param availableInviteCount
-     * @param invitationCodes
-     * @param tagName
-     * @return
-     */
-    private String insertIntoDataBase(
         UserEntity user,
         int availableInviteCount,
         List<String> invitationCodes,

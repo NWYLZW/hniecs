@@ -1,5 +1,7 @@
 package com.hniecs.mainserver.controller.admin;
 
+import com.github.pagehelper.PageHelper;
+import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.UserEntity;
 import com.hniecs.mainserver.service.admin.InvitationCodeService;
 import com.hniecs.mainserver.tool.api.CommonResult;
@@ -109,8 +111,18 @@ public class AdminInvitationCodeController {
     public CommonResult getInvitationCodesByCondition(
         @RequestParam Map<String, Object> dataMap) {
 
+        //获取查询信息
+        String tagName = (String) dataMap.get("tagName");
+        String invitationCode = (String) dataMap.get("InvitationCode");
+        String creatorName = (String) dataMap.get("creatorName");
+        Integer page = (Integer) dataMap.get("page");
+        Integer size = (Integer) dataMap.get("size");
+        //设置分页规则
+        PageHelper.startPage(page,size);
 
-        return null;
+        List<InvitationCodeEntity> data = invitationCodeService
+            .getInvitationCodePage(tagName,creatorName,invitationCode);
+        return CommonResult.success(data);
     }
 
 

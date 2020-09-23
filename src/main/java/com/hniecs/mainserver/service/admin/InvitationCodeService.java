@@ -1,5 +1,7 @@
 package com.hniecs.mainserver.service.admin;
 
+import com.github.pagehelper.Page;
+import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.UserEntity;
 import com.hniecs.mainserver.model.InvitationCodeModel;
 import com.hniecs.mainserver.tool.excel.ExcelRader;
@@ -33,6 +35,30 @@ public class InvitationCodeService {
 
     @Resource
     private InvitationCodeModel invitationCodeModel;
+
+    /**
+     * 分页获得
+     * 通过三个条件搜索验证码实体，如果传过来的Null，
+     * 将之变成万能匹配，就能实现随便查
+     * @param tagName
+     * @param creatorName
+     * @param invitationCode
+     * @return 结果集合
+     */
+    public Page<InvitationCodeEntity> getInvitationCodePage(
+        String tagName, String creatorName, String invitationCode) {
+            if(tagName == null) {
+                tagName = "%";
+            }
+            if(creatorName == null) {
+                creatorName = "%";
+            }
+            if(invitationCode == null) {
+                invitationCode = "%";
+            }
+        return (Page<InvitationCodeEntity>)
+            invitationCodeModel.getInvitationCodeList(tagName,creatorName,invitationCode);
+    }
 
     public String addInvitationCodes(
         UserEntity creator, int availableCount,
@@ -111,4 +137,5 @@ public class InvitationCodeService {
         }
         return billExcels;
     }
+
 }

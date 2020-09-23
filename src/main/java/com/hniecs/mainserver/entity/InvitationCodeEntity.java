@@ -54,16 +54,9 @@ public class InvitationCodeEntity {
      */
     private Date mtime;
 
-    @Override
-    public String toString() {
-        return "InvitationCodeEntity{" +
-            "id=" + id +
-            ", createUserId=" + createUserId +
-            ", invitationCode='" + invitationCode + '\'' +
-            ", status=" + status +
-            ", availableInviteCount=" + availableInviteCount +
-            ", ctime=" + ctime +
-            ", mtime=" + mtime +
-            '}';
-    }
+    /**
+     * 创建者实体
+     */
+    private UserEntity creator;
+
 }
