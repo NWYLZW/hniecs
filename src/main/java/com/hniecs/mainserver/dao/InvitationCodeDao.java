@@ -5,6 +5,7 @@ import com.hniecs.mainserver.entity.UserEntity;
 import org.apache.ibatis.annotations.*;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -116,22 +117,21 @@ public interface InvitationCodeDao {
      */
     @Select(
         "select * " +
-        "   from invitation_code " +
+        "from invitation_code " +
         "where " +
-        "(invitation_code like #{invitationCode}) " +
-        "and ( " +
-        "   select user_name " +
-        "       from user " +
-        "   where user.id = create_user_id " +
-        ") like #{creatorName} " +
+        "invitation_code like #{invitationCode} " +
+        "and " +
+        "(select user_name " +
+        "from user " +
+        "where user.id = create_user_id) " +
+        "like #{creatorName} " +
         "and tag_name = #{tagName};")
-    @Results({
-        @Result(property = "creator", column = "create_user_id",
-            one=@One(select = "package com.hniecs.mainserver.dao.UserDao.getUserSimpleById")
-        )
-    })
-    Map<UserEntity,InvitationCodeEntity> getInvitationCodeList(
-        String tagName, String creatorName, String invitationCode);
+    @Result(property = "creator", column = "create_user_id",
+            one=@One(select = "com.hniecs.mainserver.dao.UserDao.getUserSimpleById"))
+    List<InvitationCodeEntity> getInvitationCodeList(
+        @Param("tagName") String tagName,
+        @Param("creatorName") String creatorName,
+        @Param("invitationCode") String invitationCode);
 
     /**
      * 新增一条邀请码

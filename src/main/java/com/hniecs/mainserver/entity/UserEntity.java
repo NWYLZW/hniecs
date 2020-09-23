@@ -3,6 +3,7 @@ package com.hniecs.mainserver.entity;
 import com.hniecs.mainserver.tool.security.Password;
 import com.hniecs.mainserver.tool.security.SHA256;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.Date;
@@ -17,6 +18,7 @@ import java.util.Date;
  * @logs[3] 2020-09-16 22:37 yijie 设置全部属性全部可获取
  * @logs[3] 2020-09-17 00:58 yijie 修改toString方法
  */
+@NoArgsConstructor
 public class UserEntity {
     /**
      * 用户id
@@ -53,7 +55,6 @@ public class UserEntity {
         return "UserEntity{" +
             "id=" + id +
             ", userName='" + userName + '\'' +
-            ", passwordSHA='" + passwordSHA + '\'' +
             ", ctime=" + ctime +
             ", mtime=" + mtime +
             '}';
