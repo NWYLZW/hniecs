@@ -1,5 +1,10 @@
 # 湖南工程学院计算机协会主体后台程序
 
+## 设计规范
+
+* 每个逻辑层绝对不能出现同等级的逻辑层
+  * 例: UserBaseController.java 绝对不能出现 AdminInvitationCodeController.java
+
 ## 开发目标
 
 * [ ] `Git Submodule|Git SubTree`集成前端项目至后端主项目，方便一次性部署
