@@ -2,6 +2,8 @@ package com.hniecs.mainserver.tool.interceptor;
 
 import com.hniecs.mainserver.annotation.method.NotNeedLogin;
 import com.hniecs.mainserver.annotation.method.PermissionRequired;
+import com.hniecs.mainserver.entity.permission.Permissions;
+import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import com.hniecs.mainserver.tool.security.session.SessionTool;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +35,11 @@ public class HandlerInterceptor extends HandlerInterceptorAdapter {
         HttpServletRequest request,
         HttpServletResponse response,
         PermissionRequired permissionRequired) {
-        permissionRequired.permission();
-        return true;
+        return Permissions.havePermission(
+            new UserEntity(),
+            permissionRequired.scope(),
+            permissionRequired.permission()
+        );
     }
     /**
      * 是否拦截登陆了
@@ -69,10 +74,10 @@ public class HandlerInterceptor extends HandlerInterceptorAdapter {
                 return true;
             } else {
                 // 如果未登陆 拦截
-                boolean isLogin = this.isLogin(request, response);
-                if (!isLogin) {
-                    return false;
-                }
+//                boolean isLogin = this.isLogin(request, response);
+//                if (!isLogin) {
+//                    return false;
+//                }
                 // 添加了权限拦截的注解，判断是否有权限
                 PermissionRequired pr = handlerMethod.getMethodAnnotation(PermissionRequired.class);
                 if (pr != null) {

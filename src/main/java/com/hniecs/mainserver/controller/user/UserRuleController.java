@@ -24,10 +24,6 @@ public class UserRuleController {
     /**
      * TODO 获取已有的权限列表
      */
-    @PermissionRequired(
-        scope = AdminPermissions.NAME,
-        permission = AdminPermissions.SEARCH_ALL_USER
-    )
     @GetMapping("/user/rule/getRules")
     public CommonResult getRules() {
         return CommonResult.notFound("接口未完成");
@@ -87,6 +83,10 @@ public class UserRuleController {
     /**
      * TODO 获取自己的权限组下的应用
      */
+    @PermissionRequired(
+        scope = AdminPermissions.NAME,
+        permission = AdminPermissions.SEARCH_ALL_USER
+    )
     @GetMapping("/user/rule/getApps")
     public CommonResult getApps() {
         return CommonResult.success(new ArrayList<>(
