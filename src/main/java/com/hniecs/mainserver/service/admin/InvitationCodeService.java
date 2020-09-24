@@ -84,9 +84,10 @@ public class InvitationCodeService {
      * @return 邀请码实体列表
      */
     public Page<InvitationCodeEntity> getInvitationCodePage(
-        String tagName, String creatorName, String invitationCode
+        String invitationCode, String creatorName, String tagName
     ) {
         // TODO 优化查找效率
+        //  如果三个关键词串都为空串时调用获取全部的接口
         //  判断标签名是否存在
         //  判断创建者用户名是否存在
         return (Page<InvitationCodeEntity>) invitationCodeModel
