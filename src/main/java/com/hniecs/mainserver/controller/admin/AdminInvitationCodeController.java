@@ -31,7 +31,6 @@ public class AdminInvitationCodeController {
 
     /**
      * 手动添加邀请码
-     * @return
      */
     @PostMapping("/admin/invitationCode/addList")
     public CommonResult addInvitationCode(
@@ -50,15 +49,15 @@ public class AdminInvitationCodeController {
             return CommonResult.validateFailed();
         }
 
-//        UserEntity currentUser = (UserEntity) request.getSession().getAttribute("currentUser");
-        UserEntity currentUser =  new UserEntity();
+        UserEntity currentUser = (UserEntity) request.getSession().getAttribute("currentUser");
         currentUser.setId(1);
 
         Hashtable data = new Hashtable();
 
         String msg = invitationCodeService
-            .addInvitationCodes(currentUser, availableCount,
-                invitationCodes, tagName, data);
+            .addInvitationCodes(
+                currentUser, availableCount, invitationCodes, tagName
+                , data);
         if (msg.equals("0")) {
             return CommonResult.success(data);
         } else {
@@ -99,7 +98,7 @@ public class AdminInvitationCodeController {
         }
         Hashtable data = new Hashtable();
         String msg = invitationCodeService
-            .addInvitationCodes(currentUser, availableCount, tagName, excelIS, data,targetMoney);
+            .addInvitationCodes(currentUser, availableCount, tagName, excelIS, data, targetMoney);
         if (msg.equals("0")) {
             return CommonResult.success(data);
         } else {
