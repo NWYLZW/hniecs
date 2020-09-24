@@ -2,7 +2,7 @@ package com.hniecs.mainserver.controller.admin;
 
 import com.github.pagehelper.PageHelper;
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
-import com.hniecs.mainserver.entity.UserEntity;
+import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.service.admin.InvitationCodeService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;

@@ -1,5 +1,6 @@
 package com.hniecs.mainserver.entity;
 
+import com.hniecs.mainserver.entity.user.UserEntity;
 import lombok.Data;
 
 import java.util.Date;
