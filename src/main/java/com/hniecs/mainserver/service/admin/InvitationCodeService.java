@@ -47,9 +47,21 @@ public class InvitationCodeService {
      */
     public Page<InvitationCodeEntity> getInvitationCodePage(
         String tagName, String creatorName, String invitationCode) {
-                tagName += "%";
-                creatorName += "%";
-                invitationCode += "%";
+                if(tagName == null) {
+                    tagName = "%";
+                }else {
+                    tagName = "%" + tagName + "%";
+                }
+                if(creatorName == null) {
+                    creatorName = "%";
+                }else {
+                    creatorName = "%" + creatorName + "%";
+                }
+                if (invitationCode == null) {
+                    invitationCode = "%";
+                }else {
+                    invitationCode = "%" + invitationCode + "%";
+                }
         return (Page<InvitationCodeEntity>)
             invitationCodeModel.getInvitationCodeList(tagName,creatorName,invitationCode);
     }

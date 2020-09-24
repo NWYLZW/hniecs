@@ -63,8 +63,8 @@ public interface InvitationCodeDao {
         "from user " +
         "where user.id = create_user_id) " +
         "like #{creatorName} " +
-        "and tag_name = #{tagName} " +
-        "and status != -1;")
+        "and tag_name like #{tagName} " +
+        "and status != -1 ")
     @Result(property = "creator", column = "create_user_id",
             one=@One(select = "com.hniecs.mainserver.dao.UserDao.getUserSimpleById"))
     List<InvitationCodeEntity> getInvitationCodeList(
