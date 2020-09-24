@@ -22,7 +22,8 @@ public class ExcelRader<T> {
      * @param classSupplier 无参构造，返回一个一个继承了BillExcel的类
      * @return  账单实体列表
      */
-    public List<T> getBillList(InputStream in, Supplier<Class> classSupplier) throws ClassNotFoundException {
+    public List<T> getBillList(InputStream in, Supplier<Class> classSupplier)
+        throws ClassNotFoundException, NullPointerException {
         BillExcelListener listener = new BillExcelListener();
         Class billExcelClass = classSupplier.get();
         if (billExcelClass == null) {
