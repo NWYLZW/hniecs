@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.function.Function;
 
 /**
  * @desc    用户权限controller层 UserRuleController.java
@@ -85,7 +84,7 @@ public class UserRuleController {
      */
     @PermissionRequired(
         scope = AdminPermissions.NAME,
-        permission = AdminPermissions.SEARCH_ALL_USER
+        permission = 0X002L
     )
     @GetMapping("/user/rule/getApps")
     public CommonResult getApps() {

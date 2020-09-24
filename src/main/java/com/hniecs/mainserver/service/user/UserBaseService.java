@@ -4,7 +4,7 @@ import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.model.InvitationCodeModel;
 import com.hniecs.mainserver.model.UserModel;
-import com.hniecs.mainserver.tool.security.session.SessionTool;
+import com.hniecs.mainserver.tool.security.SessionTool;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -42,9 +42,8 @@ public class UserBaseService {
             returnData.put(
                 "sessionToken",
                 SessionTool
-                    .setUserSessionToken(
-                        session, user
-                    ).toString()
+                    .setUserSessionToken(user)
+                    .toString()
             );
             returnData.put("user", user);
         }
