@@ -20,19 +20,14 @@ import java.util.regex.Pattern;
  * @logs[2] 2020-09-15 20:15 yijie 添加了登陆接口
  * @logs[3] 2020-09-16 01:17 yijie 登陆与注册接口不被拦截器拦截 预留一些TODO
  * @logs[4] 2020-09-16 22:06 yijie 预留数据校验todo，抽离与controller层无关的代码
+ * @logs[4] 2020-09-25 04:08 yijie 删除无用的方法
  */
 @RestController
 @Slf4j
 public class UserBaseController {
-    private boolean verifyChar(char a){
-        char allowChar[]={'-','_','.','@'};
-        for (char x: allowChar) {
-            if(a==x){
-                return true;
-            }
-        }
-        return false;
-    }
+    @Resource
+    private UserBaseService userBaseService;
+
     /**
      * 校验用户名格式是否正确 字母|中文|数字|-|_|.|@ (不能以 数字，特殊字符，中文 开头) 4-12位
      * @param userName  用户名
@@ -50,7 +45,7 @@ public class UserBaseController {
     }
 
     /**
-     * 校验用户名格式是否正确 字母|数字|-|_|.|@ 5-20位
+     * 校验密码格式是否正确 字母|数字|-|_|.|@ 5-20位
      * @param password  密码
      * @return  密码格式是否正确
      */
@@ -63,9 +58,6 @@ public class UserBaseController {
 
         return Pattern.matches(pattern, password);
     }
-
-    @Resource
-    private UserBaseService userBaseService;
 
     /**
      * 用户登陆
