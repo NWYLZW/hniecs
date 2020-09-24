@@ -2,6 +2,7 @@ package com.hniecs.mainserver.model;
 
 import com.hniecs.mainserver.dao.UserDao;
 import com.hniecs.mainserver.entity.user.UserEntity;
+import com.hniecs.mainserver.tool.CommonUseStrings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -78,7 +79,7 @@ public class UserModel {
             return "0";
         } catch (Exception e) {
             log.error("插入用户出现了错误：{}", e.getMessage(), e);
-            return "服务器错误";
+            return CommonUseStrings.SERVER_FAILED.S;
         }
     }
 }

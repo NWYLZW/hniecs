@@ -2,7 +2,7 @@ package com.hniecs.mainserver.model;
 
 import com.hniecs.mainserver.dao.ResourceDao;
 import com.hniecs.mainserver.entity.ResourceEntity;
-import com.hniecs.mainserver.tool.ObjectTool;
+import com.hniecs.mainserver.tool.CommonUseStrings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -36,7 +36,7 @@ public class ResourceModel {
             return "0";
         } catch (Exception e) {
             log.error(e.getMessage());
-            return "服务器出错";
+            return CommonUseStrings.SERVER_FAILED.S;
         }
     }
 
@@ -51,7 +51,7 @@ public class ResourceModel {
             return "0";
         } catch (Exception e) {
             log.error(e.getMessage());
-            return "服务器出错";
+            return CommonUseStrings.SERVER_FAILED.S;
         }
     }
 
@@ -65,7 +65,7 @@ public class ResourceModel {
             return "0";
         } catch (Exception e) {
             log.error(e.getMessage());
-            return "服务器错误";
+            return CommonUseStrings.SERVER_FAILED.S;
         }
     }
 
@@ -86,7 +86,7 @@ public class ResourceModel {
             return "0";
         } catch (Exception e) {
             log.error(e.getMessage());
-            return "服务器错误";
+            return CommonUseStrings.SERVER_FAILED.S;
         }
 
     }
@@ -114,7 +114,7 @@ public class ResourceModel {
             return "0";
         } catch (Exception e) {
             log.error(e.getMessage());
-            return "服务器错误";
+            return CommonUseStrings.SERVER_FAILED.S;
         }
     }
 
@@ -127,7 +127,7 @@ public class ResourceModel {
             return "0";
         } catch (Exception e) {
             log.error(e.getMessage());
-            return "服务器错误";
+            return CommonUseStrings.SERVER_FAILED.S;
         }
     }
 
