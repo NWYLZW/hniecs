@@ -3,7 +3,6 @@ package com.hniecs.mainserver.dao;
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import org.apache.ibatis.annotations.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,25 +12,13 @@ import java.util.List;
  * @logs[0] 2020-09-13 19:01 yijie      创建了InvitationCodeDao.java文件
  * @logs[1] 2020-09-13 19:01 zerohua    插入列名格式为 ${columnName}
  * @logs[2] 2020-09-16 01:00 yijie      重构代码结构，修复bug
+ * @logs[3] 2020-09-25 01:18 yijie      重构代码
  */
 @Mapper
 public interface InvitationCodeDao {
-
     enum columnName{
         create_user_id, id, status, invitation_code;
     }
-
-    /**
-     * 根据(创建用户id|邀请码id|邀请码状态|邀请码内容) 获取符合条件的邀请码数组
-     * @param col       列名
-     * @param condition 条件
-     */
-    @Select(
-        "select * " +
-            "from invitation_code " +
-            "where ${columnName}=#{condition}"
-    )
-   ArrayList<InvitationCodeEntity> getAll(columnName col, String condition);
 
     /**
      * 根据(创建用户id|邀请码id|邀请码状态|邀请码内容) 获取符合条件的某个邀请码
@@ -47,30 +34,33 @@ public interface InvitationCodeDao {
 
 
     /**
-     * 来呀，查老子啊！！！！
+     * 进行详细的邀请码查询
      * @param tagName         标签名
-     * @param creatorName     创建者名
-     * @param invitationCode  内容
-     * @return
+     * @param creatorName     创建者用户名名
+     * @param invitationCode  邀请码内容
      */
     @Select(
         "select * " +
         "from invitation_code " +
-        "where " +
-        "invitation_code like #{invitationCode} " +
-        "and " +
-        "(select user_name " +
-        "from user " +
-        "where user.id = create_user_id) " +
-        "like #{creatorName} " +
-        "and tag_name like #{tagName} " +
-        "and status != -1 ")
-    @Result(property = "creator", column = "create_user_id",
-            one=@One(select = "com.hniecs.mainserver.dao.UserDao.getUserSimpleById"))
-    List<InvitationCodeEntity> getInvitationCodeList(
-        @Param("tagName") String tagName,
-        @Param("creatorName") String creatorName,
-        @Param("invitationCode") String invitationCode);
+            "where " +
+            "invitation_code like #{invitationCode} " +
+            "and (" +
+                "select user_name " +
+                    "from user " +
+                    "where user.id=create_user_id" +
+            ") like #{creatorName} " +
+            "and tag_name like #{tagName} " +
+            "and status!=-1 "
+    )
+    @Result(
+        property="creator", column="create_user_id",
+        one=@One(
+            select="com.hniecs.mainserver.dao.UserDao.getUserSimpleById"
+        )
+    )
+    List<InvitationCodeEntity> getInvitationCodes(
+        String creatorName, String tagName, String invitationCode
+    );
 
     /**
      * 新增一条邀请码
@@ -78,43 +68,24 @@ public interface InvitationCodeDao {
      */
     @Insert(
         "insert into " +
-            "invitation_code(create_user_id, invitation_code, tag_name, status,available_invite_count, ctime, mtime)" +
+            "invitation_code(create_user_id, invitation_code, tag_name, status, available_invite_count, ctime, mtime)" +
             "values(#{createUserId}, #{invitationCode}, #{tagName}, #{status}, #{availableInviteCount}, #{ctime}, #{mtime})"
     )
     void addNew(InvitationCodeEntity invitationCode);
 
     /**
-     * 通过id假删除
-     * @param id
-     * @return
-     */
-    @Update("update invitation_code set status = -1 where id = #{id}")
-    int falseDeleteById(Long id);
-
-    /**
-     * 通过邀请码id 更新一条邀请码的数据
+     * 通过邀请码id 更新一条邀请码
      * @param invitationCodeEntity  邀请码实体对象
      */
     @Update(
-        "update invitation_code " +
-            "set " +
-            "invitation_code=#{invitationCode}, " +
-            "status=#{status}, " +
-            "available_invite_count=#{availableInviteCount}, " +
-            "mtime=#{mtime} " +
-            "where id=#{id}"
+        "<script> \n"+
+            "update invitation_code set " +
+                "<if test='invitationCode!=null'>invitation_code=#{invitationCode}, </if>" +
+                "<if test='status!=null'>status=#{status}, </if>" +
+                "<if test='available_invite_count!=null'>available_invite_count=#{available_invite_count}, </if>" +
+                "<if test='mtime!=null'>mtime=#{mtime}, </if>" +
+            "where id=#{id}"+
+        "</script>"
     )
     int update(InvitationCodeEntity invitationCodeEntity);
-
-    /**
-     * 通过邀请码id 删除一个邀请码
-     * @param id 邀请码id
-     */
-    @Delete(
-        "delete " +
-            "from invitation_code " +
-            "where id=#{id}"
-    )
-    void deleteById(long id);
-
 }
