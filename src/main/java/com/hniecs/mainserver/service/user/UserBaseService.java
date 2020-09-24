@@ -58,7 +58,7 @@ public class UserBaseService {
      */
     public String registerNewUser(String userName, String password, String invitationCode) {
         InvitationCodeEntity invitationCodeEntity = invitationCodeModel.findAbleUse(invitationCode);
-        String msg = "验证码不存在";
+        String msg = "邀请码不存在";
         if (invitationCodeEntity == null) {
             return msg;
         }
