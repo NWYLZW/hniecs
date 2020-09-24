@@ -22,171 +22,141 @@ import java.util.List;
  * @author  yijie
  * @date    2020-09-20 12:52
  * @logs[0] 2020-09-20 12:52 yijie 创建了InvitationCodeService.java文件
+ * @logs[1] 2020-09-23 03:00 yijie 重构大部分代码
  */
-
 @Slf4j
 @Service
 public class InvitationCodeService {
-
-    /**
-     * 金额有效阈值
-     */
-    private BigDecimal targetMoney;
-
     @Resource
     private InvitationCodeModel invitationCodeModel;
 
     /**
-     * 分页获得
-     * 通过三个条件搜索验证码实体，如果传过来的Null，
-     * 将之变成万能匹配，就能实现随便查
-     * @param tagName
-     * @param creatorName
-     * @param invitationCode
-     * @return 结果集合
+     * 删选列表出满足条件实体列表
+     * @param billExcels            账单excel表格元数据列表
+     * @param effectiveThreshold    金额有效阈值
+     * @return 返回邀请码实体列表
      */
-    public Page<InvitationCodeEntity> getInvitationCodePage(
-        String tagName, String creatorName, String invitationCode) {
-                if(tagName == null) {
-                    tagName = "%";
-                }else {
-                    tagName = "%" + tagName + "%";
-                }
-                if(creatorName == null) {
-                    creatorName = "%";
-                }else {
-                    creatorName = "%" + creatorName + "%";
-                }
-                if (invitationCode == null) {
-                    invitationCode = "%";
-                }else {
-                    invitationCode = "%" + invitationCode + "%";
-                }
-        return (Page<InvitationCodeEntity>)
-            invitationCodeModel.getInvitationCodeList(tagName,creatorName,invitationCode);
-    }
-
-    /**
-     * 文以文件方式或者单手动添加形式最终都会调用这个方法
-     * @param creator
-     * @param availableCount
-     * @param invitationCodes
-     * @param tagName
-     * @param returnData
-     * @return
-     */
-    public String addInvitationCodes(
-        UserEntity creator, int availableCount,
-        List<String> invitationCodes,String tagName,
-        Hashtable returnData) {
-
-        return invitationCodeModel.addInvitationCodes(
-            creator,availableCount,
-            invitationCodes,
-            tagName,
-            returnData
-        );
-    }
-
-    /**
-     * @param creator          创建者
-     * @param availableCount   可利用次数
-     * @param tagName          支付类型
-     * @param returnData
-     * @return
-     */
-    public String addInvitationCodes(
-        UserEntity creator, int availableCount, String tagName,
-        InputStream excelIn,
-        Hashtable returnData,
-        String targetMoney) {
-
-        this.targetMoney = new BigDecimal(targetMoney);
-
-        List<String> invitationCodeStr = getInvitationCodeStrList(excelIn,tagName);
-        return this.addInvitationCodes(creator, availableCount,
-            invitationCodeStr, tagName, returnData);
-    }
-
-    /**
-     * 假删除
-     * @param id
-     * @return
-     */
-    public String falseDeleteById(Long id) {
-        int result = invitationCodeModel.falseDeleteById(id);
-        if(result == 0){
-            return "操作失败!";
-        }else {
-            return "0";
-        }
-    }
-
-    /**
-     * 修改
-     * @param invitationCode
-     * @return
-     */
-    public String updateInvitationCode(InvitationCodeEntity invitationCode) {
-
-        int result = invitationCodeModel.updateInvitationCode(invitationCode);
-        if(result == 0 ){
-            return "操作失败!";
-        }else {
-            return "0";
-        }
-    }
-
-    /**
-     * @param excelIn 文件输入流
-     * @param tagName
-     * @return 验证码集合
-     */
-    private List<String> getInvitationCodeStrList(InputStream excelIn,String tagName) {
-        List<BillExcel> billExcels = getBillExcel(excelIn, tagName);
-        return checkAndTransToList(billExcels);
-    }
-
-    /**
-     * 除去集合中不满足条件的实体
-     * @param billExcels
-     * @return 返回验证码集合
-     */
-    private List<String> checkAndTransToList(List<BillExcel> billExcels) {
+    private List<String> filterBillExcelData(List<BillExcel> billExcels, BigDecimal effectiveThreshold) {
         List<String> list = new ArrayList<>();
         for (BillExcel billExcel : billExcels) {
-            //字符变成钱
-            BigDecimal money = new BigDecimal( billExcel.getMoney());
+            // 字符变成钱
+            BigDecimal money = new BigDecimal(billExcel.getMoney());
             // 建议用compareTo进行比较，0 等于 1 大于 -1 小于
-            if (  money.compareTo(targetMoney) == 0  ) {
+            if (money.compareTo(effectiveThreshold) == 0) {
                 list.add(billExcel.getTransactionNumber());
             }
         }
         return list;
     }
-
     /**
      * @param in        表格流
      * @param tagName   支付方式
      * @return          账单集合
      */
-    private List<BillExcel> getBillExcel(InputStream in,String tagName) {
-
-        List<BillExcel> billExcels = null;
-        ExcelRader<BillExcel> rader = new ExcelRader<>();
+    private List<BillExcel> getBillExcels(InputStream in, String tagName) {
+        List<BillExcel> billExcels = new ArrayList<>();
         try {
-            billExcels = rader.getBillList(in,() -> {
-                if(tagName.equals("微信")) {
-                    return WechatBillExcel.class;
-                }else if(tagName.equals("支付宝")) {
-                    return AlipayBillExcel.class;
-                }
-                return null;
-            });
+            billExcels = new ExcelRader<BillExcel>()
+                .getBillList(in, () -> {
+                    // TODO 做成常量维护
+                    if(tagName.equals("微信")) {
+                        return WechatBillExcel.class;
+                    }else if(tagName.equals("支付宝")) {
+                        return AlipayBillExcel.class;
+                    }
+                    return null;
+                });
+        } catch (NullPointerException e) {
+            log.error("不能解析该标签数据", e);
         } catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            log.error("编码错误，getBillExcels{ExcelRader.getBillList 返回值未继承BillExcel类}", e);
         }
         return billExcels;
     }
 
+    /**
+     * 分页获得
+     * 通过三个条件搜索邀请码实体，如果传过来的Null，
+     * 将之变成万能匹配，就能实现随便查
+     * @param tagName           标签名
+     * @param creatorName       创建者用户名
+     * @param invitationCode    邀请码内容
+     * @return 邀请码实体列表
+     */
+    public Page<InvitationCodeEntity> getInvitationCodePage(
+        String tagName, String creatorName, String invitationCode
+    ) {
+        // TODO 优化查找效率
+        //  判断标签名是否存在
+        //  判断创建者用户名是否存在
+        return (Page<InvitationCodeEntity>) invitationCodeModel
+            .getInvitationCodeList(creatorName, tagName, invitationCode);
+    }
+
+    /**
+     * 通过邀请码字符串列表将邀请码添加至服务器
+     * @param creator           创建者实体
+     * @param availableCount    可用次数
+     * @param invitationCodes   邀请码字符串列表
+     * @param tagName           标签名
+     * @param returnData        返回数据
+     */
+    public String addInvitationCodes(
+        UserEntity creator, int availableCount, String tagName,
+        List<String> invitationCodes,
+        Hashtable returnData
+    ) {
+        // TODO 判断创建者实体是否存在
+        // TODO 去除列表中的重复数据空数据垃圾数据
+        return invitationCodeModel.addInvitationCodes(
+            creator, availableCount, tagName,
+            invitationCodes,
+            returnData
+        );
+    }
+
+    /**
+     * 通过excel文件流添加数据到数据库
+     * @param creator           创建者实体信息
+     * @param availableCount    可利用次数
+     * @param tagName           支付类型名
+     * @param targetMoney       计入数据库信息阈值金钱数
+     * @param returnData        返回数据
+     */
+    public String addInvitationCodes(
+        UserEntity creator, int availableCount, String tagName, String targetMoney,
+        InputStream excelIn,
+        Hashtable returnData
+    ) {
+        List<String> InvitationCodeStrs = filterBillExcelData(
+            getBillExcels(excelIn, tagName), new BigDecimal(targetMoney)
+        );
+        if (InvitationCodeStrs.size() == 0) {
+            returnData.put("successCount", 0);
+            returnData.put("failureCount", 0);
+            return "0";
+        }
+        return this.addInvitationCodes(
+            creator, availableCount, tagName, InvitationCodeStrs
+            , returnData
+        );
+    }
+
+    /**
+     * 删除一个邀请码
+     * @param id    邀请码id
+     */
+    public String deleteById(Long id) {
+        // TODO 判断该id邀请码是否存在
+        return invitationCodeModel.deleteById(id);
+    }
+
+    /**
+     * 修改邀请码信息
+     * @param invitationCode    邀请码实体
+     */
+    public String updateInvitationCode(InvitationCodeEntity invitationCode) {
+        // TODO 判断该邀请码实体是否存在
+        return invitationCodeModel.updateInvitationCode(invitationCode);
+    }
 }

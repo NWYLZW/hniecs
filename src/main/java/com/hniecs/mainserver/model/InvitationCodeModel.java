@@ -3,8 +3,10 @@ package com.hniecs.mainserver.model;
 import com.hniecs.mainserver.dao.InvitationCodeDao;
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
+import com.hniecs.mainserver.tool.CommonUseStrings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
+import org.w3c.dom.ranges.RangeException;
 
 import javax.annotation.Resource;
 import java.util.*;
@@ -15,28 +17,26 @@ import java.util.*;
  * @date    2020-09-13 18:57
  * @logs[0] 2020-09-13 18:57 yijie 创建了InvitationCodeModel.java文件
  * @logs[1] 2020-09-15 15:51 yijie 完善一些内容
+ * @logs[2] 2020-09-25 03:01 yijie 重构代码，修改返回值获取方式，补充注释，预留TODO
  */
 @Repository
 @Slf4j
 public class InvitationCodeModel {
-
     @Resource
     private InvitationCodeDao invitationCodeDao;
 
     /**
-     * 一个用户对应一个邀请码，每个用户他的邀请码有效次数有限
+     * 根据邀请码数据，将邀请码插到数据库中
      * @param user                  用户实体
      * @param availableInviteCount  能邀请的用户个数
      * @param invitationCodes       邀请码数组
+     * @param tagName               邀请码标签
+     * @param data                  返回数据
      */
     public String addInvitationCodes(
-        UserEntity user,
-        int availableInviteCount,
-        List<String> invitationCodes,
-        String tagName,
+        UserEntity user, int availableInviteCount, String tagName, List<String> invitationCodes,
         Hashtable data) {
-
-        //操作信息
+        // 操作信息
         int succeedCount = 0;
         int failureCount = 0;
 
@@ -59,65 +59,102 @@ public class InvitationCodeModel {
             }
         }
 
-        //加入结果
+        // 加入结果
         data.put("successCount", succeedCount);
         data.put("failureCount", failureCount);
 
         if(succeedCount == 0) {
-            return "验证码全部生成失败";
+            return "邀请码全部生成失败";
         }else {
             return "0";
         }
     }
 
     /**
+     * 使用一个邀请码实体
      * @param invitationCode    邀请码实体
      */
     public String useInvitationCode(InvitationCodeEntity invitationCode) {
         int count = invitationCode.getAvailableInviteCount();
         if(count > 0) {
             invitationCode.setAvailableInviteCount(count - 1);
+            // TODO 更新数据库信息
             return "0";
         }else {
-            return "邀请码可用次数已用尽, 使用失败!";
+            return "邀请码可用次数已用尽";
         }
     }
 
 
     /**
-     * 假删除
-     * @param id
-     * @return
+     * 删除一个邀请码
+     * @param id    邀请码id
      */
-    public int falseDeleteById(Long id) {
-        return invitationCodeDao.falseDeleteById(id);
+    public String deleteById(Long id) {
+        InvitationCodeEntity ice = new InvitationCodeEntity();
+        ice.setId(id);
+        ice.setStatus(-1);
+        try {
+            if (invitationCodeDao.update(ice) == 0) {
+                return "删除邀请码失败";
+            } else {
+                return "0";
+            }
+        } catch (Exception e) {
+            return CommonUseStrings.SERVER_FAILED.S;
+        }
     }
 
     /**
-     * 更新用户
-     * @param invitationCode
-     * @return 执行结果 > 0 代表成功
+     * 更新邀请码信息
+     * @param invitationCode    邀请码实体
      */
-    public int updateInvitationCode(InvitationCodeEntity invitationCode) {
-        return invitationCodeDao.update(invitationCode);
+    public String updateInvitationCode(InvitationCodeEntity invitationCode) {
+        // 保证对外的唯一一致性
+        if (invitationCode.getStatus() == -1) {
+            throw new RangeException((short) 0, "该接口不支持将邀请码删除的功能");
+        }
+        try {
+            if (invitationCodeDao.update(invitationCode)  == 0) {
+                return "更新邀请码失败";
+            } else {
+                return "0";
+            }
+        } catch (Exception e) {
+            return CommonUseStrings.SERVER_FAILED.S;
+        }
     }
 
     /**
-     * 超级无敌随便查
-     * @param tagName
-     * @param creatorName
-     * @param invitationCode
-     * @return 满足条件的集合
+     * 进行详细的邀请码查询
+     * @param tagName           邀请码标签名
+     * @param creatorName       创建者用户名
+     * @param invitationCode    邀请码内容
+     * @return 满足条件的邀请码实体列表
      */
     public List<InvitationCodeEntity> getInvitationCodeList(
-        String tagName, String creatorName, String invitationCode) {
-        System.out.println("=========>");
-        return invitationCodeDao.getInvitationCodeList(tagName,creatorName,invitationCode);
+        String creatorName, String tagName, String invitationCode
+    ) {
+        // TODO 这里可能有问题 待测试
+        ArrayList<String> searchConditions = new ArrayList<>(
+            Arrays.asList(
+                creatorName, tagName, invitationCode
+            )
+        );
+        for (int i = 0; i < searchConditions.size(); i++) {
+            if(searchConditions.get(i) == null) {
+                searchConditions.set(i, "%");
+            } else {
+                searchConditions.set(i, "%" + searchConditions.get(i) + "%");
+            }
+        }
+        return invitationCodeDao
+            .getInvitationCodes(creatorName, tagName, invitationCode);
     }
 
     /**
-     * 查询此邀请码是否能用
-     * @param invitationCode    邀请码
+     * 查询某邀请码是否能够使用
+     * @param invitationCode    邀请码内容
      */
     public InvitationCodeEntity findAbleUse(String invitationCode) {
         InvitationCodeEntity ic = invitationCodeDao
@@ -132,5 +169,4 @@ public class InvitationCodeModel {
             return null;
         }
     }
-
 }
