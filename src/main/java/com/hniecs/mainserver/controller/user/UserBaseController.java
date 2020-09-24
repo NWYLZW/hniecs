@@ -68,7 +68,7 @@ public class UserBaseController {
      */
     @NotNeedLogin
     @PostMapping("/user/base/login")
-    public CommonResult login(@RequestBody Map<String, String> user, HttpSession session) {
+    public CommonResult login(@RequestBody Map<String, String> user) {
         String
             userName = user.get("userName"),
             password = user.get("password");
@@ -77,7 +77,7 @@ public class UserBaseController {
             return CommonResult.validateFailed();
         }
         Hashtable data = new Hashtable();
-        String msg = userBaseService.login(userName, password, session, data);
+        String msg = userBaseService.login(userName, password, data);
         if (msg.equals("0")) {
             return CommonResult.success(data, "登陆成功");
         } else {

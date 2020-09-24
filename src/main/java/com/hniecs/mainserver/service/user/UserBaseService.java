@@ -31,10 +31,9 @@ public class UserBaseService {
      * 登陆，将信息储存到session中
      * @param userName      用户名
      * @param password      密码
-     * @param session       HttpSession字典
      * @param returnData    返回数据字典
      */
-    public String login(String userName, String password, HttpSession session, Hashtable returnData) {
+    public String login(String userName, String password, Hashtable returnData) {
         Hashtable getReturnData = new Hashtable();
         String msg = userModel.vertify(userName, password, getReturnData);
         if (msg.equals("0")) {
