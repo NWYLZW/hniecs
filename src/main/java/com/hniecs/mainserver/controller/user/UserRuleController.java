@@ -84,7 +84,7 @@ public class UserRuleController {
      */
     @PermissionRequired(
         scope = AdminPermissions.NAME,
-        permission = 0X002L
+        permission = AdminPermissions.SEARCH_ALL_USER
     )
     @GetMapping("/user/rule/getApps")
     public CommonResult getApps() {
