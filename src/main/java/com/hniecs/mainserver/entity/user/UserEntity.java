@@ -39,12 +39,18 @@ public class UserEntity {
      * 创建时间
      */
     @Getter@Setter
-    public Date ctime;
+    private Date ctime;
     /**
      * 修改时间
      */
     @Getter@Setter
-    public Date mtime;
+    private Date mtime;
+
+    /**
+     * 用户详细信息
+     */
+    @Getter
+    private UserDetailEntity detail;
 
     public UserEntity(String userName, String password) {
         this.userName = userName;

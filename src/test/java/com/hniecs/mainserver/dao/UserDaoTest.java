@@ -36,17 +36,17 @@ public class UserDaoTest {
 
     @Test
     public void testQuery() throws Exception {
-        List<UserEntity> users = userDao.getSimpleUsers();
-        System.out.println(users.toString());
+        UserEntity user = userDao.getById(17L);
+        System.out.println(user.getDetail().getRealName());
     }
 
     @Test
     public void testUpdate() throws Exception {
-        UserEntity user = userDao.getUserSimpleById(17L);
+        UserEntity user = userDao.getSimpleById(17L);
         user.setPassword("yijie");
         userDao.updateById(user);
         System.out.println(user.toString());
-        Assert.assertTrue(("yijie".equals(userDao.getUserSimpleById(17L).getUserName())));
+        Assert.assertTrue(("yijie".equals(userDao.getSimpleById(17L).getUserName())));
     }
 
     public static void main(String[] args) {

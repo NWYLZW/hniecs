@@ -1,36 +1,38 @@
 package com.hniecs.mainserver.entity.user;
 
-import cn.hutool.core.date.DateTime;
 import lombok.Data;
+
+import java.util.Date;
 
 /**
  * @desc    用户详情信息实体 UserDetailEntity.java
  * @author  yijie
  * @date    2020-09-22 17:12
  * @logs[0] 2020-09-22 17:12 yijie 创建了UserDetailEntity.java文件
+ * @logs[1] 2020-09-25 05:36 yijie 属性格式错误
  */
 @Data
 public class UserDetailEntity {
     // 与user表连接外键
-    long user_id;
+    long userId;
     // 用户真实姓名
-    String real_name;
+    String realName;
     // 专业名称
     String profession;
     // 班级号
-    long class_num;
+    long classNum;
     // 校内学号
-    String school_num;
+    String schoolNum;
     // 联系qq
-    String qq_num;
+    String qqNum;
     // 联系电话
-    String tel_num;
+    String telNum;
     // 用户注册时使用的邀请码id
-    long invitation_code_id;
+    long invitationCodeId;
     // 连接权限表id
-    long rule_id;
+    long ruleId;
     // 创建时间
-    DateTime ctime;
+    Date ctime;
     // 修改时间
-    DateTime mtime;
+    Date mtime;
 }

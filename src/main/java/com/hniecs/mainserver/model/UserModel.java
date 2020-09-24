@@ -28,7 +28,7 @@ public class UserModel {
      * @param userName 用户名
      */
     private UserEntity get(String userName) {
-        return userDao.getUserSimpleByUserName(userName);
+        return userDao.getSimpleByUserName(userName);
     }
 
     /**
@@ -36,7 +36,7 @@ public class UserModel {
      * @param userName 用户名
      */
     private boolean have(String userName) {
-        UserEntity u = userDao.getUserSimpleByUserName(userName);
+        UserEntity u = get(userName);
         return u != null;
     }
 
@@ -64,7 +64,9 @@ public class UserModel {
     public String addUser (UserEntity user) {
         if (have(user.getUserName())) return "该用户名用户已存在";
         try {
-            userDao.addNew(user);
+            if (userDao.addNew(user) == 0) {
+                return "添加用户失败";
+            }
             return "0";
         } catch (Exception e) {
             log.error("插入用户出现了错误：{}", e.getMessage(), e);

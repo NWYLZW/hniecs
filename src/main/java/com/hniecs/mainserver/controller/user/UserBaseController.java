@@ -62,7 +62,6 @@ public class UserBaseController {
     /**
      * 用户登陆
      * @param user      用户信息
-     * @param session   httpSession，由mvc容器自己管理
      * @bodyParam userName    Y   ""    用户名
      * @bodyParam password    Y   ""    密码
      */
