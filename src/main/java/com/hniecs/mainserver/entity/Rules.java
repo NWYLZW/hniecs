@@ -2,6 +2,8 @@ package com.hniecs.mainserver.entity;
 
 import com.hniecs.mainserver.entity.permission.AdminPermissions;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * @desc    权限组 Rules.java
@@ -15,6 +17,7 @@ public enum Rules {
         AdminPermissions.SEARCH_ALL_USER
     );
 
+    @Getter@Setter
     private RuleEntity r;
     Rules(String name, long permissions) {
         r = new RuleEntity(name, permissions);
