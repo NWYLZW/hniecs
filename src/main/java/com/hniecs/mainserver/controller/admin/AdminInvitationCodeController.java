@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.service.admin.InvitationCodeService;
+import com.hniecs.mainserver.tool.CommonUseStrings;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
@@ -25,10 +26,10 @@ import java.util.*;
 @RestController
 @Slf4j
 public class AdminInvitationCodeController {
-
     @Resource
     private InvitationCodeService invitationCodeService;
 
+    // TODO 下面俩个添加接口进行入参合法性校验
     /**
      * 手动添加邀请码
      */
@@ -50,13 +51,12 @@ public class AdminInvitationCodeController {
         }
 
         UserEntity currentUser = (UserEntity) request.getSession().getAttribute("currentUser");
-        currentUser.setId(1);
 
         Hashtable data = new Hashtable();
 
         String msg = invitationCodeService
             .addInvitationCodes(
-                currentUser, availableCount, invitationCodes, tagName
+                currentUser, availableCount, tagName, invitationCodes
                 , data);
         if (msg.equals("0")) {
             return CommonResult.success(data);
@@ -67,14 +67,13 @@ public class AdminInvitationCodeController {
 
     /**
      * 通过支付宝或微信导出账单文件 导入邀请码到数据库
-     * @return
      */
     @PostMapping("/admin/invitationCode/importFromExcel")
     public CommonResult importInvitationCodes(
         @RequestParam(value = "excelFile",required = true) MultipartFile excel,
         @RequestBody Map<String, Object> invitationCodeMap,
-        HttpServletRequest request){
-
+        HttpServletRequest request
+    ){
         String tagName = null;
         Integer availableCount = null;
         String targetMoney = null;
@@ -86,6 +85,7 @@ public class AdminInvitationCodeController {
             log.error("属性值不存在!",e);
             return CommonResult.validateFailed();
         }
+        // TODO 校验tagName是否为 支付宝或者微信
 
         UserEntity currentUser = (UserEntity) request.getSession().getAttribute("currentUser");
         InputStream excelIS = null;
@@ -94,11 +94,11 @@ public class AdminInvitationCodeController {
             excelIS = excel.getInputStream();
         } catch (IOException e) {
             log.error("获取文件IS流出现了问题", e);
-            return CommonResult.failed("服务器错误");
+            return CommonResult.failed(CommonUseStrings.SERVER_FAILED.S);
         }
         Hashtable data = new Hashtable();
         String msg = invitationCodeService
-            .addInvitationCodes(currentUser, availableCount, tagName, excelIS, data, targetMoney);
+            .addInvitationCodes(currentUser, availableCount, tagName, targetMoney, excelIS, data);
         if (msg.equals("0")) {
             return CommonResult.success(data);
         } else {
@@ -107,12 +107,11 @@ public class AdminInvitationCodeController {
     }
 
     /**
-     * 假删除
+     * 删除一个邀请码
      * @param id
-     * @return
      */
     @DeleteMapping("/admin/invitationCode/{id}")
-    public CommonResult falseDeleteById(@PathVariable Long id) {
+    public CommonResult falseDeleteById(@RequestParam("id") Long id) {
         String message = invitationCodeService.falseDeleteById(id);
         if(message.equals("0")) {
             return CommonResult.success(message);
@@ -138,8 +137,6 @@ public class AdminInvitationCodeController {
 
     /**
      * 获取邀请码列表 根据多种筛选条件筛选 例如状态，内容，等等
-     *
-     * @return
      */
     @GetMapping("/admin/invitationCode")
     public CommonResult getInvitationCodesByCondition(
