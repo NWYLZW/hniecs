@@ -42,17 +42,6 @@ public class UserModel {
 
     /**
      * 检查是否能够登录
-     * @param userName  用户名
-     * @param password  密码
-     */
-    public String vertify(String userName, String password) {
-        UserEntity u = get(userName);
-        if (u == null) return "该用户名用户不存在";
-        return u.vertifyPWD(password)?"0":"密码错误";
-    }
-
-    /**
-     * 检查是否能够登录
      * @param userName      用户名
      * @param password      密码
      * @param returnData    多余的返回值
