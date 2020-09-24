@@ -3,6 +3,7 @@ package com.hniecs.mainserver.dao;
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import org.apache.ibatis.annotations.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +20,16 @@ public interface InvitationCodeDao {
     enum columnName{
         create_user_id, id, status, invitation_code;
     }
+
+    /**
+     * 获取全部未被删除邀请码列表
+     */
+    @Select(
+        "select * " +
+            "from invitation_code " +
+            "where status!=-1"
+    )
+    ArrayList<InvitationCodeEntity> getAll();
 
     /**
      * 根据(创建用户id|邀请码id|邀请码状态|邀请码内容) 获取符合条件的某个邀请码
