@@ -114,7 +114,7 @@ public class InvitationCodeService {
         List<String> invitationCodes,
         HashMap returnData
     ) {
-        if (userModel.have(creator.getUserName())) {
+        if (!userModel.have(creator.getUserName())) {
             return "用户不存在";
         }
         List<String> newInvitationCodes = new ArrayList<>();
