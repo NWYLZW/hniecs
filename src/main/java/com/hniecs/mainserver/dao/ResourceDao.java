@@ -17,34 +17,28 @@ public interface ResourceDao {
      * 根据kind和模糊搜索匹配资源
      * @param kind      资源种类
      * @param condition 资源条件
-     * @param num       每页个数
-     * @param point     资源起始
      */
-    @Select("<script>" +
-        "select * " +
-        "from resource " +
-        "where <if test='kind != null'>kind = #{kind} and</if>" +
-        "name like \"%${condition}%\" or introduce like \"%${condition}%\"" +
-        "limit #{num} offset #{point}" +
-        "</script>")
-    public ArrayList<ResourceEntity> getResourceByCondition(@Param("kind") String kind, @Param("condition") String condition,
-                                                            @Param("num") long num, @Param("point") long point);
+    @Select("select * " +
+                "from resource " +
+                "where kind like \'${kind}\' and " +
+                "name like \'${condition}\' or introduce like \"${condition}\"")
+    public ArrayList<ResourceEntity> getResourceByCondition(@Param("kind") String kind, @Param("condition") String condition);
 
     /**
      * 通过资源id查找ResourceEntity
      * @param id 资源id
      */
     @Select("select * " +
-        "from resource " +
-        "where id = #{id}")
+                "from resource " +
+                "where id = #{id}")
     public ResourceEntity getResourceById(long id);
 
     /**
      * 获取所有ResourceEntity
      */
     @Select("select * " +
-        "from resource order by id " +
-        "limit #{limit} offset #{point}")
+                "from resource order by id " +
+                "limit #{limit} offset #{point}")
     public ArrayList<ResourceEntity> getAllResource(long limit, long point);
 
     /***
@@ -52,8 +46,8 @@ public interface ResourceDao {
      * @param name 资源名字
      */
     @Select("select * " +
-        "from resource " +
-        "where name=#{name}")
+                "from resource " +
+                "where name = #{name}")
     public ResourceEntity getResourceByName(String name);
 
     /***
@@ -61,8 +55,8 @@ public interface ResourceDao {
      * @param kind 资源种类
      */
     @Select("select * " +
-        "from resource " +
-        "where kind = #{kind}")
+                "from resource " +
+                "where kind = #{kind}")
     public ArrayList<ResourceEntity> getResourceByKind(String kind);
 
     /***
@@ -70,8 +64,8 @@ public interface ResourceDao {
      * @param condition 搜索条件
      */
     @Select("select distinct * " +
-        "from resource " +
-        "where kind like \"%${condition}%\" or name like \"%${condition}%\" or introduce like \"%${condition}%\"")
+                "from resource " +
+                "where kind like \"%${condition}%\" or name like \"%${condition}%\" or introduce like \"%${condition}%\"")
     public ArrayList<ResourceEntity> getResourceByFuzzy(String condition);
 
     /***
@@ -79,8 +73,8 @@ public interface ResourceDao {
      * @param resourceEntity 插入的对象
      */
     @Insert("insert into " +
-        "resource(name,kind,introduce,url,mtime,ctime) " +
-        "value(#{name},#{kind},#{introduce},#{url},#{mtime},#{ctime})")
+             "resource(name,kind,introduce,url,mtime,ctime) " +
+            "value(#{name},#{kind},#{introduce},#{url},#{mtime},#{ctime})")
     public void insert(ResourceEntity resourceEntity);
 
     /***
@@ -89,14 +83,14 @@ public interface ResourceDao {
      */
     @Update("<script>" +
         "update resource set" +
-        "<if test = 'name != null'>name=#{name},</if>" +
-        "<if test = 'kind != null'>kind=#{kind},</if>" +
-        "<if test = 'url != null'>url=#{url},</if>" +
-        "<if test = 'introduce = null'>introduce=#{introduce},</if>" +
-        "<if test = 'mtime != null'>mtime=#{mtime},</if>" +
-        "<if test = 'ctime != null'>ctime=#{ctime},</if>" +
-        "id = #{id} where id =#{id}" +
-        "</script>")
+            "<if test = 'name != null'>name=#{name},</if>" +
+            "<if test = 'kind != null'>kind=#{kind},</if>" +
+            "<if test = 'url != null'>url=#{url},</if>" +
+            "<if test = 'introduce = null'>introduce=#{introduce},</if>" +
+            "<if test = 'mtime != null'>mtime=#{mtime},</if>" +
+            "<if test = 'ctime != null'>ctime=#{ctime},</if>" +
+            "id = #{id} where id =#{id}" +
+            "</script>")
     public void update(ResourceEntity resourceEntity);
 
     /***

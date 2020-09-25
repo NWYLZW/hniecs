@@ -1,5 +1,7 @@
 package com.hniecs.mainserver.controller.resource;
 
+import com.github.pagehelper.Page;
+import com.github.pagehelper.PageHelper;
 import com.hniecs.mainserver.annotation.method.NotNeedLogin;
 import com.hniecs.mainserver.entity.ResourceEntity;
 import com.hniecs.mainserver.service.ResourceBaseService;
@@ -91,12 +93,10 @@ public class ResourceBaseController {
      */
     @NotNeedLogin
     @GetMapping("/resource/base/getResource")
-    public CommonResult get(@RequestParam String condition, @RequestParam String kind, @RequestParam long num, @RequestParam long page){
-        ArrayList<ResourceEntity> resourceList = new ArrayList<>();
-        if(condition == null){
-            return CommonResult.failed("搜索条件不能为空");
-        }
-        String msg = resource.getResource(resourceList,kind,condition,num,page);
+    public CommonResult get(@RequestParam String condition, @RequestParam String kind, @RequestParam int num, @RequestParam int page){
+        PageHelper.startPage(page,num);
+        ArrayList<ResourceEntity> resourceList = new Page<>();
+        String msg = resource.getResource(resourceList,kind,condition);
         if(msg.equals("0")){
             return CommonResult.success(resourceList,"资源查找成功");
         }

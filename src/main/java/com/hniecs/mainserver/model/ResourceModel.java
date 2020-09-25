@@ -26,12 +26,20 @@ public class ResourceModel {
      * @param resourceList 赋值的列表
      * @param kind         资源种类
      * @param condition    模糊搜索条件
-     * @param num          每页个数
-     * @param point        从那个元素开始
      */
-    public String getResource(ArrayList<ResourceEntity> resourceList, String kind, String condition, long num, long point) {
+    public String getResource(ArrayList<ResourceEntity> resourceList, String kind, String condition) {
         try {
-            ArrayList<ResourceEntity> temp = resourceDao.getResourceByCondition(kind, condition, num, point);
+            if(kind == null||kind.equals("")){
+                kind = "%";
+            }else{
+                kind="%"+kind+"%";
+            }
+            if(condition == null||condition.equals("")){
+                condition = "%";
+            }else {
+                condition ="%"+condition+"%";
+            }
+            ArrayList<ResourceEntity> temp = resourceDao.getResourceByCondition(kind, condition);
             resourceList.addAll(temp);
             return "0";
         } catch (Exception e) {
