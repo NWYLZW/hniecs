@@ -187,4 +187,12 @@ public class InvitationCodeModel {
             return null;
         }
     }
+
+    /**
+     * 判断id邀请码是否存在
+     * @param id 邀请码id
+     */
+    public boolean have(long id){
+        return invitationCodeDao.getOne(InvitationCodeDao.columnName.invitation_code,Long.toString(id))!=null;
+    }
 }
