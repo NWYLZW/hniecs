@@ -32,16 +32,7 @@ public interface ResourceDao {
                 "from resource " +
                 "where id = #{id}")
     public ResourceEntity getResourceById(long id);
-
     /**
-     * 获取所有ResourceEntity
-     */
-    @Select("select * " +
-                "from resource order by id " +
-                "limit #{limit} offset #{point}")
-    public ArrayList<ResourceEntity> getAllResource(long limit, long point);
-
-    /***
      * 通过资源名字查找资源ResourceEntity
      * @param name 资源名字
      */
