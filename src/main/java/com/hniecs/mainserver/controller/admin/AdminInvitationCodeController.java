@@ -3,7 +3,6 @@ package com.hniecs.mainserver.controller.admin;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
-import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.service.admin.InvitationCodeService;
 import com.hniecs.mainserver.tool.CommonUseStrings;
 import com.hniecs.mainserver.tool.api.CommonResult;
@@ -17,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
-import java.util.function.BiFunction;
 
 /**
  * @desc    管理员邀请码操作 AdminInvitationCodeController.java
@@ -79,20 +77,24 @@ public class AdminInvitationCodeController {
 
     /**
      * 通过支付宝或微信导出账单文件 导入邀请码到数据库
+     * @param excel             表格二进制流文件
+     * @param requestData       请求数据
+     * @bodyParam invitationCodes   Array      Y   []  待添加的邀请码列表
+     * @bodyParam tagName           String     Y   ""  标签名
+     * @bodyParam availableCount    Integer    N   0   邀请码可用次数
      */
     @PostMapping("/admin/invitationCode/importFromExcel")
     public CommonResult importInvitationCodes(
         @RequestParam(value = "excelFile", required = true) MultipartFile excel,
-        @RequestBody Map<String, Object> invitationCodeMap,
-        HttpServletRequest request
+        @RequestBody Map<String, Object> requestData
     ){
         String tagName = null;
         Integer availableCount = null;
         String targetMoney = null;
         try {
-            tagName = (String) invitationCodeMap.get("tagName");
-            availableCount = (Integer) invitationCodeMap.get("availableCount");
-            targetMoney = (String) invitationCodeMap.get("targetMoney");
+            tagName = (String) requestData.get("tagName");
+            availableCount = (Integer) requestData.get("availableCount");
+            targetMoney = (String) requestData.get("targetMoney");
         } catch (NullPointerException e) {
             log.error("属性值不存在!",e);
             return CommonResult.validateFailed();
