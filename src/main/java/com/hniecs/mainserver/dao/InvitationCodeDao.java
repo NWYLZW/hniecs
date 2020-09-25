@@ -62,7 +62,7 @@ public interface InvitationCodeDao {
                 ") like #{creatorName} " +
             "and tag_name like #{tagName}  or tag_name is null " +
             "and status!=-1 " +
-            "order by ctime desc"
+        "order by mtime desc"
     )
     @Result(
         property="creator", column="create_user_id",
