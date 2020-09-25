@@ -193,6 +193,7 @@ public class InvitationCodeModel {
      * @param id 邀请码id
      */
     public boolean have(long id){
-        return invitationCodeDao.getOne(InvitationCodeDao.columnName.invitation_code,Long.toString(id))!=null;
+        return invitationCodeDao.getOne(InvitationCodeDao.columnName.invitation_code
+            , Long.toString(id))!=null;
     }
 }

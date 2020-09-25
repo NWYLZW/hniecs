@@ -51,24 +51,24 @@ public class ResourceBaseController {
         return CommonResult.failed(msg);
     }
     /**
-     * 搜索
-     * @param condition 搜索条件
-     * @param kind 资源种类
-     * @param num 每页数量
-     * @param page 页数
+     * 搜索资源
+     * @param condition String  N  ""     搜索条件
+     * @param kind      String  N  ""     资源种类
+     * @param size      Integer Y  "1"    每页数量
+     * @param page      Integer Y  "20"   页数
      */
     @NotNeedLogin
     @GetMapping("/resource/base/get")
     public CommonResult getResourceBaseList(
         @RequestParam(name = "condition", required = false, defaultValue = "") String condition,
         @RequestParam(name = "kind", required = false, defaultValue = "") String kind,
-        @RequestParam(name = "num", required = false, defaultValue = "1") Integer num,
-        @RequestParam(name = "page", required = false, defaultValue = "20") Integer page){
-        PageHelper.startPage(page,num);
+        @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+        @RequestParam(name = "size", required = false, defaultValue = "20") Integer size){
+        PageHelper.startPage(page, size);
         ArrayList<ResourceEntity> resourceList = new Page<>();
-        String msg = resource.getResource(resourceList,kind,condition);
+        String msg = resource.getResource(resourceList, kind, condition);
         if(msg.equals("0")){
-            return CommonResult.success(resourceList,"资源查找成功");
+            return CommonResult.success(resourceList, "资源查找成功");
         }
         return CommonResult.failed(msg);
     }

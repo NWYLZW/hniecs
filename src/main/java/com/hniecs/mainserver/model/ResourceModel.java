@@ -126,5 +126,7 @@ public class ResourceModel {
      * 通过name判断资源是否存在
      * @param name 资源名
      */
-    public boolean have(String name){return resourceDao.getResourceByName(name) == null;}
+    public boolean have(String name){
+        return resourceDao.getResourceByName(name) == null;
+    }
 }
