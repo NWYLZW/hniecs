@@ -35,7 +35,7 @@ public class InvitationCodeModel {
      */
     public String addInvitationCodes(
         UserEntity user, int availableInviteCount, String tagName, List<String> invitationCodes,
-        Hashtable data) {
+        HashMap data) {
         // 操作信息
         int succeedCount = 0;
         int failureCount = 0;
@@ -78,13 +78,16 @@ public class InvitationCodeModel {
         int count = invitationCode.getAvailableInviteCount();
         if(count > 0) {
             invitationCode.setAvailableInviteCount(count - 1);
-            // TODO 更新数据库信息
-            return "0";
+            String message = this.updateInvitationCode(invitationCode);
+            if (message.equals("0")) {
+                return message;
+            } else {
+                return "邀请码使用出现了未知错误";
+            }
         }else {
             return "邀请码可用次数已用尽";
         }
     }
-
 
     /**
      * 删除一个邀请码
@@ -115,7 +118,8 @@ public class InvitationCodeModel {
             throw new RangeException((short) 0, "该接口不支持将邀请码删除的功能");
         }
         try {
-            if (invitationCodeDao.update(invitationCode)  == 0) {
+            // TODO 将mtime修改为当前时间
+            if (invitationCodeDao.update(invitationCode) == 0) {
                 return "更新邀请码失败";
             } else {
                 return "0";
@@ -130,26 +134,33 @@ public class InvitationCodeModel {
      * @param tagName           邀请码标签名
      * @param creatorName       创建者用户名
      * @param invitationCode    邀请码内容
+     * @param returnData        返回数据
      * @return 满足条件的邀请码实体列表
      */
-    public List<InvitationCodeEntity> getInvitationCodeList(
-        String creatorName, String tagName, String invitationCode
+    public String getInvitationCodeList(
+        String creatorName, String tagName, String invitationCode,
+        List<InvitationCodeEntity> returnData
     ) {
-        // TODO 这里可能有问题 待测试
-        ArrayList<String> searchConditions = new ArrayList<>(
-            Arrays.asList(
-                creatorName, tagName, invitationCode
+        HashMap<String, String> searchConditions = new HashMap<>(){{
+            put("creatorName", creatorName);
+            put("tagName", tagName);
+            put("invitationCode", invitationCode);
+        }};
+        searchConditions.forEach((key, value) -> {
+            if (value == null || value.equals("")) {
+                searchConditions.put(key, "%");
+            } else {
+                searchConditions.put(key, "%" + value + "%");
+            }
+        });
+        returnData.addAll(
+            invitationCodeDao.getInvitationCodes(
+                searchConditions.get("creatorName"),
+                searchConditions.get("tagName"),
+                searchConditions.get("invitationCode")
             )
         );
-        for (int i = 0; i < searchConditions.size(); i++) {
-            if(searchConditions.get(i) == null) {
-                searchConditions.set(i, "%");
-            } else {
-                searchConditions.set(i, "%" + searchConditions.get(i) + "%");
-            }
-        }
-        return invitationCodeDao
-            .getInvitationCodes(creatorName, tagName, invitationCode);
+        return "0";
     }
 
     /**

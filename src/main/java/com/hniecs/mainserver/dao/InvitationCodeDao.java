@@ -57,9 +57,9 @@ public interface InvitationCodeDao {
             "invitation_code like #{invitationCode} " +
             "and (" +
                 "select user_name " +
-                    "from user " +
+                "from user " +
                     "where user.id=create_user_id" +
-            ") like #{creatorName} " +
+                ") like #{creatorName} " +
             "and tag_name like #{tagName} " +
             "and status!=-1 "
     )
@@ -89,13 +89,13 @@ public interface InvitationCodeDao {
      * @param invitationCodeEntity  邀请码实体对象
      */
     @Update(
-        "<script> \n"+
+        "<script> \n" +
             "update invitation_code set " +
                 "<if test='invitationCode!=null'>invitation_code=#{invitationCode}, </if>" +
                 "<if test='status!=null'>status=#{status}, </if>" +
                 "<if test='available_invite_count!=null'>available_invite_count=#{available_invite_count}, </if>" +
                 "<if test='mtime!=null'>mtime=#{mtime}, </if>" +
-            "where id=#{id}"+
+            "where id=#{id}" +
         "</script>"
     )
     int update(InvitationCodeEntity invitationCodeEntity);

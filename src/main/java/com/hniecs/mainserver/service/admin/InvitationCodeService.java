@@ -14,6 +14,7 @@ import javax.annotation.Resource;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -81,17 +82,22 @@ public class InvitationCodeService {
      * @param tagName           标签名
      * @param creatorName       创建者用户名
      * @param invitationCode    邀请码内容
+     * @param returnData        返回数据
      * @return 邀请码实体列表
      */
-    public Page<InvitationCodeEntity> getInvitationCodePage(
-        String invitationCode, String creatorName, String tagName
+    public String getInvitationCodePage(
+        String invitationCode, String creatorName, String tagName,
+        List<InvitationCodeEntity> returnData
     ) {
         // TODO 优化查找效率
         //  如果三个关键词串都为空串时调用获取全部的接口
         //  判断标签名是否存在
         //  判断创建者用户名是否存在
-        return (Page<InvitationCodeEntity>) invitationCodeModel
-            .getInvitationCodeList(creatorName, tagName, invitationCode);
+        return invitationCodeModel
+            .getInvitationCodeList(
+                creatorName, tagName, invitationCode
+                , returnData
+            );
     }
 
     /**
@@ -105,7 +111,7 @@ public class InvitationCodeService {
     public String addInvitationCodes(
         UserEntity creator, int availableCount, String tagName,
         List<String> invitationCodes,
-        Hashtable returnData
+        HashMap returnData
     ) {
         // TODO 判断创建者实体是否存在
         // TODO 去除列表中的重复数据空数据垃圾数据
@@ -127,18 +133,18 @@ public class InvitationCodeService {
     public String addInvitationCodes(
         UserEntity creator, int availableCount, String tagName, String targetMoney,
         InputStream excelIn,
-        Hashtable returnData
+        HashMap returnData
     ) {
-        List<String> InvitationCodeStrs = filterBillExcelData(
+        List<String> invitationCodeStrs = filterBillExcelData(
             getBillExcels(excelIn, tagName), new BigDecimal(targetMoney)
         );
-        if (InvitationCodeStrs.size() == 0) {
+        if (invitationCodeStrs.isEmpty()) {
             returnData.put("successCount", 0);
             returnData.put("failureCount", 0);
             return "0";
         }
         return this.addInvitationCodes(
-            creator, availableCount, tagName, InvitationCodeStrs
+            creator, availableCount, tagName, invitationCodeStrs
             , returnData
         );
     }
