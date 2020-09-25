@@ -184,4 +184,12 @@ public class InvitationCodeService {
         }
         return invitationCodeModel.updateInvitationCode(invitationCode);
     }
+
+    /**
+     * 返回所有的不重复不为空的tagName
+     * @param tagNameList tagName数组
+     */
+    public String geTagNameList(ArrayList<String> tagNameList){
+        return invitationCodeModel.getTagName(tagNameList);
+    }
 }
