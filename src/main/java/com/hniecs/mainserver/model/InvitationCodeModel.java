@@ -141,7 +141,7 @@ public class InvitationCodeModel {
         String creatorName, String tagName, String invitationCode,
         List<InvitationCodeEntity> returnData
     ) {
-        HashMap<String, String> searchConditions = new HashMap<>(){{
+        HashMap<String, String> searchConditions = new HashMap<String, String>(){{
             put("creatorName", creatorName);
             put("tagName", tagName);
             put("invitationCode", invitationCode);
