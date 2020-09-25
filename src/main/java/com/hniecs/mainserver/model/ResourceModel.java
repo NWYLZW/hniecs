@@ -48,34 +48,7 @@ public class ResourceModel {
         }
     }
 
-    /***
-     * 模糊搜索资源
-     * @param condition 资源可能的名字，介绍，种类
-     * @return 所有名字，介绍，种类中带有condition的ResourceEntity
-     */
-    public String getFuzzySearch(String condition, ArrayList<ResourceEntity> resourceList) {
-        try {
-            resourceList.addAll(resourceDao.getResourceByFuzzy(condition));
-            return "0";
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return CommonUseStrings.SERVER_FAILED.S;
-        }
-    }
 
-    /**
-     * 按资源种类返回资源
-     * @param kind 资源种类名当为null时返回所有资源
-     */
-    public String getByKind(String kind, ArrayList<ResourceEntity> resourceList) {
-        try {
-            resourceList.addAll(resourceDao.getResourceByKind(kind));
-            return "0";
-        } catch (Exception e) {
-            log.error(e.getMessage());
-            return CommonUseStrings.SERVER_FAILED.S;
-        }
-    }
 
     /**
      * 更新资源
@@ -99,7 +72,7 @@ public class ResourceModel {
 
     }
 
-    /***
+    /**
      * 根据id返回资源
      * @param id 资源id
      */
@@ -127,6 +100,7 @@ public class ResourceModel {
     }
 
     /**
+     * 添加一个资源
      * @param resourceEntity 资源实体
      */
     public String addNew(ResourceEntity resourceEntity) {
@@ -144,8 +118,13 @@ public class ResourceModel {
      * @param id 资源id
      * @return 资源是否存在
      */
-    public boolean haveById(long id) {
-        return resourceDao.getResourceById(id) != null;
+    public boolean have(long id) {
+        return resourceDao.getResourceById(id) == null;
     }
 
+    /**
+     * 通过name判断资源是否存在
+     * @param name 资源名
+     */
+    public boolean have(String name){return resourceDao.getResourceByName(name) == null;}
 }

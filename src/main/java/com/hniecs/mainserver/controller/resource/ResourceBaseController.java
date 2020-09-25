@@ -50,50 +50,20 @@ public class ResourceBaseController {
         }
         return CommonResult.failed(msg);
     }
-
-    /***
-     *
-     * @param condition 搜索条件
-     */
-    @NotNeedLogin
-    @GetMapping("/resource/base/getResourceByFuzzy")
-    public CommonResult getByFuzzy(@RequestParam String condition) {
-        if (condition == null) {
-            return CommonResult.failed("搜索条件不能为空");
-        }
-        ArrayList<ResourceEntity> resourceList = new ArrayList<>();
-        String msg = resource.getByFuzzySearch(condition, resourceList);
-        if (msg.equals("0")) {
-            return CommonResult.success(resourceList, "资源查找成功");
-        }
-        return CommonResult.failed(msg);
-    }
-
     /**
-     * 通过资源种类查找资源
-     * @param kind 资源种类
-     */
-    @NotNeedLogin
-    @GetMapping("/resource/base/getResourceByKind")
-    public CommonResult getByKind(@RequestParam String kind) {
-        ArrayList<ResourceEntity> resourceList = new ArrayList<>();
-        String msg = resource.getResourceByKind(kind, resourceList);
-        if (msg.equals("0")) {
-            return CommonResult.success(resourceList, "资源查找成功");
-        }
-        return CommonResult.failed(msg);
-    }
-
-    /**
-     *
+     * 搜索
      * @param condition 搜索条件
      * @param kind 资源种类
      * @param num 每页数量
      * @param page 页数
      */
     @NotNeedLogin
-    @GetMapping("/resource/base/getResource")
-    public CommonResult get(@RequestParam String condition, @RequestParam String kind, @RequestParam int num, @RequestParam int page){
+    @GetMapping("/resource/base/get")
+    public CommonResult getResourceBaseList(
+        @RequestParam(name = "condition", required = false, defaultValue = "") String condition,
+        @RequestParam(name = "kind", required = false, defaultValue = "") String kind,
+        @RequestParam(name = "num", required = false, defaultValue = "1") Integer num,
+        @RequestParam(name = "page", required = false, defaultValue = "20") Integer page){
         PageHelper.startPage(page,num);
         ArrayList<ResourceEntity> resourceList = new Page<>();
         String msg = resource.getResource(resourceList,kind,condition);

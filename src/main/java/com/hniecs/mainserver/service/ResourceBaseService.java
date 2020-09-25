@@ -31,23 +31,6 @@ public class ResourceBaseService {
     }
 
     /**
-     * 通过类型返回ResourceEntity数组
-     * @param kind 资源种类
-     */
-    public String getResourceByKind(String kind, ArrayList<ResourceEntity> resourceList) {
-        return resourceModel.getByKind(kind, resourceList);
-    }
-
-    /**
-     * 模糊搜索
-     * @param condition 模糊搜索条件
-     */
-    public String getByFuzzySearch(String condition, ArrayList<ResourceEntity> resourceList) {
-        return resourceModel.getFuzzySearch(condition, resourceList);
-
-    }
-
-    /**
      * 根据id返回资源对象
      * @param id 资源id
      */
@@ -66,7 +49,7 @@ public class ResourceBaseService {
         String introduce = resourceDate.get("introduce");
         String name = resourceDate.get("name");
         String url = resourceDate.get("url");
-        if (!resourceModel.haveById(id)) {
+        if (resourceModel.have(id)) {
             return "资源不存在";
         }
         return resourceModel.updateResourceById(id, name, url, introduce, kind);
@@ -77,13 +60,14 @@ public class ResourceBaseService {
      * @param id 资源id
      */
     public String deleteResource(long id) {
-        if (!resourceModel.haveById(id)) {
+        if (resourceModel.have(id)) {
             return "资源不存在";
         }
         return resourceModel.deleteResource(id);
     }
 
     /**
+     * 添加资源
      * @param kind      资源种类
      * @param introduce 资源介绍
      * @param name      资源名

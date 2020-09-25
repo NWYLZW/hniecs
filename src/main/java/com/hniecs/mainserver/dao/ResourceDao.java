@@ -50,25 +50,7 @@ public interface ResourceDao {
                 "where name = #{name}")
     public ResourceEntity getResourceByName(String name);
 
-    /***
-     * 通过资源种类搜索ResourceEntity
-     * @param kind 资源种类
-     */
-    @Select("select * " +
-                "from resource " +
-                "where kind = #{kind}")
-    public ArrayList<ResourceEntity> getResourceByKind(String kind);
-
-    /***
-     * 模糊搜索
-     * @param condition 搜索条件
-     */
-    @Select("select distinct * " +
-                "from resource " +
-                "where kind like \"%${condition}%\" or name like \"%${condition}%\" or introduce like \"%${condition}%\"")
-    public ArrayList<ResourceEntity> getResourceByFuzzy(String condition);
-
-    /***
+    /**
      * 插入资源对象
      * @param resourceEntity 插入的对象
      */
@@ -77,7 +59,7 @@ public interface ResourceDao {
             "value(#{name},#{kind},#{introduce},#{url},#{mtime},#{ctime})")
     public void insert(ResourceEntity resourceEntity);
 
-    /***
+    /**
      * 通过id更新ResourceEntity
      * @param resourceEntity 要更新完的对象
      */
@@ -93,7 +75,7 @@ public interface ResourceDao {
             "</script>")
     public void update(ResourceEntity resourceEntity);
 
-    /***
+    /**
      * 通过用户id删除ResourceEntity
      * @param id 资源id
      */
