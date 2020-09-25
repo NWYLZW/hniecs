@@ -6,6 +6,8 @@ mybatis:
   configuration:
     # 数据库字段下划线自动转驼峰
     mapUnderscoreToCamelCase: true
+    # 打印 mybatis 生成的sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # dev-config
 ---
