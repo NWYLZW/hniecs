@@ -77,31 +77,20 @@ public class AdminInvitationCodeController {
 
     /**
      * 通过支付宝或微信导出账单文件 导入邀请码到数据库
-     * @param excel             表格二进制流文件
-     * @param requestData       请求数据
-     * @bodyParam invitationCodes   Array      Y   []  待添加的邀请码列表
-     * @bodyParam tagName           String     Y   ""  标签名
-     * @bodyParam availableCount    Integer    N   0   邀请码可用次数
+     * @param excel             File       Y       表格二进制流文件
+     * @param tagName           String     Y   ""  标签名
+     * @param availableCount    Integer    N   0   邀请码可用次数
+     * @param thresholdMoney    String     N   0   邀请码录入数据库阈值
      */
     @PostMapping("/admin/invitationCode/importFromExcel")
     public CommonResult importInvitationCodes(
-        @RequestParam(value = "excelFile", required = true) MultipartFile excel,
-        @RequestBody Map<String, Object> requestData
+        @RequestParam(value = "excelFile",      required = true) MultipartFile excel,
+        @RequestParam(value = "tagName",        required = true) String tagName,
+        @RequestParam(value = "availableCount", required = false, defaultValue = "0") Integer availableCount,
+        @RequestParam(value = "thresholdMoney", required = false, defaultValue = "30") String thresholdMoney
     ){
-        String tagName = null;
-        Integer availableCount = null;
-        String targetMoney = null;
-        try {
-            tagName = (String) requestData.get("tagName");
-            availableCount = (Integer) requestData.get("availableCount");
-            targetMoney = (String) requestData.get("targetMoney");
-        } catch (NullPointerException e) {
-            log.error("属性值不存在!",e);
-            return CommonResult.validateFailed();
-        }
         // TODO 校验tagName是否为 支付宝或者微信
-
-        InputStream excelIS = null;
+        InputStream excelIS;
         try {
             excelIS = excel.getInputStream();
         } catch (IOException e) {
@@ -112,7 +101,7 @@ public class AdminInvitationCodeController {
         HashMap<String, Object> data = new HashMap<>();
         String msg = invitationCodeService
             .addInvitationCodes(
-                SessionTool.curUser(), availableCount, tagName, targetMoney, excelIS
+                SessionTool.curUser(), availableCount, tagName, thresholdMoney, excelIS
                 , data
             );
         if (msg.equals("0")) {
@@ -142,9 +131,15 @@ public class AdminInvitationCodeController {
      */
     @PutMapping("/admin/invitationCode/one")
     public CommonResult updateInvitationCode(
-        InvitationCodeEntity entity
+        @RequestBody InvitationCodeEntity ic
     ) {
-        String message = invitationCodeService.updateInvitationCode(entity);
+        // TODO 校验ic信息正确
+        //  id存在
+        //  邀请码内容不为空，长度不超过50
+        //  可用次数不为负数
+        //  status不能等于-1 在指定的范围内 (使用枚举值规范)
+        //  不可修改的数据设置为null 创建者id，ctime，mtime...
+        String message = invitationCodeService.updateInvitationCode(ic);
         if(message.equals("0")) {
             return CommonResult.success();
         }else {

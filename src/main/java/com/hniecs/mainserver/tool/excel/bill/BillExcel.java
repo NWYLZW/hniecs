@@ -19,7 +19,7 @@ public class BillExcel{
 
     public String tag;
 
-    private static final String MONEY_MATCHES_STR = "\\d*\\.\\d*";
+    private static final String MONEY_MATCHES_STR = "\\d*\\.?\\d*";
 
     public String verify() {
         if( money != null && money.matches(MONEY_MATCHES_STR)) {

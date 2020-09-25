@@ -23,7 +23,7 @@ public class AlipayBillExcel extends BillExcel {
     /**
      * 订单金额(元)
      */
-    @ExcelProperty(index = 7)
+    @ExcelProperty(index = 6)
     private String money;
 
     /**

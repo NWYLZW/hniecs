@@ -4,6 +4,7 @@ import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.model.InvitationCodeModel;
 import com.hniecs.mainserver.model.UserModel;
+import com.hniecs.mainserver.tool.CommonUseStrings;
 import com.hniecs.mainserver.tool.excel.ExcelRader;
 import com.hniecs.mainserver.tool.excel.bill.AlipayBillExcel;
 import com.hniecs.mainserver.tool.excel.bill.BillExcel;
@@ -55,24 +56,18 @@ public class InvitationCodeService {
      * @param tagName   支付方式
      * @return          账单集合
      */
-    private List<BillExcel> getBillExcels(InputStream in, String tagName) {
+    private List<BillExcel> getBillExcels(InputStream in, String tagName) throws ClassNotFoundException, NullPointerException {
         List<BillExcel> billExcels = new ArrayList<>();
-        try {
-            billExcels = new ExcelRader<BillExcel>()
-                .getBillList(in, () -> {
-                    // TODO 做成常量维护
-                    if(tagName.equals("微信")) {
-                        return WechatBillExcel.class;
-                    }else if(tagName.equals("支付宝")) {
-                        return AlipayBillExcel.class;
-                    }
-                    return null;
-                });
-        } catch (NullPointerException e) {
-            log.error("不能解析该标签数据", e);
-        } catch (ClassNotFoundException e) {
-            log.error("编码错误，getBillExcels{ExcelRader.getBillList 返回值未继承BillExcel类}", e);
-        }
+        billExcels = new ExcelRader<BillExcel>()
+            .getBillList(in, () -> {
+                // TODO 做成常量维护
+                if(tagName.equals("微信")) {
+                    return WechatBillExcel.class;
+                }else if(tagName.equals("支付宝")) {
+                    return AlipayBillExcel.class;
+                }
+                return null;
+            });
         return billExcels;
     }
 
@@ -114,7 +109,7 @@ public class InvitationCodeService {
         List<String> invitationCodes,
         HashMap returnData
     ) {
-        if (userModel.have(creator.getUserName())) {
+        if (!userModel.have(creator.getUserName())) {
             return "用户不存在";
         }
         List<String> newInvitationCodes = new ArrayList<>();
@@ -135,26 +130,36 @@ public class InvitationCodeService {
      * @param creator           创建者实体信息
      * @param availableCount    可利用次数
      * @param tagName           支付类型名
-     * @param targetMoney       计入数据库信息阈值金钱数
+     * @param thresholdMoney       计入数据库信息阈值金钱数
      * @param returnData        返回数据
      */
     public String addInvitationCodes(
-        UserEntity creator, int availableCount, String tagName, String targetMoney,
+        UserEntity creator, int availableCount, String tagName, String thresholdMoney,
         InputStream excelIn,
         HashMap returnData
     ) {
-        List<String> invitationCodeStrs = filterBillExcelData(
-            getBillExcels(excelIn, tagName), new BigDecimal(targetMoney)
-        );
-        if (invitationCodeStrs.isEmpty()) {
-            returnData.put("successCount", 0);
-            returnData.put("failureCount", 0);
-            return "0";
+
+        try {
+            List<String> invitationCodeStrs = filterBillExcelData(
+                getBillExcels(excelIn, tagName), new BigDecimal(thresholdMoney)
+            );
+
+            if (invitationCodeStrs.isEmpty()) {
+                returnData.put("successCount", 0);
+                returnData.put("failureCount", 0);
+                return "0";
+            }
+            return this.addInvitationCodes(
+                creator, availableCount, tagName, invitationCodeStrs
+                , returnData
+            );
+        } catch (NullPointerException e) {
+            log.error("不能解析该标签数据", e);
+            return CommonUseStrings.SERVER_FAILED.S;
+        } catch (ClassNotFoundException e) {
+            log.error("编码错误，getBillExcels{ExcelRader.getBillList 返回值未继承BillExcel类}", e);
+            return CommonUseStrings.SERVER_FAILED.S;
         }
-        return this.addInvitationCodes(
-            creator, availableCount, tagName, invitationCodeStrs
-            , returnData
-        );
     }
 
     /**
