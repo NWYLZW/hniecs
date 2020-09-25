@@ -6,6 +6,8 @@ mybatis:
   configuration:
     # 数据库字段下划线自动转驼峰
     mapUnderscoreToCamelCase: true
+    # 打印 mybatis 生成的sql
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 # dev-config
 ---
@@ -51,9 +53,9 @@ server:
 spring:
   profiles: pro
   datasource:
-    url: jdbc:mysql://39.96.17.163:3306/dev-hniecs?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-    username: dev-hniecs
-    password: LCERPijnGMeN37Jz
+    url: jdbc:mysql://47.113.125.249:24501/pro-hniecs-web?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: pro-hniecs-web
+    password: wGiabnAdHHahtLJN
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
 

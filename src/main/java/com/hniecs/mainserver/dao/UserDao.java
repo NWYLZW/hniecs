@@ -1,6 +1,7 @@
 package com.hniecs.mainserver.dao;
 
-import com.hniecs.mainserver.entity.UserEntity;
+import com.hniecs.mainserver.entity.user.UserDetailEntity;
+import com.hniecs.mainserver.entity.user.UserEntity;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -15,25 +16,50 @@ import java.util.List;
 @Mapper
 public interface UserDao {
     /**
-     * 获得所有用户的简略信息
+     * 获得所有用户的简略信息列表
      * @return  用户实体列表
      */
     @Select("select * from user")
-    public List<UserEntity> getSimpleUsers();
+    List<UserEntity> getSimpleUsers();
+
     /**
-     * 获得某个用户的简略信息
+     * 通过id获得某个用户的详细信息
+     * @param   user_id 用户id
+     * @return  用户详情实体
+     */
+    @Select("select * from user_detail where user_id=#{user_id}")
+    UserDetailEntity getDetailById(Long user_id);
+    /**
+     * 通过id获得某个用户的简略信息
      * @param   id 用户id
      * @return  用户实体
      */
-    @Select("select * from  user where id=#{id}")
-    public UserEntity getUserSimpleById(Long id);
+    @Select("select * from user where id=#{id}")
+    UserEntity getSimpleById(Long id);
     /**
-     * 获得某个用户的简略信息
+     * 通过用户名获得某个用户的简略信息
      * @param   userName  用户名
      * @return  用户实体
      */
-    @Select("select * from  user where user_name=#{userName}")
-    public UserEntity getUserSimpleByUserName(String userName);
+    @Select("select * from user where user_name=#{userName}")
+    UserEntity getSimpleByUserName(String userName);
+    /**
+     * 通过用户名获得某个用户的简略信息
+     * @param   id  用户id
+     * @return  带有用户详情信息的实体
+     */
+    @Select(
+        "select * " +
+            "from user " +
+        "where id=#{id}"
+    )
+    @Result(
+        property="detail", column="id",
+        one=@One(
+            select="com.hniecs.mainserver.dao.UserDao.getDetailById"
+        )
+    )
+    UserEntity getById(Long id);
 
     /**
      * 新增一个用户

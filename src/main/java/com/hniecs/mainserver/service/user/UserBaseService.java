@@ -1,10 +1,10 @@
 package com.hniecs.mainserver.service.user;
 
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
-import com.hniecs.mainserver.entity.UserEntity;
+import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.model.InvitationCodeModel;
 import com.hniecs.mainserver.model.UserModel;
-import com.hniecs.mainserver.tool.security.session.SessionTool;
+import com.hniecs.mainserver.tool.security.SessionTool;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -31,10 +31,9 @@ public class UserBaseService {
      * 登陆，将信息储存到session中
      * @param userName      用户名
      * @param password      密码
-     * @param session       HttpSession字典
      * @param returnData    返回数据字典
      */
-    public String login(String userName, String password, HttpSession session, Hashtable returnData) {
+    public String login(String userName, String password, Hashtable returnData) {
         Hashtable getReturnData = new Hashtable();
         String msg = userModel.vertify(userName, password, getReturnData);
         if (msg.equals("0")) {
@@ -42,9 +41,8 @@ public class UserBaseService {
             returnData.put(
                 "sessionToken",
                 SessionTool
-                    .setUserSessionToken(
-                        session, user
-                    ).toString()
+                    .setUserSessionToken(user)
+                    .toString()
             );
             returnData.put("user", user);
         }
@@ -58,7 +56,7 @@ public class UserBaseService {
      */
     public String registerNewUser(String userName, String password, String invitationCode) {
         InvitationCodeEntity invitationCodeEntity = invitationCodeModel.findAbleUse(invitationCode);
-        String msg = "验证码不存在";
+        String msg = "邀请码不存在";
         if (invitationCodeEntity == null) {
             return msg;
         }

@@ -1,6 +1,6 @@
 package com.hniecs.mainserver.dao;
 
-import com.hniecs.mainserver.entity.UserEntity;
+import com.hniecs.mainserver.entity.user.UserEntity;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -8,7 +8,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * @desc      用户dao层测试类 UserDaoTest.java
@@ -24,25 +27,34 @@ public class UserDaoTest {
 
     @Test
     public void testInsert() throws Exception {
-        userDao.addNew(new UserEntity("aa1", "aa1"));
-        userDao.addNew(new UserEntity("bb1", "bb1"));
-        userDao.addNew(new UserEntity("cc1", "cc1"));
+        UserEntity userEntity=new UserEntity("chenmou","123456789");
+        userEntity.setCtime(new Date());
+        userDao.addNew(userEntity);
 
         Assert.assertEquals(3, userDao.getSimpleUsers().size());
     }
 
     @Test
     public void testQuery() throws Exception {
-        List<UserEntity> users = userDao.getSimpleUsers();
-        System.out.println(users.toString());
+        UserEntity user = userDao.getById(17L);
+        System.out.println(user.getDetail().getRealName());
     }
 
     @Test
     public void testUpdate() throws Exception {
-        UserEntity user = userDao.getUserSimpleById(17L);
+        UserEntity user = userDao.getSimpleById(17L);
         user.setPassword("yijie");
         userDao.updateById(user);
         System.out.println(user.toString());
-        Assert.assertTrue(("yijie".equals(userDao.getUserSimpleById(17L).getUserName())));
+        Assert.assertTrue(("yijie".equals(userDao.getSimpleById(17L).getUserName())));
+    }
+
+    public static void main(String[] args) {
+        String pattern="\\W";
+        String string="1@*23a1s5d6a4s56d1a3";
+        Pattern pa= Pattern.compile(pattern);
+        Matcher matcher=pa.matcher(string);
+        matcher.find();
+        System.out.println(matcher.end());
     }
 }

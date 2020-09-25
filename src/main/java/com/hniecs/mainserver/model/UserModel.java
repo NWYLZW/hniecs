@@ -1,7 +1,8 @@
 package com.hniecs.mainserver.model;
 
 import com.hniecs.mainserver.dao.UserDao;
-import com.hniecs.mainserver.entity.UserEntity;
+import com.hniecs.mainserver.entity.user.UserEntity;
+import com.hniecs.mainserver.tool.CommonUseStrings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
@@ -27,27 +28,16 @@ public class UserModel {
      * @param userName 用户名
      */
     private UserEntity get(String userName) {
-        return userDao.getUserSimpleByUserName(userName);
+        return userDao.getSimpleByUserName(userName);
     }
 
     /**
      * 检查是否有某个用户
      * @param userName 用户名
      */
-    private boolean have(String userName) {
-        UserEntity u = userDao.getUserSimpleByUserName(userName);
-        return u != null;
-    }
-
-    /**
-     * 检查是否能够登录
-     * @param userName  用户名
-     * @param password  密码
-     */
-    public String vertify(String userName, String password) {
+    public boolean have(String userName) {
         UserEntity u = get(userName);
-        if (u == null) return "该用户名用户不存在";
-        return u.vertifyPWD(password)?"0":"密码错误";
+        return u != null;
     }
 
     /**
@@ -74,11 +64,13 @@ public class UserModel {
     public String addUser (UserEntity user) {
         if (have(user.getUserName())) return "该用户名用户已存在";
         try {
-            userDao.addNew(user);
+            if (userDao.addNew(user) == 0) {
+                return "添加用户失败";
+            }
             return "0";
         } catch (Exception e) {
             log.error("插入用户出现了错误：{}", e.getMessage(), e);
-            return "服务器错误";
+            return CommonUseStrings.SERVER_FAILED.S;
         }
     }
 }

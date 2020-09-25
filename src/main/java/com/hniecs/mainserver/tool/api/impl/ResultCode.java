@@ -10,7 +10,7 @@ import lombok.Getter;
  * @logs[0] 2020-09-12 15:46 yijie 创建了ResultCode.java文件
  */
 public enum ResultCode implements IBaseErrorCode {
-    VALIDATE_FAILED(1, "参数校验错误"),
+    VALIDATE_FAILED(1, "参数错误"),
 
     SUCCESS(200, "成功"),
 
@@ -20,7 +20,7 @@ public enum ResultCode implements IBaseErrorCode {
     FORBIDDEN(403, "接口无权限"),
     NOT_FOUND(404, "接口不存在"),
 
-    FAILED(500, "失败");
+    FAILED(500, "服务器出现了错误");
 
     @Getter
     private long code;
