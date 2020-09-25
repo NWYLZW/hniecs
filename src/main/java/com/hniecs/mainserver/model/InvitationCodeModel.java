@@ -153,14 +153,21 @@ public class InvitationCodeModel {
                 searchConditions.put(key, "%" + value + "%");
             }
         });
-        returnData.addAll(
-            invitationCodeDao.getInvitationCodes(
+
+        try {
+            List<InvitationCodeEntity> invitationCodeEntities = invitationCodeDao.getInvitationCodes(
                 searchConditions.get("creatorName"),
                 searchConditions.get("tagName"),
                 searchConditions.get("invitationCode")
-            )
-        );
-        return "0";
+            );
+            returnData.addAll(
+                invitationCodeEntities
+            );
+            return "0";
+        } catch (Exception e) {
+            log.error("服务器错误", e);
+            return "服务器错误";
+        }
     }
 
     /**
