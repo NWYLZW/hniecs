@@ -20,8 +20,8 @@ public interface ResourceDao {
      */
     @Select("select * " +
                 "from resource " +
-                "where kind like \'${kind}\' and " +
-                "( name like \'${condition}\' or introduce like \'${condition}\' )")
+                "where kind like '${kind}' and " +
+                "( name like '${condition}' or introduce like '${condition}' )")
     public ArrayList<ResourceEntity> getResourceByCondition(@Param("kind") String kind, @Param("condition") String condition);
 
     /**
