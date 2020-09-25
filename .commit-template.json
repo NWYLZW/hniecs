@@ -9,6 +9,10 @@
     "title": "fix bug",
     "desc": "修复bug"
   }, {
+    "name": "todo",
+    "title": "add TODO",
+    "desc": "添加TODO"
+  }, {
     "name": "docs",
     "title": "documentation change",
     "desc": "文档变动"
