@@ -29,7 +29,7 @@ public class ResourceBaseController {
 
     /**
      * 创建资源
-     * @param resourceDate
+     * @param resourceDate 资源数据
      * @bodyParam kind      String Y  "" 资源种类
      * @bodyParam introduce String Y  "" 资源介绍
      * @bodyParam name      String Y  "" 资源名
@@ -54,8 +54,8 @@ public class ResourceBaseController {
      * 搜索资源
      * @param condition String  N  ""     搜索条件
      * @param kind      String  N  ""     资源种类
-     * @param size      Integer Y  "1"    每页数量
      * @param page      Integer Y  "20"   页数
+     * @param size      Integer Y  "1"    每页数量
      */
     @NotNeedLogin
     @GetMapping("/resource/base/get")
