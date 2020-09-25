@@ -1,9 +1,9 @@
 package com.hniecs.mainserver.service.admin;
 
-import com.github.pagehelper.Page;
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.model.InvitationCodeModel;
+import com.hniecs.mainserver.model.UserModel;
 import com.hniecs.mainserver.tool.excel.ExcelRader;
 import com.hniecs.mainserver.tool.excel.bill.AlipayBillExcel;
 import com.hniecs.mainserver.tool.excel.bill.BillExcel;
@@ -15,7 +15,6 @@ import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -30,6 +29,8 @@ import java.util.List;
 public class InvitationCodeService {
     @Resource
     private InvitationCodeModel invitationCodeModel;
+    @Resource
+    private UserModel userModel;
 
     /**
      * 删选列表出满足条件实体列表
@@ -113,11 +114,18 @@ public class InvitationCodeService {
         List<String> invitationCodes,
         HashMap returnData
     ) {
-        // TODO 判断创建者实体是否存在
-        // TODO 去除列表中的重复数据空数据垃圾数据
+        if (userModel.have(creator.getUserName())) {
+            return "用户不存在";
+        }
+        List<String> newInvitationCodes = new ArrayList<>();
+        for (String invitationCode : invitationCodes) {
+            if (!invitationCode.equals("")) {
+                newInvitationCodes.add(invitationCode);
+            }
+        }
         return invitationCodeModel.addInvitationCodes(
             creator, availableCount, tagName,
-            invitationCodes,
+            newInvitationCodes,
             returnData
         );
     }

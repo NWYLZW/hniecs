@@ -35,7 +35,7 @@ public class UserModel {
      * 检查是否有某个用户
      * @param userName 用户名
      */
-    private boolean have(String userName) {
+    public boolean have(String userName) {
         UserEntity u = get(userName);
         return u != null;
     }
