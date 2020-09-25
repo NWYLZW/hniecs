@@ -28,10 +28,10 @@ public class ResourceBaseController {
     /**
      * 创建资源
      * @param resourceDate
-     * @bodyParm kind 资源种类
-     * @bodyParm introduce 资源介绍
-     * @bodyParm name 资源名
-     * @bodyParm url 资源链接
+     * @bodyParam kind 资源种类
+     * @bodyParam introduce 资源介绍
+     * @bodyParam name 资源名
+     * @bodyParam url 资源链接
      */
     @PostMapping("/resource/base/addResource")
     public CommonResult addMapping(@RequestBody Map<String, String> resourceDate) {
