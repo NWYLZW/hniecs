@@ -133,6 +133,12 @@ public class AdminInvitationCodeController {
     public CommonResult updateInvitationCode(
         @RequestBody InvitationCodeEntity ic
     ) {
+        // TODO 校验ic信息正确
+        //  id存在
+        //  邀请码内容不为空，长度不超过50
+        //  可用次数不为负数
+        //  status不能等于-1 在指定的范围内 (使用枚举值规范)
+        //  不可修改的数据设置为null 创建者id，ctime，mtime...
         String message = invitationCodeService.updateInvitationCode(ic);
         if(message.equals("0")) {
             return CommonResult.success();
