@@ -30,7 +30,7 @@ public class ResourceBaseController {
     /**
      * 创建资源
      * @param resourceDate
-     * @bodyParam kind 资源种类
+     * @bodyParam kind String 资源种类
      * @bodyParam introduce 资源介绍
      * @bodyParam name 资源名
      * @bodyParam url 资源链接

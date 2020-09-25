@@ -162,7 +162,6 @@ public class InvitationCodeService {
      * @param id    邀请码id
      */
     public String deleteById(Long id) {
-        // TODO 判断该id邀请码是否存在
         if(!invitationCodeModel.have(id)){
             return "邀请码不存在";
         }
@@ -174,9 +173,8 @@ public class InvitationCodeService {
      * @param invitationCode    邀请码实体
      */
     public String updateInvitationCode(InvitationCodeEntity invitationCode) {
-        // TODO 判断该邀请码实体是否存在
-        Long id=invitationCode.getId();
-        if (id==null || invitationCodeModel.have(invitationCode.getId())){
+        Long id = invitationCode.getId();
+        if (id==null || invitationCodeModel.have(id)){
             return "邀请码不存在";
         }
         return invitationCodeModel.updateInvitationCode(invitationCode);
