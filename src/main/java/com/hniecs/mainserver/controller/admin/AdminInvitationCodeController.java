@@ -184,5 +184,16 @@ public class AdminInvitationCodeController {
         }
     }
 
-    // TODO 搜索tagName列表
+    /**
+     * 返回所有不为空不重复的tagName
+     */
+    @GetMapping("/admin/invitationCode/getTagName")
+    public CommonResult getTagName(){
+        ArrayList<String> tagNameList = new ArrayList<>();
+        String msg = invitationCodeService.geTagNameList(tagNameList);
+        if(msg.equals("0")){
+            return CommonResult.success(tagNameList,"获取tagName成功");
+        }
+        return CommonResult.failed(msg);
+    }
 }

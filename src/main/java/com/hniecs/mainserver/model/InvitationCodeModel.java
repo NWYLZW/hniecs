@@ -203,4 +203,17 @@ public class InvitationCodeModel {
         }
         return true;
     }
+
+    /**
+     *返回所有的不重复不为空的tagName
+     */
+    public String getTagName(ArrayList<String> tagNameList){
+        try{
+            tagNameList.addAll(invitationCodeDao.getTagNameList());
+            return "0";
+        } catch (Exception e){
+            log.error(e.getMessage());
+            return "服务器错误";
+        }
+    }
 }

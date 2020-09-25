@@ -32,6 +32,16 @@ public interface InvitationCodeDao {
     ArrayList<InvitationCodeEntity> getAll();
 
     /**
+     *返回所有的不重复不为空的tagName
+     */
+    @Select(
+        "select tag_name " +
+            "from invitation_code " +
+            "where length(trim(tag_name)) != 0 and tag_name is not null " +
+            "group by tag_name"
+    )
+    public ArrayList<String> getTagNameList();
+    /**
      * 根据(创建用户id|邀请码id|邀请码状态|邀请码内容) 获取符合条件的某个邀请码
      * @param col       列名
      * @param condition 条件
