@@ -131,9 +131,9 @@ public class AdminInvitationCodeController {
      */
     @PutMapping("/admin/invitationCode/one")
     public CommonResult updateInvitationCode(
-        InvitationCodeEntity entity
+        @RequestBody InvitationCodeEntity ic
     ) {
-        String message = invitationCodeService.updateInvitationCode(entity);
+        String message = invitationCodeService.updateInvitationCode(ic);
         if(message.equals("0")) {
             return CommonResult.success();
         }else {
