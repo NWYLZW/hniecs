@@ -55,7 +55,7 @@ public class SessionTool {
      * 校验用户的sessionToken是否正确
      * @return  sessionToken是否正确
      */
-    public static boolean vertifyUserSessionToken () {
+    public static boolean verifyUserSessionToken () {
         String sessionToken = null;
         try {
             sessionToken = (String) getSession().getAttribute("sessionToken");
