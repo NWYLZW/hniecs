@@ -80,7 +80,7 @@ public interface InvitationCodeDao {
             "where length(trim(tag_name)) != 0 and tag_name is not null " +
             "group by tag_name"
     )
-    public ArrayList<String> getTagNameList();
+    List<String> getTagNameList();
 
     /**
      * 新增一条邀请码
