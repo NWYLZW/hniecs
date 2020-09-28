@@ -193,27 +193,26 @@ public class InvitationCodeModel {
      * @param id 邀请码id
      */
     public boolean have(long id){
-        InvitationCodeEntity invitationCodeEntity = invitationCodeDao.getOne(InvitationCodeDao.columnName.invitation_code
-            , Long.toString(id));
-        if(invitationCodeEntity == null){
+        InvitationCodeEntity invitationCodeEntity = invitationCodeDao.getOne(
+            InvitationCodeDao.columnName.id, Long.toString(id)
+        );
+        if (invitationCodeEntity == null) {
             return false;
         }
-        if(invitationCodeEntity.getStatus() == -1){
-            return false;
-        }
-        return true;
+        return invitationCodeEntity.getStatus() != -1;
     }
 
     /**
-     *返回所有的不重复不为空的tagName
+     * 返回所有的不重复不为空的tagName
+     * @param tagNameList tagName数组
      */
-    public String getTagName(ArrayList<String> tagNameList){
-        try{
+    public String getTagName(List<String> tagNameList){
+        try {
             tagNameList.addAll(invitationCodeDao.getTagNameList());
             return "0";
-        } catch (Exception e){
-            log.error(e.getMessage());
-            return "服务器错误";
+        } catch (Exception e) {
+            log.error("获取标签名列表时异常", e);
+            return CommonUseStrings.SERVER_FAILED.S;
         }
     }
 }

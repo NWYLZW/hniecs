@@ -30,6 +30,46 @@ public interface InvitationCodeDao {
             "where status!=-1"
     )
     ArrayList<InvitationCodeEntity> getAll();
+    /**
+     * 根据(创建用户id|邀请码id|邀请码状态|邀请码内容) 获取符合条件的某个邀请码
+     * @param col       列名
+     * @param condition 条件
+     */
+    @Select(
+        "select * " +
+            "from invitation_code " +
+            "where ${col}=#{condition}"
+    )
+    InvitationCodeEntity getOne(columnName col, String condition);
+    /**
+     * 进行详细的邀请码查询
+     * @param tagName         标签名
+     * @param creatorName     创建者用户名名
+     * @param invitationCode  邀请码内容
+     */
+    @Select(
+        "select * " +
+            "from invitation_code " +
+            "where " +
+            "invitation_code like #{invitationCode} " +
+            "and (" +
+            "select user_name " +
+            "from user " +
+            "where user.id=create_user_id" +
+            ") like #{creatorName} " +
+            "and tag_name like #{tagName}  or tag_name is null " +
+            "and status!=-1 " +
+            "order by mtime desc"
+    )
+    @Result(
+        property="creator", column="create_user_id",
+        one=@One(
+            select="com.hniecs.mainserver.dao.UserDao.getSimpleById"
+        )
+    )
+    List<InvitationCodeEntity> getInvitationCodes(
+        String creatorName, String tagName, String invitationCode
+    );
 
     /**
      *返回所有的不重复不为空的tagName
@@ -41,48 +81,6 @@ public interface InvitationCodeDao {
             "group by tag_name"
     )
     public ArrayList<String> getTagNameList();
-    /**
-     * 根据(创建用户id|邀请码id|邀请码状态|邀请码内容) 获取符合条件的某个邀请码
-     * @param col       列名
-     * @param condition 条件
-     */
-    @Select(
-        "select * " +
-            "from invitation_code " +
-            "where ${columnName}=#{condition}"
-    )
-    InvitationCodeEntity getOne(columnName col, String condition);
-
-
-    /**
-     * 进行详细的邀请码查询
-     * @param tagName         标签名
-     * @param creatorName     创建者用户名名
-     * @param invitationCode  邀请码内容
-     */
-    @Select(
-        "select * " +
-        "from invitation_code " +
-            "where " +
-            "invitation_code like #{invitationCode} " +
-            "and (" +
-                "select user_name " +
-                "from user " +
-                    "where user.id=create_user_id" +
-                ") like #{creatorName} " +
-            "and tag_name like #{tagName}  or tag_name is null " +
-            "and status!=-1 " +
-        "order by mtime desc"
-    )
-    @Result(
-        property="creator", column="create_user_id",
-        one=@One(
-            select="com.hniecs.mainserver.dao.UserDao.getSimpleById"
-        )
-    )
-    List<InvitationCodeEntity> getInvitationCodes(
-        String creatorName, String tagName, String invitationCode
-    );
 
     /**
      * 新增一条邀请码
