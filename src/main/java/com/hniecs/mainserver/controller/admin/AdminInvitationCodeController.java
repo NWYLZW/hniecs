@@ -167,7 +167,7 @@ public class AdminInvitationCodeController {
                     && (content.length() <= 0 || content.length() > 50)
                 )
                 || (availableInviteCount != null && availableInviteCount < 0)
-                || (status != null && status != -1)
+                || (status != null && status == -1)
         ) {
             return CommonResult.validateFailed();
         }
