@@ -1,5 +1,6 @@
 package com.hniecs.mainserver.entity.user;
 
+import com.hniecs.mainserver.entity.Rules;
 import lombok.Data;
 
 import java.util.Date;
@@ -31,6 +32,8 @@ public class UserDetailEntity {
     long invitationCodeId;
     // 连接权限表id
     long ruleId;
+    // 用户权限实体
+    Rules.RuleEntity rule;
     // 创建时间
     Date ctime;
     // 修改时间

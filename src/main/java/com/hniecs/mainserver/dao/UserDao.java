@@ -28,6 +28,12 @@ public interface UserDao {
      * @return  用户详情实体
      */
     @Select("select * from user_detail where user_id=#{user_id}")
+    @Result(
+        property="rule", column="rule_id",
+        one=@One(
+            select="com.hniecs.mainserver.dao.RuleDao.getById"
+        )
+    )
     UserDetailEntity getDetailById(Long user_id);
     /**
      * 通过id获得某个用户的简略信息

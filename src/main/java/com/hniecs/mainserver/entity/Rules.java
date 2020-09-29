@@ -14,7 +14,8 @@ import lombok.Setter;
 public enum Rules {
     SUPPER_ADMIN(
         "超级管理员",
-        AdminPermissions.SEARCH_ALL_USER
+        AdminPermissions.OPERATE_INVITATION_CODES &
+        AdminPermissions.SEARCH_INVITATION_CODES
     );
 
     @Getter@Setter
