@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.hniecs</groupId>
     <artifactId>main-server</artifactId>
-    <version>1.0.1.0-RELEASE</version>
+    <version>1.0.1.1-RELEASE</version>
     <name>main-server</name>
     <description>HNIECS‘s web project</description>
 
