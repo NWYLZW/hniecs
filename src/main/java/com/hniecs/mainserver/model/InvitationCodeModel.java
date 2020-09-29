@@ -118,13 +118,14 @@ public class InvitationCodeModel {
             throw new RangeException((short) 0, "该接口不支持将邀请码删除的功能");
         }
         try {
-            // TODO 将mtime修改为当前时间
+            invitationCode.setMtime(new Date());
             if (invitationCodeDao.update(invitationCode) == 0) {
                 return "更新邀请码失败";
             } else {
                 return "0";
             }
         } catch (Exception e) {
+            log.error("更新新邀请码时出现了错误", e);
             return CommonUseStrings.SERVER_FAILED.S;
         }
     }

@@ -179,7 +179,7 @@ public class InvitationCodeService {
      */
     public String updateInvitationCode(InvitationCodeEntity invitationCode) {
         Long id = invitationCode.getId();
-        if (id == null || invitationCodeModel.have(id)){
+        if (id == null || !invitationCodeModel.have(id)){
             return "邀请码不存在";
         }
         return invitationCodeModel.updateInvitationCode(invitationCode);
