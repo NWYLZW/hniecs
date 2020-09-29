@@ -97,6 +97,7 @@ public class InvitationCodeModel {
         InvitationCodeEntity ice = new InvitationCodeEntity();
         ice.setId(id);
         ice.setStatus(-1);
+        ice.setMtime(new Date());
         try {
             if (invitationCodeDao.update(ice) == 0) {
                 return "删除邀请码失败";
@@ -104,6 +105,7 @@ public class InvitationCodeModel {
                 return "0";
             }
         } catch (Exception e) {
+            log.error("删除邀请码出现了错误", e);
             return CommonUseStrings.SERVER_FAILED.S;
         }
     }

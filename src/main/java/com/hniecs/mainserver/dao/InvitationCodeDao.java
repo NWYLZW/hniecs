@@ -51,14 +51,14 @@ public interface InvitationCodeDao {
         "select * " +
             "from invitation_code " +
             "where " +
-            "invitation_code like #{invitationCode} " +
-            "and (" +
-            "select user_name " +
-            "from user " +
-            "where user.id=create_user_id" +
-            ") like #{creatorName} " +
-            "and tag_name like #{tagName}  or tag_name is null " +
-            "and status!=-1 " +
+                "invitation_code like #{invitationCode} " +
+                "and (" +
+                    "select user_name " +
+                    "from user " +
+                    "where user.id=create_user_id" +
+                ") like #{creatorName} " +
+                "and (tag_name like #{tagName}  or tag_name is null) " +
+                "and status!=-1 " +
             "order by mtime desc"
     )
     @Result(

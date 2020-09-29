@@ -135,7 +135,7 @@ public class AdminInvitationCodeController {
         }
         String message = invitationCodeService.deleteById(id);
         if(message.equals("0")) {
-            return CommonResult.success(message);
+            return CommonResult.success();
         }else {
             return CommonResult.failed(message);
         }
