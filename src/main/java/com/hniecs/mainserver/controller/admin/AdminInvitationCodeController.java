@@ -202,6 +202,12 @@ public class AdminInvitationCodeController {
         @RequestParam(name = "page"             , required = false, defaultValue = "1") Integer page,
         @RequestParam(name = "size"             , required = false, defaultValue = "20") Integer size
     ) {
+        if (page <= 0 || size < 0) {
+            return CommonResult.validateFailed();
+        }
+        if (size == 0) {
+            return CommonResult.success(new ArrayList<>());
+        }
         // 设置分页规则
         PageHelper.startPage(page, size);
 
