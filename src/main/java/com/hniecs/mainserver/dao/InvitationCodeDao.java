@@ -101,8 +101,9 @@ public interface InvitationCodeDao {
         "<script> \n" +
             "update invitation_code set " +
                 "<if test='invitationCode!=null'>invitation_code=#{invitationCode}, </if>" +
-                "<if test='status!=null'>status=#{status}, </if>" +
                 "<if test='availableInviteCount!=null'>available_invite_count=#{availableInviteCount}, </if>" +
+                "<if test='tagName!=null'>tag_name=#{tagName}, </if>" +
+                "<if test='status!=null'>status=#{status}, </if>" +
                 "<if test='mtime!=null'>mtime=#{mtime} </if>" +
             "where id=#{id}" +
         "</script>"

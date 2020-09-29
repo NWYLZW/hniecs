@@ -114,7 +114,7 @@ public class InvitationCodeModel {
      */
     public String updateInvitationCode(InvitationCodeEntity invitationCode) {
         // 保证对外的唯一一致性
-        if (invitationCode.getStatus() == -1) {
+        if (invitationCode.getStatus() != null && invitationCode.getStatus() == -1) {
             throw new RangeException((short) 0, "该接口不支持将邀请码删除的功能");
         }
         try {

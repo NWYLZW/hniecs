@@ -141,11 +141,11 @@ public class AdminInvitationCodeController {
     /**
      * 修改
      * 修改邀请码内容 禁用邀请码 添加标签 修改使用次数
-     * @bodyParam id                Integer     Y   ""  邀请码id
-     * @bodyParam invitationCode    String      N   ""  待添加的邀请码列表
-     * @bodyParam tagName           String      N   ""  邀请码标签
-     * @bodyParam availableCount    Integer     N   0   邀请码可用次数
-     * @bodyParam status            Integer     N   0   邀请码状态
+     * @bodyParam id                    Integer     Y   ""  邀请码id
+     * @bodyParam invitationCode        String      N   ""  待添加的邀请码列表
+     * @bodyParam tagName               String      N   ""  邀请码标签
+     * @bodyParam availableInviteCount  Integer     N   0   邀请码可用次数
+     * @bodyParam status                Integer     N   0   邀请码状态
      */
     @PermissionRequired(
         scope = AdminPermissions.NAME,
@@ -156,11 +156,21 @@ public class AdminInvitationCodeController {
         @RequestBody InvitationCodeEntity ic
     ) {
         // TODO 校验ic信息正确
-        //  id存在
-        //  邀请码内容不为空，长度不超过50
-        //  可用次数不为负数
         //  status不能等于-1 在指定的范围内 (使用枚举值规范)
         //  不可修改的数据设置为null 创建者id，ctime，mtime...
+        String content = ic.getInvitationCode();
+        Integer availableInviteCount = ic.getAvailableInviteCount();
+        Integer status = ic.getStatus();
+        if (
+            ic.getId() == null
+                || (content != null
+                    && (content.length() <= 0 || content.length() > 50)
+                )
+                || (availableInviteCount != null && availableInviteCount < 0)
+                || (status != null && status != -1)
+        ) {
+            return CommonResult.validateFailed();
+        }
         String message = invitationCodeService.updateInvitationCode(ic);
         if(message.equals("0")) {
             return CommonResult.success();
