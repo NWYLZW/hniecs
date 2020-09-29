@@ -122,14 +122,17 @@ public class AdminInvitationCodeController {
 
     /**
      * 删除一个邀请码
-     * @param id    邀请码id
+     * @param id    Long    Y   0    邀请码id
      */
     @DeleteMapping("/admin/invitationCode/one")
     @PermissionRequired(
         scope = AdminPermissions.NAME,
         permission = AdminPermissions.OPERATE_INVITATION_CODES
     )
-    public CommonResult falseDeleteById(Long id) {
+    public CommonResult falseDeleteById(@RequestParam("id") Long id) {
+        if (id <= 0) {
+            return CommonResult.validateFailed();
+        }
         String message = invitationCodeService.deleteById(id);
         if(message.equals("0")) {
             return CommonResult.success(message);
