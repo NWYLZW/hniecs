@@ -100,17 +100,22 @@ public class UserBaseController {
     /**
      * 用户注册
      * @param registerData  注册信息字典
-     * @bodyParam userName          Y   ""    用户名
-     * @bodyParam password          Y   ""    密码
-     * @bodyParam invitationCode    Y   ""    邀请码
+     * @bodyParam userName          Y   ""  用户名
+     * @bodyParam password          Y   ""  密码
+     * @bodyParam realName          Y   ""  用户名
+     * @bodyParam schoolNum         Y   ""  用户名
+     * @bodyParam profession        Y   ""  用户名
+     * @bodyParam classNum          Y   ""  用户名
+     * @bodyParam qqNum             Y   ""  用户名
+     * @bodyParam telNum            Y   ""  用户名
+     * @bodyParam invitationCode    Y   ""  邀请码
      */
     @NotNeedLogin
-    @PostMapping("/user/base/register")
+    @PostMapping("/user/base/registered")
     public CommonResult register(@RequestBody Map<String, String> registerData) {
-        String
-            userName = registerData.get("userName"),
-            password = registerData.get("password"),
-            invitationCode = registerData.get("invitationCode");
+        String userName         = registerData.get("userName");
+        String password         = registerData.get("password");
+        String invitationCode   = registerData.get("invitationCode");
         if (!verifyUserName(userName) || !verifyPassword(password)) {
             return CommonResult.validateFailed();
         }
