@@ -49,7 +49,7 @@ public class UserEntity {
     /**
      * 用户详细信息
      */
-    @Getter
+    @Getter@Setter
     private UserDetailEntity detail;
 
     public UserEntity(String userName, String password) {

@@ -62,14 +62,26 @@ public class UserModel {
      * @param user  用户entity实体结构
      */
     public String addUser (UserEntity user) {
-        if (have(user.getUserName())) return "该用户名用户已存在";
+        if (user.getDetail() == null) {
+            log.error("传给userModel.addUser方法未设置detail属性信息");
+            return CommonUseStrings.SERVER_FAILED.S;
+        }
         try {
             if (userDao.addNew(user) == 0) {
                 return "添加用户失败";
             }
-            return "0";
+            try {
+                // 获取添加后的用户id 加到userDetail中
+                UserEntity newU = userDao.getSimpleByUserName(user.getUserName());
+                user.getDetail().setUserId(newU.getId());
+                userDao.addNewDetail(user.getDetail());
+                return "0";
+            } catch (Exception e) {
+                log.error("userDetail表 添加新用户详情信息时出现了错误", e.getMessage(), e);
+                return CommonUseStrings.SERVER_FAILED.S;
+            }
         } catch (Exception e) {
-            log.error("插入用户出现了错误：{}", e.getMessage(), e);
+            log.error("user表 添加新用户时出现了错误", e.getMessage(), e);
             return CommonUseStrings.SERVER_FAILED.S;
         }
     }

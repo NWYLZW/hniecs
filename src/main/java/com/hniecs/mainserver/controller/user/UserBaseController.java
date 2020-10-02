@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 import java.util.*;
+import java.util.function.BooleanSupplier;
+import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
@@ -100,30 +102,50 @@ public class UserBaseController {
     /**
      * 用户注册
      * @param registerData  注册信息字典
-     * @bodyParam userName          Y   ""  用户名
-     * @bodyParam password          Y   ""  密码
-     * @bodyParam realName          Y   ""  用户名
-     * @bodyParam schoolNum         Y   ""  用户名
-     * @bodyParam profession        Y   ""  用户名
-     * @bodyParam classNum          Y   ""  用户名
-     * @bodyParam qqNum             Y   ""  用户名
-     * @bodyParam telNum            Y   ""  用户名
-     * @bodyParam invitationCode    Y   ""  邀请码
+     * @bodyParam userName          Y   ""  用户名     字母|中文|数字|-|_|.|@ (不能以 数字，特殊字符，中文 开头) 4-12位
+     * @bodyParam password          Y   ""  密码      字母|数字|-|_|.|@ 5-20位
+     * @bodyParam realName          Y   ""  真实姓名   中文 2-5位
+     * @bodyParam schoolNum         Y   ""  学号      20xxxxxxxxxx 12位
+     * @bodyParam profession        Y   ""  专业名    中文 20位
+     * @bodyParam classNum          Y   ""  班级      数字 4位
+     * @bodyParam qqNum             Y   ""  qq号码    数字 6-16位
+     * @bodyParam telNum            N   ""  电话号码   数字 11位
+     * @bodyParam invitationCode    Y   ""  邀请码    不含空格 50
      */
     @NotNeedLogin
     @PostMapping("/user/base/registered")
     public CommonResult register(@RequestBody Map<String, String> registerData) {
         String userName         = registerData.get("userName");
         String password         = registerData.get("password");
+        String realName         = registerData.get("realName");
+        String schoolNum        = registerData.get("schoolNum");
+        String profession       = registerData.get("profession");
+        String classNum         = registerData.get("classNum");
+        String qqNum            = registerData.get("qqNum");
+        String telNum           = registerData.get("telNum");
         String invitationCode   = registerData.get("invitationCode");
-        if (!verifyUserName(userName) || !verifyPassword(password)) {
+        if (
+            !verifyUserName(userName)
+                || !verifyPassword(password)
+                || !Pattern.matches("^[\u4E00-\u9FA5]{2,5}$", realName)
+                || !Pattern.matches("^20[0-9]{10}$", schoolNum)
+                || !Pattern.matches("^[\u4E00-\u9FA5]{2,20}$", profession)
+                || !Pattern.matches("^[0-9]{4}$", classNum)
+                || !Pattern.matches("^[0-9]{6,16}$", qqNum)
+                || (telNum != null && !Pattern.matches("^1[3-9]\\d{9}$", telNum))
+                || !Pattern.matches("^\\S{1,50}$", invitationCode)
+        ) {
             return CommonResult.validateFailed();
         }
         String msg = userBaseService.registerNewUser(
-            userName, password, invitationCode
+            userName, password
+            , realName, schoolNum
+            , profession, classNum
+            , qqNum, telNum
+            , invitationCode
         );
         if (msg.equals("0")) {
-            return CommonResult.success("注册成功");
+            return CommonResult.success();
         } else {
             return CommonResult.validateFailed(msg);
         }

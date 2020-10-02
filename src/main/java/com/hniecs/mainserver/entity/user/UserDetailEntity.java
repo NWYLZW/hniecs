@@ -21,7 +21,7 @@ public class UserDetailEntity {
     // 专业名称
     String profession;
     // 班级号
-    long classNum;
+    String classNum;
     // 校内学号
     String schoolNum;
     // 联系qq
@@ -38,4 +38,16 @@ public class UserDetailEntity {
     Date ctime;
     // 修改时间
     Date mtime;
+
+    public UserDetailEntity(String realName, String profession, String classNum, String schoolNum, String qqNum, String telNum, long invitationCodeId, long ruleId, Date ctime) {
+        this.realName = realName;
+        this.profession = profession;
+        this.classNum = classNum;
+        this.schoolNum = schoolNum;
+        this.qqNum = qqNum;
+        this.telNum = telNum;
+        this.invitationCodeId = invitationCodeId;
+        this.ruleId = ruleId;
+        this.ctime = ctime;
+    }
 }

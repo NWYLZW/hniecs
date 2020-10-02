@@ -78,6 +78,23 @@ public interface UserDao {
             "values(#{userName}, #{passwordSHA}, #{ctime})"
     )
     int addNew(UserEntity user);
+    /**
+     * 新增一个用户的详情信息
+     * @param   ud 用户详情实体
+     * @return 操作成功行数
+     */
+    @Insert(
+        "insert into " +
+            "user_detail(user_id, real_name, profession, class_num, school_num, qq_num, tel_num, invitation_code_id, rule_id, ctime) " +
+            "values(" +
+                "#{userId}, #{realName}, " +
+                "#{profession}, #{classNum}, #{schoolNum}, " +
+                "#{qqNum}, #{telNum}, " +
+                "#{invitationCodeId}, #{ruleId}, " +
+                "#{ctime}" +
+            ");"
+    )
+    int addNewDetail(UserDetailEntity ud);
 
     /**
      * 通过用户id更新用户
