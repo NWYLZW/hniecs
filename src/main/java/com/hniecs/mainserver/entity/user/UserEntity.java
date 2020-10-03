@@ -36,6 +36,11 @@ public class UserEntity {
      */
     private String passwordSHA;
     /**
+     * 用户头像url
+     */
+    @Getter@Setter
+    private String avatarUrl;
+    /**
      * 创建时间
      */
     @Getter@Setter
