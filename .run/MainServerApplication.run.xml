@@ -2,6 +2,7 @@
   <configuration default="false" name="MainServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <module name="hniecs-web" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.hniecs.mainserver.MainServerApplication" />
+    <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=dev --server.port=10000" />
     <option name="ALTERNATIVE_JRE_PATH" />
     <option name="UPDATE_ACTION_UPDATE_POLICY" value="UpdateClassesAndResources" />
     <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
