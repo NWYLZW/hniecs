@@ -42,7 +42,8 @@ public class UserBaseController {
         String zhPattern = "\\u4E00-\\u9FA5";
         String letterPattern = "a-z,A-Z";
 
-        String pattern = '^' + '[' + letterPattern + ']' + '[' + zhPattern + ',' + letterPattern + ",\\d," + specialCharPattern + "]{" + min + ',' + max + '}';
+        String pattern = "^[" + letterPattern + ']' + '[' + zhPattern + ',' + letterPattern + ",\\d," + specialCharPattern + "]{" + min + ',' + max + '}';
+        System.out.println(pattern);
         return Pattern.matches(pattern, userName);
     }
 
