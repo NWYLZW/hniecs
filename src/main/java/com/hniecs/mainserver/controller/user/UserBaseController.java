@@ -38,11 +38,11 @@ public class UserBaseController {
     private boolean verifyUserName(String userName) {
         int min = 3;
         int max = 12;
-        String specialCharPattern = "[-|_|.|@]";
-        String zhPattern = "[\u4E00-\u9FA5]";
-        String letterPattern = "[[a-z]|[A-Z]]";
+        String specialCharPattern = "-,_,.,@";
+        String zhPattern = "\\u4E00-\\u9FA5";
+        String letterPattern = "a-z,A-Z";
 
-        String pattern = "^" + letterPattern + "[" + zhPattern + "|" + letterPattern + "|\\d|" + specialCharPattern + "]{" + min + "," + max + "}";
+        String pattern = '^' + '[' + letterPattern + ']' + '[' + zhPattern + ',' + letterPattern + ",\\d," + specialCharPattern + "]{" + min + ',' + max + '}';
         return Pattern.matches(pattern, userName);
     }
 
@@ -54,9 +54,9 @@ public class UserBaseController {
     private boolean verifyPassword(String password) {
         int min = 5;
         int max = 20;
-        String specialCharPattern = "[-|_|.|@]";
-        String letterPattern = "[[a-z]|[A-Z]]";
-        String pattern = "^[" + letterPattern + "|\\d|" + specialCharPattern + "]{" + min + "," + max + "}";
+        String specialCharPattern = "-,_,.,@";
+        String letterPattern = "a-z,A-Z";
+        String pattern = "^[" + letterPattern + ",\\d," + specialCharPattern + "]{" + min + "," + max + "}";
 
         return Pattern.matches(pattern, password);
     }
