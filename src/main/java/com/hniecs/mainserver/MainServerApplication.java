@@ -1,26 +1,36 @@
 package com.hniecs.mainserver;
 
 import com.hniecs.mainserver.model.RuleModel;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 
 @SpringBootApplication
+@Slf4j
 public class MainServerApplication {
 
     /**
-     * 一些启动任务
-     * @param context   springBoot上下文
+     * SpringBoot 应用上下文
      */
-    public static void init (ConfigurableApplicationContext context) {
-        context.getBean(RuleModel.class).addAll();
+    public static ConfigurableApplicationContext context;
+
+    /**
+     * 一些启动任务
+     */
+    public static void init () {
+        try {
+            context.getBean(RuleModel.class).addAll();
+        } catch (Exception e) {
+            log.error("插入权限组时出现了错误，如有修改权限配置信息，请重启服务");
+        }
     }
 
     public static void main (String[] args) {
-        SpringApplication app = new SpringApplication(MainServerApplication.class);
-        ConfigurableApplicationContext context = app.run(args);
-
-        init(context);
+        context = new SpringApplication(
+            MainServerApplication.class
+        ).run(args);
+        init();
     }
 
 }
