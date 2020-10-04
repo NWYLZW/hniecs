@@ -25,7 +25,7 @@ public class UserEntity {
      * 用户id
      */
     @Getter@Setter
-    private long id;
+    private Long id;
     /**
      * 用户名
      */
