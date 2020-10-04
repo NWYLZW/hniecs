@@ -1,6 +1,7 @@
 package com.hniecs.mainserver.model;
 
 import com.hniecs.mainserver.dao.UserDao;
+import com.hniecs.mainserver.entity.user.UserDetailEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.tool.CommonUseStrings;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +29,30 @@ public class UserModel {
      * @param userName 用户名
      */
     private UserEntity get(String userName) {
-        return userDao.getSimpleByUserName(userName);
+        if (userName.equals("")) {
+            return null;
+        }
+        try {
+            return userDao.getSimpleByUserName(userName);
+        } catch (Exception e) {
+            log.error("获取用户简略信息时出现了错误", e);
+            return null;
+        }
+    }
+    public boolean injectDetailData (UserEntity u) {
+        if (u == null) {
+            return false;
+        }
+        try {
+            UserDetailEntity userDetailEntity = userDao.getDetailById(u.getId());
+            u.setDetail(
+                userDetailEntity
+            );
+            return true;
+        } catch (Exception e) {
+            log.error("注入用户详细信息时出现了错误", e);
+            return false;
+        }
     }
 
     /**

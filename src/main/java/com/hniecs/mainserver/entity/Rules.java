@@ -43,10 +43,13 @@ public enum Rules {
      * 用户规则实体
      */
     @Data
-    public class RuleEntity {
+    public static class RuleEntity {
         long id;
         String name;
         Long permissions;
+
+        public RuleEntity() {
+        }
         public RuleEntity(String name, Long permissions) {
             this.name = name;
             this.permissions = permissions;
