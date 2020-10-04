@@ -29,6 +29,13 @@ public interface RuleDao {
      */
     @Select("select * from rule where id=#{id}")
     Rules.RuleEntity getById(Long id);
+    /**
+     * 通过权限组权限值 判断某个权限是否存在
+     * @param   permissions 权限组权限值
+     * @return  0 不存在，1 存在
+     */
+    @Select("select count(1) from rule where permissions=#{permissions}")
+    int have(Long permissions);
 
     /**
      * 新增一个权限组
@@ -36,8 +43,8 @@ public interface RuleDao {
      */
     @Insert(
         "insert into " +
-            "rule(id, name, permissions) " +
-            "values(#{id}, #{name}, #{permissions})"
+            "rule(name, permissions) " +
+            "values(#{name}, #{permissions})"
     )
     int addNew(Rules.RuleEntity rule);
 
