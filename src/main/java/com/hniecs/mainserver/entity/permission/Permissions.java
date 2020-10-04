@@ -30,17 +30,31 @@ public class Permissions
     }
 
     /**
+     * 通过权限域，权限分值，计算出权限值
+     * @param scopeName     权限域名
+     * @param permissions   某个权限
+     */
+    public static Long countUnitPermission (String scopeName, Long permissions) {
+        Long SCOPE = getScope(scopeName) << 20;
+        return SCOPE + permissions;
+    }
+
+    /**
      * 检测是否有某个权限或权限组
      * @param user          用户实体
-     * @param scopeName     作用域
+     * @param scopeName     作用域  空字符串是表示后面使用的是权限组
      * @param permissions   某个权限或权限组
      * @return  该用户是否有该权限或权限组
      */
     public static boolean havePermission (
         UserEntity user, String scopeName, Long permissions
     ) {
-        Long SCOPE = getScope(scopeName) << 20;
-        Long UNIT_PERMISSION = SCOPE + permissions;
-        return Rules.SUPPER_ADMIN.can(UNIT_PERMISSION);
+        Long PERMISSIONS;
+        if (scopeName.equals("")) {
+            PERMISSIONS = permissions;
+        } else {
+            PERMISSIONS = countUnitPermission(scopeName, permissions);
+        }
+        return user.getDetail().getRule().can(PERMISSIONS);
     }
 }

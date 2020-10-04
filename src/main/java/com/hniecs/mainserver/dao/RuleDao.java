@@ -1,10 +1,10 @@
 package com.hniecs.mainserver.dao;
 
 import com.hniecs.mainserver.entity.Rules;
-import com.hniecs.mainserver.entity.user.UserEntity;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -33,12 +33,22 @@ public interface RuleDao {
     /**
      * 新增一个权限组
      * @param   rule 权限组实体
-     * @return 操作成功行数
      */
     @Insert(
         "insert into " +
-            "user(id, name, permissions) " +
+            "rule(id, name, permissions) " +
             "values(#{id}, #{name}, #{permissions})"
     )
     int addNew(Rules.RuleEntity rule);
+
+    /**
+     * 更新一个权限组
+     * @param   rule    权限组实体
+     */
+    @Update(
+        "update rule " +
+            "set name=#{name}, permissions=#{permissions} " +
+            "where id=#{id}"
+    )
+    int update(Rules.RuleEntity rule);
 }

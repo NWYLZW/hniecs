@@ -1,6 +1,7 @@
 package com.hniecs.mainserver.entity;
 
 import com.hniecs.mainserver.entity.permission.AdminPermissions;
+import com.hniecs.mainserver.entity.permission.Permissions;
 import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,10 +13,16 @@ import lombok.Setter;
  * @logs[0] 2020-09-25 04:29 yijie  创建了 Rules.java 文件
  */
 public enum Rules {
+    COMMON(
+        "普通用户",
+        0
+    ),
     SUPPER_ADMIN(
         "超级管理员",
+        Permissions.countUnitPermission(AdminPermissions.NAME,
         AdminPermissions.OPERATE_INVITATION_CODES &
-        AdminPermissions.SEARCH_INVITATION_CODES
+            AdminPermissions.SEARCH_INVITATION_CODES
+        )
     );
 
     @Getter@Setter
@@ -47,10 +54,17 @@ public enum Rules {
 
         /**
          * 校验该规则是否有某个权限或权限组
-         * @param permissions   权限或权限组
+         * @param   permissions 权限或权限组
          */
         public boolean can(Long permissions) {
-            return (this.permissions | permissions) == permissions;
+            long thisScopePermission = this.permissions >> 20;
+            long scopePermission = permissions >> 20;
+            if ((thisScopePermission | permissions) != scopePermission) {
+                return false;
+            }
+            long thisUnitPermission = this.permissions - thisScopePermission;
+            long unitPermission = permissions - scopePermission;
+            return (thisUnitPermission | unitPermission) == unitPermission;
         }
     }
 }
