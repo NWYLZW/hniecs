@@ -1,14 +1,17 @@
 package com.hniecs.mainserver.service.user;
 
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
+import com.hniecs.mainserver.entity.user.UserDetailEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.model.InvitationCodeModel;
 import com.hniecs.mainserver.model.UserModel;
 import com.hniecs.mainserver.tool.security.SessionTool;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.Hashtable;
 
 /**
@@ -48,24 +51,49 @@ public class UserBaseService {
         }
         return msg;
     }
+
     /**
      * 注册新用户
-     * @param userName  用户名
-     * @param password  密码
-     * @param invitationCode  邀请码
+     * @param userName          用户名
+     * @param password          密码
+     * @param realName          真实姓名
+     * @param schoolNum         学号
+     * @param profession        专业名
+     * @param classNum          班级号
+     * @param qqNum             qq号码
+     * @param telNum            电话号码
+     * @param invitationCode    邀请码
      */
-    public String registerNewUser(String userName, String password, String invitationCode) {
-        InvitationCodeEntity invitationCodeEntity = invitationCodeModel.findAbleUse(invitationCode);
-        String msg = "邀请码不存在";
-        if (invitationCodeEntity == null) {
-            return msg;
+    @Transactional
+    public String registerNewUser(
+        String userName, String password
+        , String realName, String schoolNum
+        , String profession, String classNum
+        , String qqNum, String telNum
+        , String invitationCode
+    ) {
+        if (userModel.have(userName)) {
+            return "该用户名用户已存在";
         }
-        msg = invitationCodeModel.useInvitationCode(invitationCodeEntity);
+
+        InvitationCodeEntity ice = invitationCodeModel.findAbleUse(invitationCode);
+        if (ice == null) {
+            return "邀请码不存在";
+        }
+
+        String msg = invitationCodeModel.useInvitationCode(ice);
         if (!msg.equals("0")) {
             return msg;
         }
 
         UserEntity u = new UserEntity(userName, password);
+        u.setCtime(new Date());
+        u.setDetail(new UserDetailEntity(
+            realName, profession,
+            classNum, schoolNum,
+            qqNum, telNum,
+            ice.getId(), 1, new Date()
+        ));
         msg = userModel.addUser(u);
         return msg;
     }

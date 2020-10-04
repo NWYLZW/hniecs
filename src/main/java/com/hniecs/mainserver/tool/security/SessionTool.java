@@ -1,6 +1,8 @@
 package com.hniecs.mainserver.tool.security;
 
+import com.hniecs.mainserver.MainServerApplication;
 import com.hniecs.mainserver.entity.user.UserEntity;
+import com.hniecs.mainserver.model.UserModel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -32,7 +34,18 @@ public class SessionTool {
      */
     public static UserEntity curUser () {
         try {
-            return (UserEntity) getSession().getAttribute("currentUser");
+            UserEntity cu = (UserEntity) getSession().getAttribute("currentUser");
+            try {
+                MainServerApplication.context
+                    .getBean(UserModel.class)
+                    .injectDetailData(
+                        cu
+                    );
+                return cu;
+            } catch (Exception e) {
+                log.error("注入curUser Detail属性时发生了错误", e);
+            }
+            return cu;
         } catch (Exception e) {
             log.error("无法从 session中获取 UserEntity格式的 currentUser对象", e);
         }
@@ -55,7 +68,7 @@ public class SessionTool {
      * 校验用户的sessionToken是否正确
      * @return  sessionToken是否正确
      */
-    public static boolean vertifyUserSessionToken () {
+    public static boolean verifyUserSessionToken () {
         String sessionToken = null;
         try {
             sessionToken = (String) getSession().getAttribute("sessionToken");

@@ -48,6 +48,10 @@
     "name": "revert",
     "title": "revert",
     "desc": "版本回退"
+  }, {
+    "name": "release",
+    "title": "release",
+    "desc": "版本更新时使用"
   }],
   "scopes": [{
     "name": "controller",
@@ -61,6 +65,10 @@
     "name": "model",
     "title": "model",
     "desc": "模型层被修改时使用"
+  }, {
+    "name": "entity",
+    "title": "entity",
+    "desc": "实体被修改时使用"
   }, {
     "name": "dao",
     "title": "dao",

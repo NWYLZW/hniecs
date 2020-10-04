@@ -1,10 +1,10 @@
 package com.hniecs.mainserver.dao;
 
 import com.hniecs.mainserver.entity.Rules;
-import com.hniecs.mainserver.entity.user.UserEntity;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
@@ -29,16 +29,33 @@ public interface RuleDao {
      */
     @Select("select * from rule where id=#{id}")
     Rules.RuleEntity getById(Long id);
+    /**
+     * 通过权限组权限值 判断某个权限是否存在
+     * @param   permissions 权限组权限值
+     * @return  0 不存在，1 存在
+     */
+    @Select("select count(1) from rule where permissions=#{permissions}")
+    int have(Long permissions);
 
     /**
      * 新增一个权限组
      * @param   rule 权限组实体
-     * @return 操作成功行数
      */
     @Insert(
         "insert into " +
-            "user(id, name, permissions) " +
-            "values(#{id}, #{name}, #{permissions})"
+            "rule(name, permissions) " +
+            "values(#{name}, #{permissions})"
     )
     int addNew(Rules.RuleEntity rule);
+
+    /**
+     * 更新一个权限组
+     * @param   rule    权限组实体
+     */
+    @Update(
+        "update rule " +
+            "set name=#{name}, permissions=#{permissions} " +
+            "where id=#{id}"
+    )
+    int update(Rules.RuleEntity rule);
 }

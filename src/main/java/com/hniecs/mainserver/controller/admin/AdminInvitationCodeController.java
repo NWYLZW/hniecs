@@ -2,7 +2,9 @@ package com.hniecs.mainserver.controller.admin;
 
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
+import com.hniecs.mainserver.annotation.method.PermissionRequired;
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
+import com.hniecs.mainserver.entity.permission.AdminPermissions;
 import com.hniecs.mainserver.service.admin.InvitationCodeService;
 import com.hniecs.mainserver.tool.CommonUseStrings;
 import com.hniecs.mainserver.tool.api.CommonResult;
@@ -12,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
@@ -39,6 +40,10 @@ public class AdminInvitationCodeController {
      * @bodyParam tagName           String     Y   ""  标签名
      * @bodyParam availableCount    Integer    N   0   邀请码可用次数
      */
+    @PermissionRequired(
+        scope = AdminPermissions.NAME,
+        permission = AdminPermissions.OPERATE_INVITATION_CODES
+    )
     @PostMapping("/admin/invitationCode/list")
     public CommonResult addInvitationCode(
         @RequestBody Map<String, Object> requestData
@@ -82,6 +87,10 @@ public class AdminInvitationCodeController {
      * @param availableCount    Integer    N   0   邀请码可用次数
      * @param thresholdMoney    String     N   0   邀请码录入数据库阈值
      */
+    @PermissionRequired(
+        scope = AdminPermissions.NAME,
+        permission = AdminPermissions.OPERATE_INVITATION_CODES
+    )
     @PostMapping("/admin/invitationCode/importFromExcel")
     public CommonResult importInvitationCodes(
         @RequestParam(value = "excelFile",      required = true) MultipartFile excel,
@@ -113,13 +122,20 @@ public class AdminInvitationCodeController {
 
     /**
      * 删除一个邀请码
-     * @param id
+     * @param id    Long    Y   0    邀请码id
      */
     @DeleteMapping("/admin/invitationCode/one")
-    public CommonResult falseDeleteById(Long id) {
+    @PermissionRequired(
+        scope = AdminPermissions.NAME,
+        permission = AdminPermissions.OPERATE_INVITATION_CODES
+    )
+    public CommonResult falseDeleteById(@RequestParam("id") Long id) {
+        if (id <= 0) {
+            return CommonResult.validateFailed();
+        }
         String message = invitationCodeService.deleteById(id);
         if(message.equals("0")) {
-            return CommonResult.success(message);
+            return CommonResult.success();
         }else {
             return CommonResult.failed(message);
         }
@@ -128,17 +144,36 @@ public class AdminInvitationCodeController {
     /**
      * 修改
      * 修改邀请码内容 禁用邀请码 添加标签 修改使用次数
+     * @bodyParam id                    Integer     Y   ""  邀请码id
+     * @bodyParam invitationCode        String      N   ""  待添加的邀请码列表
+     * @bodyParam tagName               String      N   ""  邀请码标签
+     * @bodyParam availableInviteCount  Integer     N   0   邀请码可用次数
+     * @bodyParam status                Integer     N   0   邀请码状态
      */
+    @PermissionRequired(
+        scope = AdminPermissions.NAME,
+        permission = AdminPermissions.OPERATE_INVITATION_CODES
+    )
     @PutMapping("/admin/invitationCode/one")
     public CommonResult updateInvitationCode(
         @RequestBody InvitationCodeEntity ic
     ) {
         // TODO 校验ic信息正确
-        //  id存在
-        //  邀请码内容不为空，长度不超过50
-        //  可用次数不为负数
         //  status不能等于-1 在指定的范围内 (使用枚举值规范)
         //  不可修改的数据设置为null 创建者id，ctime，mtime...
+        String content = ic.getInvitationCode();
+        Integer availableInviteCount = ic.getAvailableInviteCount();
+        Integer status = ic.getStatus();
+        if (
+            ic.getId() == null
+                || (content != null
+                    && (content.length() <= 0 || content.length() > 50)
+                )
+                || (availableInviteCount != null && availableInviteCount < 0)
+                || (status != null && status == -1)
+        ) {
+            return CommonResult.validateFailed();
+        }
         String message = invitationCodeService.updateInvitationCode(ic);
         if(message.equals("0")) {
             return CommonResult.success();
@@ -155,6 +190,10 @@ public class AdminInvitationCodeController {
      * @bodyParam page              int     N   1   页码
      * @bodyParam size              int     N   20  每页个数
      */
+    @PermissionRequired(
+        scope = AdminPermissions.NAME,
+        permission = AdminPermissions.SEARCH_INVITATION_CODES
+    )
     @GetMapping("/admin/invitationCode/search")
     public CommonResult getInvitationCodesByCondition(
         @RequestParam(name = "invitationCode"   , required = false, defaultValue = "") String invitationCode,
@@ -163,6 +202,12 @@ public class AdminInvitationCodeController {
         @RequestParam(name = "page"             , required = false, defaultValue = "1") Integer page,
         @RequestParam(name = "size"             , required = false, defaultValue = "20") Integer size
     ) {
+        if (page <= 0 || size < 0) {
+            return CommonResult.validateFailed();
+        }
+        if (size == 0) {
+            return CommonResult.success(new ArrayList<>());
+        }
         // 设置分页规则
         PageHelper.startPage(page, size);
 
@@ -182,12 +227,16 @@ public class AdminInvitationCodeController {
     /**
      * 返回所有不为空不重复的tagName
      */
-    @GetMapping("/admin/invitationCode/getTagName")
+    @PermissionRequired(
+        scope = AdminPermissions.NAME,
+        permission = AdminPermissions.SEARCH_INVITATION_CODES
+    )
+    @GetMapping("/admin/invitationCode/tagNames")
     public CommonResult getTagName(){
         ArrayList<String> tagNameList = new ArrayList<>();
         String msg = invitationCodeService.geTagNameList(tagNameList);
         if(msg.equals("0")){
-            return CommonResult.success(tagNameList,"获取tagName成功");
+            return CommonResult.success(tagNameList);
         }
         return CommonResult.failed(msg);
     }

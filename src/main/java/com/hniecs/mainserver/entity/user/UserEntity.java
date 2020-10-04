@@ -25,7 +25,7 @@ public class UserEntity {
      * 用户id
      */
     @Getter@Setter
-    private long id;
+    private Long id;
     /**
      * 用户名
      */
@@ -35,6 +35,11 @@ public class UserEntity {
      * SHA算法加密后的密码
      */
     private String passwordSHA;
+    /**
+     * 用户头像url
+     */
+    @Getter@Setter
+    private String avatarUrl;
     /**
      * 创建时间
      */
@@ -49,7 +54,7 @@ public class UserEntity {
     /**
      * 用户详细信息
      */
-    @Getter
+    @Getter@Setter
     private UserDetailEntity detail;
 
     public UserEntity(String userName, String password) {
