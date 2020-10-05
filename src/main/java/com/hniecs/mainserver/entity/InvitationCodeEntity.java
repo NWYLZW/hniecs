@@ -18,12 +18,12 @@ public class InvitationCodeEntity {
     /**
      * 邀请码id
      */
-    private long id;
+    private Long id;
 
     /**
      * 创建邀请码的用户id
      */
-    private long createUserId;
+    private Long createUserId;
 
     /**
      * 邀请码内容 长度在50个以内
@@ -38,12 +38,12 @@ public class InvitationCodeEntity {
     /**
      * 邀请码状态 -1 已删除，0 未使用，1 已使用，2 禁止使用
      */
-    private int status;
+    private Integer status;
 
     /**
      * 剩余邀请次数 -1 无限邀请
      */
-    private int availableInviteCount;
+    private Integer availableInviteCount;
 
     /**
      * 创建时间

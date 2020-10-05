@@ -9,5 +9,8 @@ package com.hniecs.mainserver.entity.permission;
 public interface AdminPermissions extends IPermissions {
     String NAME = "admin";
 
-    long SEARCH_ALL_USER = 0X001;
+    // 操作邀请码权限
+    long OPERATE_INVITATION_CODES = 0X001;
+    // 搜索邀请码列表权限
+    long SEARCH_INVITATION_CODES = 0X008;
 }

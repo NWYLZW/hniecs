@@ -1,25 +1,6 @@
 spring:
-  profiles:
-    active: dev
-
-mybatis:
-  configuration:
-    # 数据库字段下划线自动转驼峰
-    mapUnderscoreToCamelCase: true
-    # 打印 mybatis 生成的sql
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-# dev-config
----
-spring:
-  profiles: dev
+  profiles.active: dev
   datasource:
-    url: jdbc:mysql://39.96.17.163:3306/dev-hniecs?useUnicode=true&characterEncoding=UTF-8&useSSL=false
-    username: dev-hniecs
-    password: LCERPijnGMeN37Jz
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    type: com.alibaba.druid.pool.DruidDataSource
-
     initialSize: 5
     minIdle: 5
     maxActive: 20
@@ -31,21 +12,35 @@ spring:
     testOnBorrow: false
     testOnReturn: false
     poolPreparedStatements: true
-    #   配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
+    # 配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
     filters: stat,wall,slf4j
     maxPoolPreparedStatementPerConnectionSize: 20
     useGlobalDataSourceStat: true
     connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
-    #    自动建表
-    #    schema:
-    #      - classpath:Emp.sql
-    #默认不起作用，需要配置
+    # 自动建表
+    # schema:
+    #   - classpath:Emp.sql
+
+mybatis:
+  configuration:
+    # 数据库字段下划线自动转驼峰
+    mapUnderscoreToCamelCase: true
 
 server:
   port: 10000
-  servlet:
-    session:
-      timeout: 86400
+  servlet.session:
+    timeout: 86400
+
+# dev-config
+---
+spring:
+  profiles: dev
+  datasource:
+    url: jdbc:mysql://39.96.17.163:3306/dev-hniecs?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: dev-hniecs
+    password: LCERPijnGMeN37Jz
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
 ---
 
 # pro-config
@@ -58,30 +53,4 @@ spring:
     password: wGiabnAdHHahtLJN
     driver-class-name: com.mysql.cj.jdbc.Driver
     type: com.alibaba.druid.pool.DruidDataSource
-
-    initialSize: 5
-    minIdle: 5
-    maxActive: 20
-    maxWait: 60000
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 300000
-    validationQuery: SELECT 1 FROM DUAL
-    testWhileIdle: true
-    testOnBorrow: false
-    testOnReturn: false
-    poolPreparedStatements: true
-    #   配置监控统计拦截的filters，去掉后监控界面sql无法统计，'wall'用于防火墙
-    filters: stat,wall,slf4j
-    maxPoolPreparedStatementPerConnectionSize: 20
-    useGlobalDataSourceStat: true
-    connectionProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
-    #    自动建表
-    #    schema:
-    #      - classpath:Emp.sql
-    #默认不起作用，需要配置
-server:
-  port: 10018
-  servlet:
-    session:
-      timeout: 86400
 ---

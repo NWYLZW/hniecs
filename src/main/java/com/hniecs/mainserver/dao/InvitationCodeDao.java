@@ -30,17 +30,6 @@ public interface InvitationCodeDao {
             "where status!=-1"
     )
     ArrayList<InvitationCodeEntity> getAll();
-
-    /**
-     *返回所有的不重复不为空的tagName
-     */
-    @Select(
-        "select tag_name " +
-            "from invitation_code " +
-            "where length(trim(tag_name)) != 0 and tag_name is not null " +
-            "group by tag_name"
-    )
-    public ArrayList<String> getTagNameList();
     /**
      * 根据(创建用户id|邀请码id|邀请码状态|邀请码内容) 获取符合条件的某个邀请码
      * @param col       列名
@@ -49,11 +38,9 @@ public interface InvitationCodeDao {
     @Select(
         "select * " +
             "from invitation_code " +
-            "where ${columnName}=#{condition}"
+            "where ${col}=#{condition}"
     )
     InvitationCodeEntity getOne(columnName col, String condition);
-
-
     /**
      * 进行详细的邀请码查询
      * @param tagName         标签名
@@ -62,17 +49,17 @@ public interface InvitationCodeDao {
      */
     @Select(
         "select * " +
-        "from invitation_code " +
+            "from invitation_code " +
             "where " +
-            "invitation_code like #{invitationCode} " +
-            "and (" +
-                "select user_name " +
-                "from user " +
+                "invitation_code like #{invitationCode} " +
+                "and (" +
+                    "select user_name " +
+                    "from user " +
                     "where user.id=create_user_id" +
                 ") like #{creatorName} " +
-            "and tag_name like #{tagName}  or tag_name is null " +
-            "and status!=-1 " +
-        "order by mtime desc"
+                "and (tag_name like #{tagName}  or tag_name is null) " +
+                "and status!=-1 " +
+            "order by mtime desc"
     )
     @Result(
         property="creator", column="create_user_id",
@@ -83,6 +70,17 @@ public interface InvitationCodeDao {
     List<InvitationCodeEntity> getInvitationCodes(
         String creatorName, String tagName, String invitationCode
     );
+
+    /**
+     *返回所有的不重复不为空的tagName
+     */
+    @Select(
+        "select tag_name " +
+            "from invitation_code " +
+            "where length(trim(tag_name)) != 0 and tag_name is not null " +
+            "group by tag_name"
+    )
+    List<String> getTagNameList();
 
     /**
      * 新增一条邀请码
@@ -103,9 +101,10 @@ public interface InvitationCodeDao {
         "<script> \n" +
             "update invitation_code set " +
                 "<if test='invitationCode!=null'>invitation_code=#{invitationCode}, </if>" +
+                "<if test='availableInviteCount!=null'>available_invite_count=#{availableInviteCount}, </if>" +
+                "<if test='tagName!=null'>tag_name=#{tagName}, </if>" +
                 "<if test='status!=null'>status=#{status}, </if>" +
-                "<if test='available_invite_count!=null'>available_invite_count=#{available_invite_count}, </if>" +
-                "<if test='mtime!=null'>mtime=#{mtime}, </if>" +
+                "<if test='mtime!=null'>mtime=#{mtime} </if>" +
             "where id=#{id}" +
         "</script>"
     )

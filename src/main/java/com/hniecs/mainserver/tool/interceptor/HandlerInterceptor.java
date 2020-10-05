@@ -54,7 +54,7 @@ public class HandlerInterceptor extends HandlerInterceptorAdapter {
         HttpServletResponse response
     ) throws IOException {
         // 校验session是否正确
-        boolean isRightSession = SessionTool.vertifyUserSessionToken();
+        boolean isRightSession = SessionTool.verifyUserSessionToken();
         if (!isRightSession) {
             response.setStatus(401);
             response.setCharacterEncoding("utf-8");

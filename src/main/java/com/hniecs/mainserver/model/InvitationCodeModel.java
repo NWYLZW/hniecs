@@ -97,6 +97,7 @@ public class InvitationCodeModel {
         InvitationCodeEntity ice = new InvitationCodeEntity();
         ice.setId(id);
         ice.setStatus(-1);
+        ice.setMtime(new Date());
         try {
             if (invitationCodeDao.update(ice) == 0) {
                 return "删除邀请码失败";
@@ -104,6 +105,7 @@ public class InvitationCodeModel {
                 return "0";
             }
         } catch (Exception e) {
+            log.error("删除邀请码出现了错误", e);
             return CommonUseStrings.SERVER_FAILED.S;
         }
     }
@@ -114,17 +116,18 @@ public class InvitationCodeModel {
      */
     public String updateInvitationCode(InvitationCodeEntity invitationCode) {
         // 保证对外的唯一一致性
-        if (invitationCode.getStatus() == -1) {
+        if (invitationCode.getStatus() != null && invitationCode.getStatus() == -1) {
             throw new RangeException((short) 0, "该接口不支持将邀请码删除的功能");
         }
         try {
-            // TODO 将mtime修改为当前时间
+            invitationCode.setMtime(new Date());
             if (invitationCodeDao.update(invitationCode) == 0) {
                 return "更新邀请码失败";
             } else {
                 return "0";
             }
         } catch (Exception e) {
+            log.error("更新新邀请码时出现了错误", e);
             return CommonUseStrings.SERVER_FAILED.S;
         }
     }
@@ -193,27 +196,26 @@ public class InvitationCodeModel {
      * @param id 邀请码id
      */
     public boolean have(long id){
-        InvitationCodeEntity invitationCodeEntity = invitationCodeDao.getOne(InvitationCodeDao.columnName.invitation_code
-            , Long.toString(id));
-        if(invitationCodeEntity == null){
+        InvitationCodeEntity invitationCodeEntity = invitationCodeDao.getOne(
+            InvitationCodeDao.columnName.id, Long.toString(id)
+        );
+        if (invitationCodeEntity == null) {
             return false;
         }
-        if(invitationCodeEntity.getStatus() == -1){
-            return false;
-        }
-        return true;
+        return invitationCodeEntity.getStatus() != -1;
     }
 
     /**
-     *返回所有的不重复不为空的tagName
+     * 返回所有的不重复不为空的tagName
+     * @param tagNameList tagName数组
      */
-    public String getTagName(ArrayList<String> tagNameList){
-        try{
+    public String getTagName(List<String> tagNameList){
+        try {
             tagNameList.addAll(invitationCodeDao.getTagNameList());
             return "0";
-        } catch (Exception e){
-            log.error(e.getMessage());
-            return "服务器错误";
+        } catch (Exception e) {
+            log.error("获取标签名列表时异常", e);
+            return CommonUseStrings.SERVER_FAILED.S;
         }
     }
 }
