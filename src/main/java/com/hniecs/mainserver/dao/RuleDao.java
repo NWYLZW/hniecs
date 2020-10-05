@@ -30,12 +30,12 @@ public interface RuleDao {
     @Select("select * from rule where id=#{id}")
     Rules.RuleEntity getById(Long id);
     /**
-     * 通过权限组权限值 判断某个权限是否存在
-     * @param   permissions 权限组权限值
+     * 通过权限组id 判断某个权限是否存在
+     * @param   id 权限组id
      * @return  0 不存在，1 存在
      */
-    @Select("select count(1) from rule where permissions=#{permissions}")
-    int have(Long permissions);
+    @Select("select count(1) from rule where id=#{id}")
+    int have(Long id);
 
     /**
      * 新增一个权限组
