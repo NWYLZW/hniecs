@@ -26,7 +26,7 @@ public class RuleModel {
         for (Rules rule : Rules.values()) {
             Rules.RuleEntity r = rule.getR();
             try {
-                if (ruleDao.have(r.getPermissions()) == 0) {
+                if (ruleDao.have(r.getId()) == 0) {
                     try {
                         ruleDao.addNew(r);
                     } catch (Exception e) {

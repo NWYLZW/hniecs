@@ -14,21 +14,23 @@ import lombok.Setter;
  */
 public enum Rules {
     COMMON(
+        1L,
         "普通用户",
         0
     ),
     SUPPER_ADMIN(
+        2L,
         "超级管理员",
         Permissions.countUnitPermission(AdminPermissions.NAME,
-        AdminPermissions.OPERATE_INVITATION_CODES &
+        AdminPermissions.OPERATE_INVITATION_CODES |
             AdminPermissions.SEARCH_INVITATION_CODES
         )
     );
 
     @Getter@Setter
     private RuleEntity r;
-    Rules(String name, long permissions) {
-        r = new RuleEntity(name, permissions);
+    Rules(Long id, String name, long permissions) {
+        r = new RuleEntity(id, name, permissions);
     }
 
     /**
@@ -44,13 +46,14 @@ public enum Rules {
      */
     @Data
     public static class RuleEntity {
-        long id;
+        Long id;
         String name;
         Long permissions;
 
         public RuleEntity() {
         }
-        public RuleEntity(String name, Long permissions) {
+        public RuleEntity(Long id, String name, Long permissions) {
+            this.id = id;
             this.name = name;
             this.permissions = permissions;
         }
@@ -62,12 +65,12 @@ public enum Rules {
         public boolean can(Long permissions) {
             long thisScopePermission = this.permissions >> 20;
             long scopePermission = permissions >> 20;
-            if ((thisScopePermission | permissions) != scopePermission) {
+            if ((thisScopePermission & scopePermission) != scopePermission) {
                 return false;
             }
-            long thisUnitPermission = this.permissions - thisScopePermission;
-            long unitPermission = permissions - scopePermission;
-            return (thisUnitPermission | unitPermission) == unitPermission;
+            long thisUnitPermission = this.permissions - (thisScopePermission << 20);
+            long unitPermission = permissions - (scopePermission << 20);
+            return (thisUnitPermission & unitPermission) == unitPermission;
         }
     }
 }
