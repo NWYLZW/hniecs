@@ -50,7 +50,6 @@ public class UserEntity {
      */
     @Getter@Setter
     private Date mtime;
-
     /**
      * 用户详细信息
      */

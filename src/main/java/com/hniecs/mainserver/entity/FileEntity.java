@@ -6,17 +6,20 @@ import java.util.Date;
 
 /**
  * @author 陈桢梁
- * @desc $END$ PhotoEntity.java
+ * @desc $END$ fileEntity.java
  * @date 2020-09-25 22:04
- * @logs[0] 2020-09-25 22:04 陈桢梁 创建了PhotoEntity.java文件
+ * @logs[0] 2020-09-25 22:04 陈桢梁 创建了fileEntity.java文件
  */
 @Data
-public class PhotoEntity {
+public class FileEntity {
     /**
      * 图片id
      */
     private Long id;
-
+    /**
+     * 图片所属用户id
+     */
+    private Long userId;
     /**
      * 图片在服务器上保存的路径
      */
