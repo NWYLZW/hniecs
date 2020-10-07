@@ -100,7 +100,25 @@ public class FileBaseController {
         }
         return CommonResult.failed(msg);
     }
-
+    @PostMapping("/file/base/add/{dirType}/{kind}")
+    public CommonResult add(@RequestParam MultipartFile multipartFile, @PathVariable String dirType, @PathVariable String kind){
+        String[] fileName = multipartFile.getOriginalFilename().split("\\.",2);
+        String suffix = fileName[1];
+        String fileNameNotSuffix = fileName[0];
+        ArrayList<String> getPathList = new ArrayList<>();
+        if(!verifyDirType(kind)||!verifySuffix(suffix)){
+            return CommonResult.failed("url错误");
+        }
+        if(multipartFile.getSize() >= 5 * 1024 * 1024){
+            return CommonResult.failed("文件过大");
+        }
+        String basePath = System.getProperty("user.dir")+"/workPlace/"+dirType+"/"+kind+"/";
+        String msg= fileService.add(suffix, basePath, fileNameNotSuffix, multipartFile, getPathList, SessionTool.curUser().getId());
+        if(msg.equals("0")){
+            return CommonResult.success(getPathList.get(0),"上传成功");
+        }
+        return CommonResult.failed(msg);
+    }
     /**
      *
      * @param path 需要删除的图片路径

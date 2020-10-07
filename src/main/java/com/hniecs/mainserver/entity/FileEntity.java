@@ -21,10 +21,13 @@ public class FileEntity {
      */
     private Long userId;
     /**
+     * 文件大小
+     */
+    private Long size;
+    /**
      * 图片在服务器上保存的路径
      */
     private String path;
-
     /**
      * 创建时间
      */
@@ -39,9 +42,11 @@ public class FileEntity {
     public String toString(){
         String charList="{" +
             "id:" +id+
-            "path :"+path+
-            "ctime :"+ctime+
-            "mtime :";
+            "userId:"+userId+
+            "size:"+size+
+            "path:"+path+
+            "ctime:"+ctime+
+            "mtime:";
         if(mtime == null){
             charList+="null";
         }else {

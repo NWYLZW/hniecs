@@ -59,7 +59,8 @@ public interface FileDao {
         "<script>" +
             "update file set" +
             "<if test = 'path != null'>path = #{path},</if>" +
-            "<if test = 'mtime != null'>mtime = #{mtime},</if>" +
+            "<if test = 'size != null'>size = #{size},</if>" +
+            "<if test = 'mtime != null'>mtime = #{mtime},</if>"+
             "id = #{id} " +
             "where id = #{id}" +
             "</script>")

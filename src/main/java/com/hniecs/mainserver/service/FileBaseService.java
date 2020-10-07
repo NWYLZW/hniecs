@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 
 /**
@@ -56,23 +57,46 @@ public class FileBaseService {
 
     /**
      * 更新图片地址
-     * @param filepath
-     * @param fileName
-     * @param multipartFile
-     * @param userEntity
-     * @param pathList
+     * @param filepath 文件路径
+     * @param fileName 文件名
+     * @param multipartFile 上传的文件
+     * @param userEntity 用户实体
+     * @param pathList 获取路径数组
      */
    public String update(String filepath, String fileName, MultipartFile multipartFile, UserEntity userEntity, ArrayList<String> pathList)  {
        String[] suffix = fileName.split("\\.",2);
-       log.error(suffix[0]+" "+suffix[1]);
-       String name = SHA256.salt(suffix[0]+userEntity.getId(),2);
-       File mkdir = new File(filepath+userEntity.getId()+"/image");
-       if(!mkdir.exists()){
+       File file = transToFile(filepath+"/"+userEntity.getId()+"/image",suffix[0],suffix[1]);
+       if(file == null){
            return "文件路径错误";
        }
-       //deleteFile(userEntity.getId());
-       File file = new File(filepath+"/"+userEntity.getId()+"/image/"+name+"."+suffix[1]);
        return fileModel.update(file, multipartFile, userEntity.getId(), pathList);
    }
-
+    public String add(String suffix, String path, String fileName, MultipartFile multipartFile
+        , ArrayList<String> getPathList, long userId) {
+       File file = transToFile(path, fileName, suffix);
+       if(file == null){
+           return "文件路径错误";
+       }
+       try {
+           getPathList.add(file.getCanonicalPath());
+       }catch (IOException e){
+           log.error(e.getMessage());
+           return "服务器出错";
+       }
+        return fileModel.add(multipartFile, file, userId);
+    }
+    /**
+     * 通过路径和原名字返回一个文件
+     * @param path 文件路径
+     * @param fileName 文件名
+     * @param suffix 文件后缀
+     */
+   private File transToFile(String path, String fileName, String suffix){
+       String name = SHA256.salt(fileName);
+       File dir = new File(path);
+       if(!dir.exists()){
+           return null;
+       }
+       return new File(path+"/"+name+"."+suffix);
+   }
 }

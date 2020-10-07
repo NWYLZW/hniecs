@@ -2,14 +2,8 @@ package com.hniecs.mainserver.model;
 
 import com.hniecs.mainserver.dao.FileDao;
 import com.hniecs.mainserver.entity.FileEntity;
-import com.hniecs.mainserver.tool.security.SHA256;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.coyote.Response;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -49,6 +43,12 @@ public class FileModel {
         }
     }
 
+    /**
+     *
+     * @param path 文件路径
+     * @param suffix 文件后缀
+     * @param dateList 获取数据的数组
+     */
     public String getByPath(String path, String suffix, ArrayList<HttpServletResponse> dateList){
         try {
             FileEntity fileEntity = fileDao.getByPath(path);
@@ -67,18 +67,24 @@ public class FileModel {
      * @param filePath 文件名
      */
     public HttpServletResponse export(String filePath, String suffix, HttpServletResponse response) throws IOException {
-        byte[] bytes = readFile(filePath);
+        byte[] bytes = readFile(new File(filePath));
         response.setContentType("image/"+suffix);
         response.getOutputStream().write(bytes);
         response.addHeader("Content-Disposition", "attachment;filename=image."+suffix);
         return response;
     }
-    @Cacheable
-    public byte[] readFile(String path) throws IOException {
-        File file = new File(path);
+
+    /**
+     * 通过路径从一个文件中读数据到byte数组里并缓存
+     * @param file 文件对象
+     * @return 文件数据
+     * @throws IOException io异常
+     */
+    @Cacheable(value = "myCache",condition = "#{file.length()/(5 * 1024 *1024) == 0}")
+    public byte[] readFile(File file) throws IOException {
         log.warn("fuck");
         FileInputStream in = new FileInputStream(file);
-        byte[] bytes = new byte[5 * 1024 * 1024];
+        byte[] bytes = new byte[(int)file.length()];
         in.read(bytes);
         return  bytes;
     }
@@ -93,18 +99,31 @@ public class FileModel {
             multipartFile.transferTo(file);
             FileEntity fileEntity = new FileEntity();
             fileEntity.setPath(file.getCanonicalPath());
+            fileEntity.setSize(multipartFile.getSize());
             fileEntity.setMtime(new Date());
             fileEntity.setId(fileDao.getByUserId(userId).getId());
             fileDao.update(fileEntity);
             temp.add(file.getCanonicalPath());
             return "0";
         }catch (Exception e){
-            log.error("fuck");
             log.error(e.getMessage());
             return "服务器出错";
         }
     }
-
+    public String add(MultipartFile file, File targetFile, long userId) {
+        try {
+            FileEntity fileEntity = new FileEntity();
+            fileEntity.setPath(targetFile.getCanonicalPath());
+            fileEntity.setSize(file.getSize());
+            fileEntity.setCtime(new Date());
+            fileEntity.setUserId(userId);
+            fileDao.insert(fileEntity);
+            return "0";
+        }catch (Exception e){
+            log.error(e.getMessage());
+            return "服务器出错";
+        }
+    }
     /**
      *通过id删除图片和数据库条目
      * @param id 文件id

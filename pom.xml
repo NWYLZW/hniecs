@@ -46,6 +46,11 @@
             <artifactId>alipay-easysdk</artifactId>
             <version>2.0.2</version>
         </dependency>
+        <!-- spring缓存依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
