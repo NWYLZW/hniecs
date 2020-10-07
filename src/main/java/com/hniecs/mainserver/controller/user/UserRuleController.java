@@ -1,14 +1,18 @@
 package com.hniecs.mainserver.controller.user;
 
 import com.hniecs.mainserver.annotation.method.PermissionRequired;
+import com.hniecs.mainserver.entity.AppEntity;
 import com.hniecs.mainserver.entity.permission.AdminPermissions;
+import com.hniecs.mainserver.service.user.UserRuleService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * @desc    用户权限controller层 UserRuleController.java
@@ -19,6 +23,8 @@ import java.util.HashMap;
  */
 @RestController
 public class UserRuleController {
+    @Resource
+    UserRuleService userRuleService;
     /**------------------超级管理员------------------**/
     /**
      * TODO 获取已有的权限列表
@@ -84,38 +90,12 @@ public class UserRuleController {
      */
     @GetMapping("/user/rule/getApps")
     public CommonResult getApps() {
-        return CommonResult.success(new ArrayList<>(
-            Arrays.asList(
-                new HashMap<String, Object>() {{
-                    put("name", "后台管理");
-                    put("iconUTF8", "&#xe76e;");
-                    put("url", "/admin/manage/user");
-                }},
-                new HashMap<String, Object>() {{
-                    put("name", "我的消息");
-                    put("iconUTF8", "&#xe6a2;");
-                    put("url", "/message/my/index");
-                    put("menus", new ArrayList<>(
-                        Arrays.asList(
-                            new HashMap<String, Object>() {{
-                                put("name", "公告");
-                                put("iconUTF8", "&#xe6aa;");
-                                put("url", "/admin/announcement/index");
-                            }},
-                            new HashMap<String, Object>() {{
-                                put("name", "聊天");
-                                put("iconUTF8", "&#xe6a9;");
-                                put("url", "/admin/chat/index");
-                            }},
-                            new HashMap<String, Object>() {{
-                                put("name", "看板");
-                                put("iconUTF8", "&#xe6ab;");
-                                put("url", "/admin/board/index");
-                            }}
-                        )
-                    ));
-                }}
-            )
-        ));
+        ArrayList<AppEntity> apps = new ArrayList<>();
+        String message = userRuleService.getApps(apps);
+        if (message.equals("0")) {
+            return CommonResult.success(apps);
+        } else {
+            return CommonResult.failed(message);
+        }
     }
 }
