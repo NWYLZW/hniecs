@@ -106,6 +106,7 @@ public class FileModel {
             temp.add(file.getCanonicalPath());
             return "0";
         }catch (Exception e){
+            log.error("fuck");
             log.error(e.getMessage());
             return "服务器出错";
         }
@@ -117,10 +118,12 @@ public class FileModel {
             fileEntity.setSize(file.getSize());
             fileEntity.setCtime(new Date());
             fileEntity.setUserId(userId);
+            file.transferTo(targetFile);
             fileDao.insert(fileEntity);
             return "0";
         }catch (Exception e){
             log.error(e.getMessage());
+            targetFile.delete();
             return "服务器出错";
         }
     }

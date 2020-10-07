@@ -48,8 +48,8 @@ public interface FileDao {
      * @param fileEntity
      */
     @Insert("insert into " +
-        "file(path, ctime, mtime)" +
-        "value(#{path}, #{ctime}, #{mtime})")
+        "file(path, type, name, suffix, size, uploader_id,  ctime, mtime)" +
+        "value(#{path}, #{type}, #{name}, #{suffix}, #{size}, #{uploaderId}, #{ctime}, #{mtime})")
     public void insert(FileEntity fileEntity);
     /**
      * 更新图片
@@ -59,6 +59,9 @@ public interface FileDao {
         "<script>" +
             "update file set" +
             "<if test = 'path != null'>path = #{path},</if>" +
+            "<if test = 'type != null'>type = #{type},</if>"+
+            "<if test = 'name != null'>name = #{name},</if>"+
+            "<if test = 'suffix != null'>suffix = #{suffix},</if>"+
             "<if test = 'size != null'>size = #{size},</if>" +
             "<if test = 'mtime != null'>mtime = #{mtime},</if>"+
             "id = #{id} " +

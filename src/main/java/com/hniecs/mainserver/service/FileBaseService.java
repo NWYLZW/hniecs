@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class FileBaseService {
     @Resource
     FileModel fileModel;
-
+    final int saltCount = 2;
     /**
      * 通过id删除文件
      * @param id
@@ -51,10 +51,6 @@ public class FileBaseService {
        return fileModel.getByPath(path, suffix, dateList);
    }
 
-   public String addPrivate(String filepath, String fileName, MultipartFile multipartFile, UserEntity userEntity){
-        return  "0";
-   }
-
     /**
      * 更新图片地址
      * @param filepath 文件路径
@@ -71,7 +67,21 @@ public class FileBaseService {
        }
        return fileModel.update(file, multipartFile, userEntity.getId(), pathList);
    }
-    public String add(String suffix, String path, String fileName, MultipartFile multipartFile
+
+    public String addPrivate(String fileName, MultipartFile multipartFile
+        , ArrayList<String> getPathList){
+        return  "0";
+    }
+    /**
+     * 上传文件到公共目录
+     * @param suffix 文件后缀
+     * @param path 文件路径
+     * @param fileName 文件名
+     * @param multipartFile 文件数据
+     * @param getPathList 获取保存后数据数组
+     * @param userId 用户id
+     */
+    public String addPublic(String suffix, String path, String fileName, MultipartFile multipartFile
         , ArrayList<String> getPathList, long userId) {
        File file = transToFile(path, fileName, suffix);
        if(file == null){
@@ -85,6 +95,8 @@ public class FileBaseService {
        }
         return fileModel.add(multipartFile, file, userId);
     }
+
+
     /**
      * 通过路径和原名字返回一个文件
      * @param path 文件路径
@@ -92,8 +104,9 @@ public class FileBaseService {
      * @param suffix 文件后缀
      */
    private File transToFile(String path, String fileName, String suffix){
-       String name = SHA256.salt(fileName);
+       String name = SHA256.salt(fileName, saltCount);
        File dir = new File(path);
+       System.out.println(path);
        if(!dir.exists()){
            return null;
        }
