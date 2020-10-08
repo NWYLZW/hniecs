@@ -24,6 +24,8 @@ public class AppEntity {
     String name;
     /** 介绍 */
     String desc;
+    /** 图标颜色 */
+    String color;
     /** 图标UTF8编码值 */
     String iconUTF8;
     /** 跳转到的页面 */
