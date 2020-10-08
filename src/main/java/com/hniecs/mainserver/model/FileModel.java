@@ -3,8 +3,11 @@ package com.hniecs.mainserver.model;
 import com.hniecs.mainserver.dao.FileDao;
 import com.hniecs.mainserver.entity.FileEntity;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheConfig;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
@@ -35,8 +38,7 @@ public class FileModel {
             if(fileEntity == null){
                 return "图片不存在";
             }
-            fileList.add(export(fileEntity.getPath(), "jpg", fileList.get(0)));
-            return "0";
+            return "未完成";
         }catch (Exception e){
             log.error(e.getMessage());
             return "服务器出错";
@@ -46,47 +48,49 @@ public class FileModel {
     /**
      *
      * @param path 文件路径
-     * @param suffix 文件后缀
-     * @param dateList 获取数据的数组
      */
-    public String getByPath(String path, String suffix, ArrayList<HttpServletResponse> dateList){
+    public String getByPath(String path){
         try {
             FileEntity fileEntity = fileDao.getByPath(path);
             if (fileEntity == null) {
                 return "文件不存在";
             }
-            dateList.add(export(path, suffix, dateList.get(0)));
             return "0";
         }catch (Exception e){
             log.error(e.getMessage());
             return "服务器出错";
         }
     }
+
     /**
-     * 通过一个文件对象返回一个响应实体
-     * @param filePath 文件名
+     *
+     * @param bytes 要写入头部的二进制数组
+     * @param suffix 文件名后缀
+     * @param response 响应对象
+     * @throws IOException io异常
      */
-    public HttpServletResponse export(String filePath, String suffix, HttpServletResponse response) throws IOException {
-        byte[] bytes = readFile(new File(filePath));
+    public HttpServletResponse export(byte[] bytes, String suffix, HttpServletResponse response) throws IOException {
         response.setContentType("image/"+suffix);
         response.getOutputStream().write(bytes);
         response.addHeader("Content-Disposition", "attachment;filename=image."+suffix);
         return response;
     }
-
     /**
      * 通过路径从一个文件中读数据到byte数组里并缓存
      * @param file 文件对象
      * @return 文件数据
      * @throws IOException io异常
      */
-    @Cacheable(value = "myCache",condition = "#{file.length()/(5 * 1024 *1024) == 0}")
+    @Cacheable(value = "myCache", key = "#file.name", condition = "#file.length() <= 5 * 1024 * 1024")
     public byte[] readFile(File file) throws IOException {
-        log.warn("fuck");
         FileInputStream in = new FileInputStream(file);
         byte[] bytes = new byte[(int)file.length()];
         in.read(bytes);
         return  bytes;
+    }
+    @CachePut(value = "myCache", key = "#file.name")
+    public byte[] updateCache(File file) throws IOException {
+        return readFile(file);
     }
     /**
      * 更新文件
@@ -111,19 +115,24 @@ public class FileModel {
             return "服务器出错";
         }
     }
-    public String add(MultipartFile file, File targetFile, long userId) {
+    public String upload(MultipartFile file, File targetFile, long uploaderId) {
         try {
             FileEntity fileEntity = new FileEntity();
-            fileEntity.setPath(targetFile.getCanonicalPath());
+            fileEntity.setPath(targetFile.getCanonicalPath().replace("\\","/"));
             fileEntity.setSize(file.getSize());
             fileEntity.setCtime(new Date());
-            fileEntity.setUserId(userId);
+            fileEntity.setUploaderId(uploaderId);
             file.transferTo(targetFile);
             fileDao.insert(fileEntity);
             return "0";
+        } catch (IOException e){
+            log.error("读取文件路径失败或转换路径失败");
+            if(targetFile.exists()) {
+                targetFile.delete();
+            }
+            return "服务器出错";
         }catch (Exception e){
             log.error(e.getMessage());
-            targetFile.delete();
             return "服务器出错";
         }
     }

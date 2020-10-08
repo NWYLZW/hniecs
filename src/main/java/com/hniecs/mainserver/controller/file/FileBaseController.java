@@ -6,6 +6,7 @@ import com.hniecs.mainserver.tool.api.CommonResult;
 import com.hniecs.mainserver.tool.enums.DirTypeEnum;
 import com.hniecs.mainserver.tool.security.SessionTool;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -61,11 +62,11 @@ public class FileBaseController {
         , @PathVariable String suffix, HttpServletResponse response){
         ArrayList<HttpServletResponse> fileDateList = new ArrayList<>();
         fileDateList.add(response);
-        if(verifySuffix(suffix) || verifyDirType(dirType)){
+        if(!verifySuffix(suffix) || !verifyDirType(dirType)){
             return CommonResult.failed("url有误");
         }
-        String basePath = System.getProperty("user.dir") + "\\workPlace\\"+SessionTool.curUser().getId()+"\\"
-            +dirType+"\\"+fileName+"."+suffix;
+        String basePath = System.getProperty("user.dir").replace("\\","/") + "/workPlace/public"+"/"
+            +dirType+"/"+fileName+"."+suffix;
         String msg = fileService.get(basePath, suffix, fileDateList);
         if(msg.equals("0")){
             return fileDateList.get(0);
@@ -73,6 +74,14 @@ public class FileBaseController {
         return CommonResult.failed(msg);
     }
 
+
+    @ResponseBody
+    @GetMapping("/test/{path}")
+    @Cacheable(value = "Cache", key = "#path")
+    public byte[] test(@PathVariable String path) {
+        System.out.println("fuck!");
+        return new byte[10];
+    }
 
     /**
      * 上传文件进public文件夹目录
@@ -100,7 +109,7 @@ public class FileBaseController {
         return CommonResult.failed(msg);
     }
     @ResponseBody
-    @PostMapping("/file/base/upload/{scopeType}/{dirtype}")
+    @PostMapping("/file/base/upload/{scopeType}/{dirType}")
     public CommonResult upload(@RequestParam MultipartFile multipartFile, @PathVariable String scopeType, @PathVariable String dirType){
         String[] fileName = multipartFile.getOriginalFilename().split("\\.",2);
         String suffix = fileName[1];
@@ -108,7 +117,8 @@ public class FileBaseController {
         ArrayList<String> getPathList = new ArrayList<>();
         String basePath = System.getProperty("user.dir").replace("\\", "/") + "/workPlace/" + scopeType+"/";
         String msg;
-        if(verifyDirType(dirType)||verifySuffix(suffix)){
+        log.warn("fuck");
+        if(!verifyDirType(dirType)||!verifySuffix(suffix)){
             return CommonResult.validateFailed("url错误");
         }
         if(multipartFile.getSize() >= 5 * 1024 * 1024){

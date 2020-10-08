@@ -5,6 +5,7 @@ import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.model.FileModel;
 import com.hniecs.mainserver.tool.security.SHA256;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -48,7 +49,16 @@ public class FileBaseService {
      * @param path 文件路径
      */
    public String get(String path, String suffix, ArrayList<HttpServletResponse> dateList){
-       return fileModel.getByPath(path, suffix, dateList);
+       String msg = fileModel.getByPath(path);
+       if(msg.equals("0")) {
+           try {
+               byte[] bytes = fileModel.readFile(new File(path));
+               dateList.add(fileModel.export(bytes,suffix,dateList.get(0)));
+           }catch (IOException e){
+               return "服务器出错";
+           }
+       }
+       return msg;
    }
 
     /**
@@ -79,21 +89,24 @@ public class FileBaseService {
      * @param fileName 文件名
      * @param multipartFile 文件数据
      * @param getPathList 获取保存后数据数组
-     * @param userId 用户id
+     * @param uploaderId 用户id
      */
     public String addPublic(String suffix, String path, String fileName, MultipartFile multipartFile
-        , ArrayList<String> getPathList, long userId) {
+        , ArrayList<String> getPathList, long uploaderId) {
        File file = transToFile(path, fileName, suffix);
        if(file == null){
            return "文件路径错误";
        }
        try {
            getPathList.add(file.getCanonicalPath());
+           if(file.exists()){
+               fileModel.updateCache(file);
+           }
        }catch (IOException e){
            log.error(e.getMessage());
            return "服务器出错";
        }
-        return fileModel.add(multipartFile, file, userId);
+        return fileModel.upload(multipartFile, file, uploaderId);
     }
 
 

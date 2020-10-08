@@ -36,15 +36,17 @@ public class FileEntity {
     /**
      * 文件类型
      */
-    @Getter@Setter
+    @Getter
     private String type;
     /**
      * 文件名
      */
+    @Getter
     private String name;
     /**
      * 文件后缀名
      */
+    @Getter
     private String suffix;
     /**
      * 创建时间
@@ -58,10 +60,12 @@ public class FileEntity {
     @Getter@Setter
     private Date mtime;
 
-    private  void setPath(String path){
+    public void setPath(String path){
         this.path = path;
-        String[] fileName = path.split(String.valueOf('\\'));
+        System.out.println(path);
+        String[] fileName = path.split(String.valueOf('/'),10);
         name = fileName[fileName.length-1];
+        type = fileName[fileName.length-2];
         suffix = name.split("\\.",2)[1];
     }
     @Override
