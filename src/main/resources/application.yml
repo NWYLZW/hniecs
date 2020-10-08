@@ -20,7 +20,8 @@ spring:
     # 自动建表
     # schema:
     #   - classpath:Emp.sql
-
+  cache:
+    type: simple
 mybatis:
   configuration:
     # 数据库字段下划线自动转驼峰
