@@ -16,17 +16,20 @@ public class FileEntity {
     /**
      * 图片id
      */
-    @Getter@Setter
+    @Getter
+    @Setter
     private Long id;
     /**
      * 图片所属用户id
      */
-    @Getter@Setter
+    @Getter
+    @Setter
     private Long uploaderId;
     /**
      * 文件大小
      */
-    @Getter@Setter
+    @Getter
+    @Setter
     private Long size;
     /**
      * 图片在服务器上保存的路径
@@ -51,38 +54,41 @@ public class FileEntity {
     /**
      * 创建时间
      */
-    @Getter@Setter
+    @Getter
+    @Setter
     private Date ctime;
 
     /**
      * 修改时间
      */
-    @Getter@Setter
+    @Getter
+    @Setter
     private Date mtime;
 
-    public void setPath(String path){
+    public void setPath(String path) {
         this.path = path;
         System.out.println(path);
-        String[] fileName = path.split(String.valueOf('/'),10);
-        name = fileName[fileName.length-1];
-        type = fileName[fileName.length-2];
-        suffix = name.split("\\.",2)[1];
+        String[] fileName = path.split(String.valueOf('/'), 10);
+        name = fileName[fileName.length - 1];
+        type = fileName[fileName.length - 2];
+        suffix = name.split("\\.", 2)[1];
     }
+
     @Override
-    public String toString(){
-        String charList="{" +
-            "id:" +id+
-            "userId:"+uploaderId+
-            "size:"+size+
-            "path:"+path+
-            "ctime:"+ctime+
+    public String toString() {
+        String charList = "{" +
+            "id:" + id +
+            "userId:" + uploaderId +
+            "size:" + size +
+            "path:" + path +
+            "ctime:" + ctime +
             "mtime:";
-        if(mtime == null){
-            charList+="null";
-        }else {
-            charList+=mtime;
+        if (mtime == null) {
+            charList += "null";
+        } else {
+            charList += mtime;
         }
-        charList+="}";
+        charList += "}";
         return charList;
     }
 }

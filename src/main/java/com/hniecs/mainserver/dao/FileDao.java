@@ -28,7 +28,7 @@ public interface FileDao {
      */
     @Select(
         "select * " +
-            "from file "+
+            "from file " +
             "where userId = #{userId}"
     )
     public FileEntity getByUserId(long userId);
@@ -38,19 +38,23 @@ public interface FileDao {
      * @param path 图片路径
      */
     @Select(
-        "select * "+
-            "from file "+
+        "select * " +
+            "from file " +
             "where path = #{path}"
     )
     public FileEntity getByPath(String path);
+
     /**
      * 插入图片
      * @param fileEntity
      */
-    @Insert("insert into " +
-        "file(path, type, name, suffix, size, uploader_id,  ctime, mtime)" +
-        "value(#{path}, #{type}, #{name}, #{suffix}, #{size}, #{uploaderId}, #{ctime}, #{mtime})")
+    @Insert(
+        "insert into " +
+            "file(path, type, name, suffix, size, uploader_id,  ctime, mtime)" +
+            "value(#{path}, #{type}, #{name}, #{suffix}, #{size}, #{uploaderId}, #{ctime}, #{mtime})"
+    )
     public void insert(FileEntity fileEntity);
+
     /**
      * 更新图片
      * @param fileEntity 图片实体
@@ -58,15 +62,16 @@ public interface FileDao {
     @Update(
         "<script>" +
             "update file set" +
-            "<if test = 'path != null'>path = #{path},</if>" +
-            "<if test = 'type != null'>type = #{type},</if>"+
-            "<if test = 'name != null'>name = #{name},</if>"+
-            "<if test = 'suffix != null'>suffix = #{suffix},</if>"+
-            "<if test = 'size != null'>size = #{size},</if>" +
-            "<if test = 'mtime != null'>mtime = #{mtime},</if>"+
-            "id = #{id} " +
+                "<if test = 'path != null'>path = #{path},</if>" +
+                "<if test = 'type != null'>type = #{type},</if>" +
+                "<if test = 'name != null'>name = #{name},</if>" +
+                "<if test = 'suffix != null'>suffix = #{suffix},</if>" +
+                "<if test = 'size != null'>size = #{size},</if>" +
+                "<if test = 'mtime != null'>mtime = #{mtime},</if>" +
+                "id = #{id} " +
             "where id = #{id}" +
-            "</script>")
+        "</script>"
+    )
     public void update(FileEntity fileEntity);
 
     /**
@@ -75,6 +80,7 @@ public interface FileDao {
      */
     @Delete(
         "delete from file" +
-            "where id = #{id}")
+            "where id = #{id}"
+    )
     public void delete(Long id);
 }
