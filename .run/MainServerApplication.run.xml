@@ -1,16 +1,6 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="MainServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <module name="hniecs-web" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="com.hniecs.mainserver.MainServerApplication" />
-    <option name="ALTERNATIVE_JRE_PATH" />
-    <option name="UPDATE_ACTION_UPDATE_POLICY" value="UpdateClassesAndResources" />
-    <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
-    <method v="2">
-      <option name="Make" enabled="true" />
-    </method>
-  </configuration>
   <configuration default="false" name="MainServerApplication LogSQL" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <module name="hniecs-web" />
+    <module name="main-server" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.hniecs.mainserver.MainServerApplication" />
     <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=dev --server.port=10000 --mybatis.configuration.log-impl=org.apache.ibatis.logging.stdout.StdOutImpl" />
     <option name="ALTERNATIVE_JRE_PATH" />
@@ -21,7 +11,7 @@
     </method>
   </configuration>
   <configuration default="false" name="MainServerApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
-    <module name="hniecs-web" />
+    <module name="main-server" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="com.hniecs.mainserver.MainServerApplication" />
     <option name="PROGRAM_PARAMETERS" value="--spring.profiles.active=dev --server.port=10000" />
     <option name="ALTERNATIVE_JRE_PATH" />
