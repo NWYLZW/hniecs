@@ -16,7 +16,7 @@ import java.util.*;
 public class UserRuleService {
     /**
      * 获取应用列表
-     * @param returnData 返回数据类型
+     * @param returnData 返回数据
      */
     public String getApps (List<AppEntity> returnData) {
         ArrayList<AppEntity> apps = new ArrayList<>();
