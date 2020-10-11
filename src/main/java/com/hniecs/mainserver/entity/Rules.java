@@ -13,6 +13,7 @@ import lombok.Setter;
  * @logs[0] 2020-09-25 04:29 yijie  创建了 Rules.java 文件
  */
 public enum Rules {
+    // TODO 跨域元权限可能导致权限越界bug
     COMMON(
         1L,
         "普通用户",
