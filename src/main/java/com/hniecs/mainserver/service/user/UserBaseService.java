@@ -6,11 +6,13 @@ import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.model.InvitationCodeModel;
 import com.hniecs.mainserver.model.UserModel;
 import com.hniecs.mainserver.tool.security.SessionTool;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 
@@ -24,6 +26,7 @@ import java.util.Hashtable;
  * @logs[3] 2020-09-16 22:42 yijie 抽离sessionToken处理，集中管理易于处理加密次数
  */
 @Service
+@Slf4j
 public class UserBaseService {
     @Resource
     private UserModel userModel;
@@ -52,6 +55,24 @@ public class UserBaseService {
         return msg;
     }
 
+    /**
+     * 通过用户名获取用户可公开数据
+     * @param userName 用户名
+     * @param getUserDetailList 获取用户数据的数组
+     */
+    public String getByUserNameOrUserId(String userName, ArrayList<UserDetailEntity> getUserDetailList){
+        UserDetailEntity userDetailEntity;
+        if(!userModel.have(userName)){
+            return "用户名不存在";
+        }
+    }
+
+    /**
+     * 通过用户id获取用户可公开数据
+     * @param id 用户id
+     * @param getUserDetailList 获取用户数据的数组
+     */
+    public String getByUserNameOrUserId(long id, ArrayList<UserDetailEntity> getUserDetailList){}
     /**
      * 注册新用户
      * @param userName          用户名

@@ -85,22 +85,6 @@ public class UserModel {
     }
 
     /**
-     * 初始化用户文件夹
-     * @param userEntity 用户实体
-     */
-    private boolean createfileDir(File newFile,UserEntity userEntity) {
-        String basePath = System.getProperty("user.dir");
-        basePath += "/workplace/public/"+userEntity.getId()+"/image";
-        try {
-            newFile = new File(basePath);
-            newFile.mkdirs();
-            return true;
-        }catch (Exception e){
-            newFile.getParentFile().delete();
-            return false;
-        }
-    }
-    /**
      * 添加用户
      * @param user  用户entity实体结构
      */
@@ -118,7 +102,17 @@ public class UserModel {
                 UserEntity newU = userDao.getSimpleByUserName(user.getUserName());
                 user.getDetail().setUserId(newU.getId());
                 userDao.addNewDetail(user.getDetail());
-                createfileDir(new File(""),user);
+                String basePath = System.getProperty("user.dir")+"/workplace/private/" + newU.getId();
+                File imageDir = new File(basePath+"/image");
+                try{
+                    if(!imageDir.isDirectory()||!imageDir.exists()) {
+                        System.out.println(imageDir.getCanonicalPath());
+                        imageDir.mkdirs();
+                    }
+                }catch (Exception e){
+                    log.error(e.getMessage());
+                    return "服务器出错";
+                }
                 return "0";
             } catch (Exception e) {
                 log.error("userDetail表 添加新用户详情信息时出现了错误", e.getMessage(), e);

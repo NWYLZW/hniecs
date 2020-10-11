@@ -1,6 +1,7 @@
 package com.hniecs.mainserver.controller.user;
 
 import com.hniecs.mainserver.annotation.method.NotNeedLogin;
+import com.hniecs.mainserver.entity.user.UserDetailEntity;
 import com.hniecs.mainserver.service.user.UserBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;
@@ -156,7 +157,21 @@ public class UserBaseController {
      * @return 与搜索信息相关的用户列表
      */
     @GetMapping("/user/base/searchByIdOrUserName")
-    public CommonResult searchByIdOrUserName() {
+    public CommonResult searchByIdOrUserName(@RequestParam String userName,@RequestParam Long userId) {
+        String msg;
+        ArrayList<UserDetailEntity> userDetailEntityArrayList = new ArrayList<>();
+        if(userName == null && userId == null){
+            return CommonResult.success(null,"参数必须有用户信息或者用户id");
+        }
+        if(userId != null && userName != null){
+            return CommonResult.success(null,"只能使用id或者用户名其中一个");
+        }
+        if(userId != null){
+            msg = userBaseService.getByUserNameOrUserId(userId, userDetailEntityArrayList);
+        }
+        if(userName != null){
+            msg = userBaseService.getByUserNameOrUserId(userName, userDetailEntityArrayList);
+        }
         return CommonResult.notFound("接口未完成");
     }
 

@@ -4,8 +4,10 @@ import com.hniecs.mainserver.entity.FileEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.model.FileModel;
 import com.hniecs.mainserver.tool.security.SHA256;
+import com.hniecs.mainserver.tool.threadtool.ClearCacheTask;
+import com.hniecs.mainserver.tool.threadtool.ThreadManager;
+import com.hniecs.mainserver.tool.threadtool.我想留着当个纪念.TimerManager;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -23,22 +25,21 @@ import java.util.ArrayList;
  */
 @Slf4j
 @Service
-public class FileBaseService {
+public class FileBaseService{
     @Resource
     FileModel fileModel;
     final int saltCount = 2;
-
     /**
      * 通过id删除文件
      * @param id
      */
-    private boolean deleteFile(long id) {
+    private boolean deleteFile(long id){
         FileEntity fileEntity = fileModel.getById(id);
-        if (fileEntity == null) {
+        if(fileEntity == null){
             return true;
         }
         File temp = new File(fileEntity.getPath());
-        if (temp.exists()) {
+        if (temp.exists()){
             temp.delete();
             return true;
         }
@@ -47,84 +48,109 @@ public class FileBaseService {
 
     /**
      * 通过文件路径返回文件二进制数据
+     * @param fileName 文件名
      * @param path 文件路径
+     * @param suffix 文件后缀
+     * @param dateList 文件数据
      */
-    public String get(String path, String suffix, ArrayList<HttpServletResponse> dateList) {
-        String msg = fileModel.getByPath(path);
-        if (msg.equals("0")) {
-            try {
-                byte[] bytes = fileModel.readFile(new File(path));
-                dateList.add(fileModel.export(bytes, suffix, dateList.get(0)));
-            } catch (IOException e) {
-                return "服务器出错";
-            }
-        }
-        return msg;
+    public String getPublic(String path, String fileName, String suffix,ArrayList<HttpServletResponse> dateList){
+        path += SHA256.salt(fileName.split("\\.",2)[1],saltCount)+"."+suffix;
+        return get(path, suffix, dateList);
     }
+    /**
+     *通过文件路径返回文件二进制数据
+     * @param path 文件路径
+     * @param suffix 文件后缀
+     * @param dateList 文件数据
+     */
+    public String get(String path, String suffix, ArrayList<HttpServletResponse> dateList){
+       String msg = fileModel.getByPath(path);
+       if(msg.equals("0")) {
+           try {
+               File file = new File(path);
+               byte[] bytes = fileModel.readFile(file);
+               dateList.add(fileModel.export(bytes,suffix,dateList.get(0)));
+               ThreadManager.getInstance().getTaskList().Check(file);
+           }catch (IOException e){
+               return "服务器出错";
+           }
+       }
+       return msg;
+   }
 
     /**
      * 更新图片地址
-     * @param filepath      文件路径
-     * @param fileName      文件名
+     * @param filepath 文件路径
+     * @param fileName 文件名
      * @param multipartFile 上传的文件
-     * @param userEntity    用户实体
-     * @param pathList      获取路径数组
+     * @param userEntity 用户实体
+     * @param pathList 获取路径数组
      */
-    public String update(String filepath, String fileName, MultipartFile multipartFile, UserEntity userEntity, ArrayList<String> pathList) {
-        String[] suffix = fileName.split("\\.", 2);
-        File file = transToFile(filepath + "/" + userEntity.getId() + "/image", suffix[0], suffix[1]);
-        if (file == null) {
+   public String update(String filepath, String fileName, MultipartFile multipartFile, UserEntity userEntity, ArrayList<String> pathList)  {
+       String[] suffix = fileName.split("\\.",2);
+       File file = transToFile(filepath+"/"+userEntity.getId()+"/image",suffix[0],suffix[1]);
+       if(file == null){
+           return "文件路径错误";
+       }
+       return fileModel.update(file, multipartFile, userEntity.getId(), pathList);
+   }
+
+    public String addPrivate(String fileName, String path, MultipartFile multipartFile, ArrayList<String> getPathList, long uploadId){
+       String[] fileNames = fileName.split("\\.", 2);
+        File file = transToFile(path,fileNames[0],fileNames[1]);
+        if(file == null){
             return "文件路径错误";
         }
-        return fileModel.update(file, multipartFile, userEntity.getId(), pathList);
-    }
-
-    public String addPrivate(String fileName, MultipartFile multipartFile
-        , ArrayList<String> getPathList) {
-        return "0";
-    }
-
-    /**
-     * 上传文件到公共目录
-     * @param suffix        文件后缀
-     * @param path          文件路径
-     * @param fileName      文件名
-     * @param multipartFile 文件数据
-     * @param getPathList   获取保存后数据数组
-     * @param uploaderId    用户id
-     */
-    public String addPublic(String suffix, String path, String fileName, MultipartFile multipartFile
-        , ArrayList<String> getPathList, long uploaderId) {
-        File file = transToFile(path, fileName, suffix);
-        if (file == null) {
-            return "文件路径错误";
-        }
-        try {
+        try{
             getPathList.add(file.getCanonicalPath());
-            if (file.exists()) {
-                fileModel.updateCache(file);
-            }
-        } catch (IOException e) {
+        }catch (IOException e){
             log.error(e.getMessage());
             return "服务器出错";
         }
+        return fileModel.upload(multipartFile, file, uploadId);
+    }
+    /**
+     * 上传文件到公共目录
+     * @param suffix 文件后缀
+     * @param path 文件路径
+     * @param fileName 文件名
+     * @param multipartFile 文件数据
+     * @param getPathList 获取保存后数据数组
+     * @param uploaderId 用户id
+     */
+    public String addPublic(String suffix, String path, String fileName, MultipartFile multipartFile
+        , ArrayList<String> getPathList, long uploaderId) {
+       File file = transToFile(path, fileName, suffix);
+       if(file == null){
+           return "文件路径错误";
+       }
+       try {
+           getPathList.add(file.getCanonicalPath());
+           if(file.exists()){
+               fileModel.updateCache(file);
+           }
+       }catch (IOException e){
+           log.error(e.getMessage());
+           return "服务器出错";
+       }
         return fileModel.upload(multipartFile, file, uploaderId);
     }
 
 
     /**
      * 通过路径和原名字返回一个文件
-     * @param path     文件路径
-     * @param fileName 文件名
-     * @param suffix   文件后缀
+     * @param path 文件路径
+     * @param fileName 文件名除去后缀
+     * @param suffix 文件后缀
      */
-    private File transToFile(String path, String fileName, String suffix) {
-        String name = SHA256.salt(fileName, saltCount);
-        File dir = new File(path);
-        System.out.println(path);
-        if (!dir.exists()) {
-            return null;
-        }
-        return new File(path + "/" + name + "." + suffix);
-    }
+   private File transToFile(String path, String fileName, String suffix){
+       String name = SHA256.salt(fileName, saltCount);
+       File dir = new File(path);
+       if(!dir.exists()){
+           return null;
+       }
+       return new File(path+"/"+name+"."+suffix);
+   }
+
+
 }

@@ -1,5 +1,8 @@
 package com.hniecs.mainserver.controller.file;
 
+import com.hniecs.mainserver.annotation.method.NotNeedLogin;
+import com.hniecs.mainserver.annotation.method.PermissionRequired;
+import com.hniecs.mainserver.entity.permission.AdminPermissions;
 import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.service.FileBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
@@ -58,55 +61,57 @@ public class FileBaseController {
         }
         return false;
     }
-
+    @PermissionRequired(
+        scope = AdminPermissions.NAME,
+        permission = AdminPermissions.CHANGE_USER_FILE
+    )
+    @PostMapping("/dynamic-static/{user_Id}/{dirType}/{fileName}.{suffix}")
+    public Object getByManger(@PathVariable String user_Id, @PathVariable String dirType
+        , @PathVariable String fileName, @PathVariable String suffix, HttpServletResponse response){
+        ArrayList<HttpServletResponse> responses = new ArrayList<>();
+        responses.add(response);
+        String basePath =  System.getProperty("user.dir").replace("\\", "/") + "/workPlace/private/" +
+            user_Id + "/" + dirType + "/" + fileName + "." + suffix;
+        String msg = getPrivate(basePath, dirType, suffix, responses);
+        if (msg.equals("0")) {
+            return responses.get(0);
+        }
+        return CommonResult.failed(msg);
+    }
+    @PostMapping("/dynamic-static/private/{dirType}/{fileName}.{suffix}")
+    public Object getPrivate(@PathVariable String dirType, @PathVariable String fileName
+        , @PathVariable String suffix, HttpServletResponse response){
+        ArrayList<HttpServletResponse> fileDateList = new ArrayList<>();
+        fileDateList.add(response);
+        String basePath =  System.getProperty("user.dir").replace("\\", "/") + "/workPlace/private/" +
+            SessionTool.curUser() + "/" + dirType + "/" + fileName + "." + suffix;
+        String msg = getPrivate(basePath, dirType, suffix, fileDateList);
+        if (msg.equals("0")) {
+            return fileDateList.get(0);
+        }
+        return CommonResult.failed(msg);
+    }
+    private String getPrivate(String path, String dirType, String suffix, ArrayList<HttpServletResponse> responses ){
+        if (!verifySuffix(suffix) || !verifyDirType(dirType)) {
+            return "url有误";
+        }
+        String msg = fileService.get(path, suffix, responses);
+        return msg;
+    }
+    @NotNeedLogin
     @PostMapping("/dynamic-static/public/{dirType}/{fileName}.{suffix}")
-    public Object get(@PathVariable String dirType, @PathVariable String fileName
-        , @PathVariable String suffix, HttpServletResponse response) {
+    public Object getPublic(@PathVariable String dirType, @PathVariable String fileName
+        , @PathVariable String suffix, HttpServletResponse response, @RequestParam long userId) {
         ArrayList<HttpServletResponse> fileDateList = new ArrayList<>();
         fileDateList.add(response);
         if (!verifySuffix(suffix) || !verifyDirType(dirType)) {
             return CommonResult.failed("url有误");
         }
         String basePath = System.getProperty("user.dir").replace("\\", "/") + "/workPlace/public" + "/"
-            + dirType + "/" + fileName + "." + suffix;
-        String msg = fileService.get(basePath, suffix, fileDateList);
+            + dirType + "/";
+        String msg = fileService.getPublic(basePath, fileName+"."+suffix, suffix, fileDateList);
         if (msg.equals("0")) {
             return fileDateList.get(0);
-        }
-        return CommonResult.failed(msg);
-    }
-
-
-    @ResponseBody
-    @GetMapping("/test/{path}")
-    @Cacheable(value = "Cache", key = "#path")
-    public byte[] test(@PathVariable String path) {
-        System.out.println("fuck!");
-        return new byte[10];
-    }
-
-    /**
-     * 上传文件进public文件夹目录
-     * @param path          文件对应路径不包括文件名
-     * @param multipartFile 文件流数据
-     */
-    @ResponseBody
-    @PostMapping("/file/base/update")
-    public CommonResult update(@RequestParam("filePath") String path, @RequestParam MultipartFile multipartFile) {
-        path = System.getProperty("user.dir").replace("\\", "/") + "/./workPlace/" + path;
-        String name = multipartFile.getOriginalFilename();
-        String suffix = name.split(".", 2)[1];
-        ArrayList<String> pathList = new ArrayList<>();
-        if (multipartFile.getSize() >= 5 * 1024 * 1024) {
-            return CommonResult.failed("图片过大");
-        }
-        if (verifySuffix(suffix)) {
-            return CommonResult.failed("文件类型有误");
-        }
-        UserEntity userEntity = SessionTool.curUser();
-        String msg = fileService.update(path, name, multipartFile, userEntity, pathList);
-        if (msg.equals("0")) {
-            return CommonResult.success(pathList, "文件上传成功");
         }
         return CommonResult.failed(msg);
     }
@@ -120,7 +125,6 @@ public class FileBaseController {
         ArrayList<String> getPathList = new ArrayList<>();
         String basePath = System.getProperty("user.dir").replace("\\", "/") + "/workPlace/" + scopeType + "/";
         String msg;
-        log.warn("fuck");
         if (!verifyDirType(dirType) || !verifySuffix(suffix)) {
             return CommonResult.validateFailed("url错误");
         }
@@ -129,7 +133,7 @@ public class FileBaseController {
         }
         if (scopeType.equals("private")) {
             basePath += SessionTool.curUser().getId() + "/" + dirType;
-            msg = fileService.addPrivate(multipartFile.getOriginalFilename(), multipartFile, getPathList);
+            msg = fileService.addPrivate(multipartFile.getOriginalFilename(), basePath, multipartFile, getPathList, SessionTool.curUser().getId());
         } else if (scopeType.equals("public")) {
             basePath += dirType;
             msg = fileService.addPublic(suffix, basePath,
