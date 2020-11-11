@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import java.util.Date;
-import java.util.Hashtable;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @desc    UserBaseService.java
@@ -32,24 +32,17 @@ public class UserBaseService {
 
     /**
      * 登陆，将信息储存到session中
-     * @param userName      用户名
-     * @param password      密码
-     * @param returnData    返回数据字典
+     * @param userName 用户名
+     * @param password 密码
      */
-    public String login(String userName, String password, Hashtable returnData) {
-        Hashtable getReturnData = new Hashtable();
-        String msg = userModel.vertify(userName, password, getReturnData);
-        if (msg.equals("0")) {
-            UserEntity user = (UserEntity) getReturnData.get("userData");
-            returnData.put(
-                "sessionToken",
-                SessionTool
-                    .setUserSessionToken(user)
-                    .toString()
+    public Map<String, Object> login(String userName, String password) {
+        UserEntity user = userModel.vertify(userName, password);
+        return new HashMap<>(){{
+            put(
+                "sessionToken", SessionTool.setUserSessionToken(user).toString()
             );
-            returnData.put("user", user);
-        }
-        return msg;
+            put("user", user);
+        }};
     }
 
     /**

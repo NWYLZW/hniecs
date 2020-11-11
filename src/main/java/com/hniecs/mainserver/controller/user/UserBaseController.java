@@ -1,6 +1,7 @@
 package com.hniecs.mainserver.controller.user;
 
 import com.hniecs.mainserver.annotation.method.NotNeedLogin;
+import com.hniecs.mainserver.exception.CommonExceptions;
 import com.hniecs.mainserver.service.user.UserBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;
@@ -73,17 +74,19 @@ public class UserBaseController {
         String
             userName = user.get("userName"),
             password = user.get("password");
+        if (
+            userName == null || password == null ||
+            userName.equals("") || password.equals("")
+        ) {
+            throw CommonExceptions.FORM_VALIDATION.exception;
+        }
         // 密码已加密过一遍，不需要校验
         if (!verifyUserName(userName)) {
             return CommonResult.validateFailed();
         }
-        Hashtable data = new Hashtable();
-        String msg = userBaseService.login(userName, password, data);
-        if (msg.equals("0")) {
-            return CommonResult.success(data, "登陆成功");
-        } else {
-            return CommonResult.validateFailed(msg);
-        }
+        return CommonResult.success(
+            userBaseService.login(userName, password), "登陆成功"
+        );
     }
 
     /**
