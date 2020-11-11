@@ -1,6 +1,5 @@
 package com.hniecs.mainserver.entity;
 
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 

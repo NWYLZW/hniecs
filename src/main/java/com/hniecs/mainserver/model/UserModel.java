@@ -9,6 +9,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
 import java.io.File;
+import java.util.HashMap;
 import java.util.Hashtable;
 
 /**
@@ -75,16 +76,16 @@ public class UserModel {
      * 检查是否能够登录
      * @param userName      用户名
      * @param password      密码
-     * @param returnData    多余的返回值
      */
-    public String vertify(String userName, String password, Hashtable returnData) {
+    public UserEntity vertify(String userName, String password) {
         UserEntity u = get(userName);
-        if (u == null) return "该用户名用户不存在";
+        if (u == null) {
+            throw new RuntimeException("[1001] {该用户名用户不存在}");
+        }
         if (u.vertifyPWD(password)) {
-            returnData.put("userData", u);
-            return "0";
+            return u;
         } else {
-            return "密码错误";
+            throw new RuntimeException("[1002] {密码错误}");
         }
     }
 
