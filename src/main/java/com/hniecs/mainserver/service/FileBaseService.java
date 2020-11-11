@@ -4,9 +4,9 @@ import com.hniecs.mainserver.entity.FileEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.model.FileModel;
 import com.hniecs.mainserver.tool.security.SHA256;
-import com.hniecs.mainserver.tool.threadtool.ClearCacheTask;
+
 import com.hniecs.mainserver.tool.threadtool.ThreadManager;
-import com.hniecs.mainserver.tool.threadtool.我想留着当个纪念.TimerManager;
+
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -54,7 +54,8 @@ public class FileBaseService{
      * @param dateList 文件数据
      */
     public String getPublic(String path, String fileName, String suffix,ArrayList<HttpServletResponse> dateList){
-        path += SHA256.salt(fileName.split("\\.",2)[1],saltCount)+"."+suffix;
+        path += SHA256.salt(fileName,saltCount)+"."+suffix;
+        System.out.println(path);
         return get(path, suffix, dateList);
     }
     /**

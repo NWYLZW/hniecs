@@ -67,6 +67,10 @@ public class UserModel {
         return u != null;
     }
 
+    public boolean have(long id){
+        UserEntity u = userDao.getById(id);
+        return u != null;
+    }
     /**
      * 检查是否能够登录
      * @param userName      用户名

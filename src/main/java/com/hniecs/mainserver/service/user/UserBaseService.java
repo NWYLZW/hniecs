@@ -65,6 +65,7 @@ public class UserBaseService {
         if(!userModel.have(userName)){
             return "用户名不存在";
         }
+        return "接口未完成";
     }
 
     /**
@@ -72,7 +73,13 @@ public class UserBaseService {
      * @param id 用户id
      * @param getUserDetailList 获取用户数据的数组
      */
-    public String getByUserNameOrUserId(long id, ArrayList<UserDetailEntity> getUserDetailList){}
+    public String getByUserNameOrUserId(long id, ArrayList<UserDetailEntity> getUserDetailList){
+        UserDetailEntity userDetailEntity;
+        if(!userModel.have(id)){
+            return "用户id不存在";
+        }
+        return "接口未完成";
+    }
     /**
      * 注册新用户
      * @param userName          用户名

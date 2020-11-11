@@ -3,13 +3,11 @@ package com.hniecs.mainserver.controller.file;
 import com.hniecs.mainserver.annotation.method.NotNeedLogin;
 import com.hniecs.mainserver.annotation.method.PermissionRequired;
 import com.hniecs.mainserver.entity.permission.AdminPermissions;
-import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.service.FileBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import com.hniecs.mainserver.tool.enums.DirTypeEnum;
 import com.hniecs.mainserver.tool.security.SessionTool;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -72,12 +70,20 @@ public class FileBaseController {
         responses.add(response);
         String basePath =  System.getProperty("user.dir").replace("\\", "/") + "/workPlace/private/" +
             user_Id + "/" + dirType + "/" + fileName + "." + suffix;
-        String msg = getPrivate(basePath, dirType, suffix, responses);
+        String msg = get(basePath, dirType, suffix, responses);
         if (msg.equals("0")) {
             return responses.get(0);
         }
         return CommonResult.failed(msg);
     }
+
+    /**
+     * 用户获取自己的私有文件夹下的文件
+     * @param dirType 文件类型
+     * @param fileName 文件名
+     * @param suffix 文件名后缀
+     * @param response 响应
+     */
     @PostMapping("/dynamic-static/private/{dirType}/{fileName}.{suffix}")
     public Object getPrivate(@PathVariable String dirType, @PathVariable String fileName
         , @PathVariable String suffix, HttpServletResponse response){
@@ -85,23 +91,31 @@ public class FileBaseController {
         fileDateList.add(response);
         String basePath =  System.getProperty("user.dir").replace("\\", "/") + "/workPlace/private/" +
             SessionTool.curUser() + "/" + dirType + "/" + fileName + "." + suffix;
-        String msg = getPrivate(basePath, dirType, suffix, fileDateList);
+        String msg = get(basePath, dirType, suffix, fileDateList);
         if (msg.equals("0")) {
             return fileDateList.get(0);
         }
         return CommonResult.failed(msg);
     }
-    private String getPrivate(String path, String dirType, String suffix, ArrayList<HttpServletResponse> responses ){
+    private String get(String path, String dirType, String suffix, ArrayList<HttpServletResponse> responses){
         if (!verifySuffix(suffix) || !verifyDirType(dirType)) {
             return "url有误";
         }
         String msg = fileService.get(path, suffix, responses);
         return msg;
     }
+
+    /**
+     * 获取公共文件夹下的文件
+     * @param dirType 文件类型
+     * @param fileName 文件名
+     * @param suffix 文件名后缀
+     * @param response 响应
+     */
     @NotNeedLogin
     @PostMapping("/dynamic-static/public/{dirType}/{fileName}.{suffix}")
     public Object getPublic(@PathVariable String dirType, @PathVariable String fileName
-        , @PathVariable String suffix, HttpServletResponse response, @RequestParam long userId) {
+        , @PathVariable String suffix, HttpServletResponse response) {
         ArrayList<HttpServletResponse> fileDateList = new ArrayList<>();
         fileDateList.add(response);
         if (!verifySuffix(suffix) || !verifyDirType(dirType)) {
@@ -109,13 +123,19 @@ public class FileBaseController {
         }
         String basePath = System.getProperty("user.dir").replace("\\", "/") + "/workPlace/public" + "/"
             + dirType + "/";
-        String msg = fileService.getPublic(basePath, fileName+"."+suffix, suffix, fileDateList);
+        String msg = fileService.getPublic(basePath, fileName, suffix, fileDateList);
         if (msg.equals("0")) {
             return fileDateList.get(0);
         }
         return CommonResult.failed(msg);
     }
 
+    /**
+     * 上传文件
+     * @param multipartFile 文件对象
+     * @param scopeType 公有或私有文件夹
+     * @param dirType 文件种类
+     */
     @ResponseBody
     @PostMapping("/file/base/upload/{scopeType}/{dirType}")
     public CommonResult upload(@RequestParam MultipartFile multipartFile, @PathVariable String scopeType, @PathVariable String dirType) {
@@ -125,6 +145,9 @@ public class FileBaseController {
         ArrayList<String> getPathList = new ArrayList<>();
         String basePath = System.getProperty("user.dir").replace("\\", "/") + "/workPlace/" + scopeType + "/";
         String msg;
+        if(multipartFile.isEmpty()){
+            return CommonResult.failed("请选择文件");
+        }
         if (!verifyDirType(dirType) || !verifySuffix(suffix)) {
             return CommonResult.validateFailed("url错误");
         }

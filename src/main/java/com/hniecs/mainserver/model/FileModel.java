@@ -133,16 +133,31 @@ public class FileModel {
 
     public String upload(MultipartFile file, File targetFile, long uploaderId) {
         try {
-            FileEntity fileEntity = new FileEntity();
-            fileEntity.setPath(targetFile.getCanonicalPath().replace("\\", "/"));
-            fileEntity.setSize(file.getSize());
-            fileEntity.setCtime(new Date());
-            fileEntity.setUploaderId(uploaderId);
-            file.transferTo(targetFile);
-            fileDao.insert(fileEntity);
-            return "0";
+            String path = targetFile.getCanonicalPath().replace("\\", "/");
+            if(!have(path)) {
+                FileEntity fileEntity = new FileEntity();
+                fileEntity.setPath(path);
+                fileEntity.setSize(file.getSize());
+                fileEntity.setCtime(new Date());
+                fileEntity.setUploaderId(uploaderId);
+                file.transferTo(targetFile);
+                fileDao.insert(fileEntity);
+                return "0";
+            }else {
+                FileEntity fileEntity = fileDao.getByPath(path);
+                fileEntity.setMtime(new Date());
+                fileEntity.setSize(file.getSize());
+                System.gc();
+                if(targetFile.delete()) {
+                    file.transferTo(targetFile);
+                    fileDao.update(fileEntity);
+                    return "0";
+                }else {
+                    throw new Exception();
+                }
+            }
         } catch (IOException e) {
-            log.error("读取文件路径失败或转换路径失败");
+            log.error("读取文件路径失败或转换文件失败");
             if (targetFile.exists()) {
                 targetFile.delete();
             }
@@ -182,5 +197,7 @@ public class FileModel {
             return null;
         }
     }
-
+    public boolean have(String path){
+        return fileDao.getByPath(path) != null;
+    }
 }
