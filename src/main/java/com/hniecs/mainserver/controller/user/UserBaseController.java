@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.*;
-import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
@@ -132,7 +129,7 @@ public class UserBaseController {
                 || !Pattern.matches("^[\u4E00-\u9FA5]{2,20}$", profession)
                 || !Pattern.matches("^[0-9]{4}$", classNum)
                 || !Pattern.matches("^[0-9]{6,16}$", qqNum)
-                || (telNum != null && !Pattern.matches("^1[3-9]\\d{9}$", telNum))
+                || !Pattern.matches("^1[3-9]\\d{9}$", telNum)
                 || !Pattern.matches("^\\S{1,50}$", invitationCode)
         ) {
             throw CommonExceptions.BAD_REQUEST.exception;
@@ -153,7 +150,7 @@ public class UserBaseController {
      */
     @GetMapping("/user/base/searchByIdOrUserName")
     public CommonResult searchByIdOrUserName() {
-        return CommonResult.notFound("接口未完成");
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 
     /**
@@ -162,7 +159,7 @@ public class UserBaseController {
      */
     @GetMapping("/user/base/activeData")
     public CommonResult getActiveData() {
-        return CommonResult.notFound("接口未完成");
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 
     /**
@@ -171,7 +168,7 @@ public class UserBaseController {
      */
     @GetMapping("/user/base/integral")
     public CommonResult getIntegral() {
-        return CommonResult.notFound("接口未完成");
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 
     /**
@@ -180,6 +177,6 @@ public class UserBaseController {
      */
     @GetMapping("/user/base/myDetailData")
     public CommonResult getMyDetailData() {
-        return CommonResult.notFound("接口未完成");
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 }

@@ -1,5 +1,6 @@
 package com.hniecs.mainserver.controller.setting;
 
+import com.hniecs.mainserver.exception.CommonExceptions;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,28 +39,28 @@ public class SettingHomeController {
      */
     @GetMapping("/setting/home/carousels")
     public CommonResult getCarousels() {
-        return CommonResult.notFound("接口未完成");
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
     /**
      * TODO 添加一个主页的轮播图字典
      */
     @PostMapping("/setting/home/carousel")
     public CommonResult addCarousel() {
-        return CommonResult.notFound("接口未完成");
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
     /**
      * TODO 删除一个主页的轮播图字典
      */
     @DeleteMapping("/setting/home/carousel")
     public CommonResult deleteCarousel() {
-        return CommonResult.notFound("接口未完成");
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
     /**
      * TODO 修改一个主页的轮播图内容
      */
     @PutMapping("/setting/home/carousel")
     public CommonResult updateCarousel() {
-        return CommonResult.notFound("接口未完成");
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 
     /**
@@ -68,6 +69,6 @@ public class SettingHomeController {
      */
     @GetMapping("/setting/home/services")
     public CommonResult getServices() {
-        return CommonResult.notFound("接口未完成");
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 }

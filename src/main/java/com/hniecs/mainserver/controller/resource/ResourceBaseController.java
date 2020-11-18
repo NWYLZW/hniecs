@@ -7,7 +7,6 @@ import com.hniecs.mainserver.entity.ResourceEntity;
 import com.hniecs.mainserver.service.ResourceBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.ibatis.annotations.Param;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
