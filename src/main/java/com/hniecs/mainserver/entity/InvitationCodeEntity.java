@@ -1,6 +1,7 @@
 package com.hniecs.mainserver.entity;
 
 import com.hniecs.mainserver.entity.user.UserEntity;
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,6 +14,7 @@ import java.util.Date;
  * @logs[1] 2020-09-21 18:27 yijie 支持假删除
  */
 @Data
+@Builder
 public class InvitationCodeEntity {
 
     /**

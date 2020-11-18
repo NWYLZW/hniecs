@@ -1,13 +1,13 @@
 package com.hniecs.mainserver.exception;
 
 /**
- * @desc    普通返回异常 CommonExceptions.java
+ * @desc    常用异常 CommonExceptions.java
  * @author  yijie
  * @date    2020-11-11 16:55
  * @logs[0] 2020-11-11 16:55 yijie 创建了CommonExceptions.java文件
  */
 public enum CommonExceptions {
-    BAD_REQUEST(400, "错误的请求"),
+    BAD_REQUEST(400, "参数校验错误"),
     UNAUTHORIZED(401, "未经授权"),
     PAYMENT_REQUIRED(402, "需要付款"),
     FORBIDDEN(403, "禁止的"),
@@ -47,9 +47,7 @@ public enum CommonExceptions {
     INSUFFICIENT_STORAGE(507, "存储空间不足"),
     LOOP_DETECTED(508, "检测到死循环"),
     NOT_EXTENDED(510, "需要对请求进一步扩展"),
-    NETWORK_AUTHENTICATION_REQUIRED(511, "需要网络验证"),
-
-    FORM_VALIDATION(1000, "表单验证未通过");
+    NETWORK_AUTHENTICATION_REQUIRED(511, "需要网络验证");
 
     public RuntimeException exception;
 

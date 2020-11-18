@@ -2,6 +2,8 @@ package com.hniecs.mainserver.service.admin;
 
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
+import com.hniecs.mainserver.exception.CommonExceptions;
+import com.hniecs.mainserver.exception.UserExceptions;
 import com.hniecs.mainserver.model.InvitationCodeModel;
 import com.hniecs.mainserver.model.UserModel;
 import com.hniecs.mainserver.tool.CommonUseStrings;
@@ -17,6 +19,7 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @desc    InvitationCodeService.java
@@ -24,6 +27,7 @@ import java.util.List;
  * @date    2020-09-20 12:52
  * @logs[0] 2020-09-20 12:52 yijie 创建了InvitationCodeService.java文件
  * @logs[1] 2020-09-23 03:00 yijie 重构大部分代码
+ * @logs[2] 2020-11-18 12:56 yijie 重构代码
  */
 @Slf4j
 @Service
@@ -78,22 +82,18 @@ public class InvitationCodeService {
      * @param tagName           标签名
      * @param creatorName       创建者用户名
      * @param invitationCode    邀请码内容
-     * @param returnData        返回数据
      * @return 邀请码实体列表
      */
-    public String getInvitationCodePage(
-        String invitationCode, String creatorName, String tagName,
-        List<InvitationCodeEntity> returnData
+    public List<InvitationCodeEntity> getInvitationCodePage(
+        String invitationCode, String creatorName, String tagName
     ) {
         // TODO 优化查找效率
         //  如果三个关键词串都为空串时调用获取全部的接口
         //  判断标签名是否存在
         //  判断创建者用户名是否存在
-        return invitationCodeModel
-            .getInvitationCodeList(
-                creatorName, tagName, invitationCode
-                , returnData
-            );
+        return invitationCodeModel.getInvitationCodeList(
+            creatorName, tagName, invitationCode
+        );
     }
 
     /**
@@ -102,15 +102,13 @@ public class InvitationCodeService {
      * @param availableCount    可用次数
      * @param invitationCodes   邀请码字符串列表
      * @param tagName           标签名
-     * @param returnData        返回数据
      */
-    public String addInvitationCodes(
+    public Map<String, Integer> addInvitationCodes(
         UserEntity creator, int availableCount, String tagName,
-        List<String> invitationCodes,
-        HashMap returnData
+        List<String> invitationCodes
     ) {
         if (!userModel.have(creator.getUserName())) {
-            return "用户不存在";
+            throw UserExceptions.NOT_FOUND_USER_BY_USERNAME.exception;
         }
         List<String> newInvitationCodes = new ArrayList<>();
         for (String invitationCode : invitationCodes) {
@@ -120,8 +118,7 @@ public class InvitationCodeService {
         }
         return invitationCodeModel.addInvitationCodes(
             creator, availableCount, tagName,
-            newInvitationCodes,
-            returnData
+            newInvitationCodes
         );
     }
 
@@ -130,13 +127,11 @@ public class InvitationCodeService {
      * @param creator           创建者实体信息
      * @param availableCount    可利用次数
      * @param tagName           支付类型名
-     * @param thresholdMoney       计入数据库信息阈值金钱数
-     * @param returnData        返回数据
+     * @param thresholdMoney    计入数据库信息阈值金钱数
      */
-    public String addInvitationCodes(
+    public Map<String, Integer> addInvitationCodes(
         UserEntity creator, int availableCount, String tagName, String thresholdMoney,
-        InputStream excelIn,
-        HashMap returnData
+        InputStream excelIn
     ) {
 
         try {
@@ -145,20 +140,17 @@ public class InvitationCodeService {
             );
 
             if (invitationCodeStrs.isEmpty()) {
-                returnData.put("successCount", 0);
-                returnData.put("failureCount", 0);
-                return "0";
+                return new HashMap<>(){{
+                    put("successCount", 0);
+                    put("failureCount", 0);
+                }};
             }
             return this.addInvitationCodes(
                 creator, availableCount, tagName, invitationCodeStrs
-                , returnData
             );
-        } catch (NullPointerException e) {
-            log.error("不能解析该标签数据", e);
-            return CommonUseStrings.SERVER_FAILED.S;
-        } catch (ClassNotFoundException e) {
-            log.error("编码错误，getBillExcels{ExcelRader.getBillList 返回值未继承BillExcel类}", e);
-            return CommonUseStrings.SERVER_FAILED.S;
+        } catch (NullPointerException | ClassNotFoundException e) {
+            e.printStackTrace();
+            throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
         }
     }
 
@@ -166,31 +158,33 @@ public class InvitationCodeService {
      * 删除一个邀请码
      * @param id    邀请码id
      */
-    public String deleteById(Long id) {
+    public void deleteById(Long id) {
         if(!invitationCodeModel.have(id)){
-            return "邀请码不存在";
+            throw UserExceptions.NOT_FOUND_INVITATION_CODE.exception;
         }
-        return invitationCodeModel.deleteById(id);
+        invitationCodeModel.deleteById(id);
     }
 
     /**
      * 修改邀请码信息
      * @param invitationCode    邀请码实体
      */
-    public String updateInvitationCode(InvitationCodeEntity invitationCode) {
+    public void updateInvitationCode(InvitationCodeEntity invitationCode) {
         Long id = invitationCode.getId();
         if (id == null || !invitationCodeModel.have(id)){
-            return "邀请码不存在";
+            throw UserExceptions.NOT_FOUND_INVITATION_CODE.exception;
         }
-        return invitationCodeModel.updateInvitationCode(invitationCode);
+        invitationCodeModel.updateInvitationCode(invitationCode);
     }
 
     /**
      * 获取invitationCode表中所有的tagName 并加上全部
-     * @param tagNameList tagName数组
+     * @return 包括一个全部的tag列表
      */
-    public String geTagNameList(List<String> tagNameList){
-        tagNameList.add("全部");
-        return invitationCodeModel.getTagName(tagNameList);
+    public List<String> geTagNameList(){
+        return new ArrayList<>(){{
+            add("全部");
+            addAll(invitationCodeModel.getTagName());
+        }};
     }
 }

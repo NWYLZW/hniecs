@@ -3,6 +3,8 @@ package com.hniecs.mainserver.model;
 import com.hniecs.mainserver.dao.InvitationCodeDao;
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
+import com.hniecs.mainserver.exception.CommonExceptions;
+import com.hniecs.mainserver.exception.UserExceptions;
 import com.hniecs.mainserver.tool.CommonUseStrings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -18,6 +20,7 @@ import java.util.*;
  * @logs[0] 2020-09-13 18:57 yijie 创建了InvitationCodeModel.java文件
  * @logs[1] 2020-09-15 15:51 yijie 完善一些内容
  * @logs[2] 2020-09-25 03:01 yijie 重构代码，修改返回值获取方式，补充注释，预留TODO
+ * @logs[3] 2020-11-18 12:56 yijie 重构代码
  */
 @Repository
 @Slf4j
@@ -31,22 +34,20 @@ public class InvitationCodeModel {
      * @param availableInviteCount  能邀请的用户个数
      * @param invitationCodes       邀请码数组
      * @param tagName               邀请码标签
-     * @param data                  返回数据
      */
-    public String addInvitationCodes(
-        UserEntity user, int availableInviteCount, String tagName, List<String> invitationCodes,
-        HashMap data) {
+    public Map<String, Integer> addInvitationCodes(
+        UserEntity user, int availableInviteCount, String tagName, List<String> invitationCodes
+    ) {
         // 操作信息
         int succeedCount = 0;
         int failureCount = 0;
-
-        InvitationCodeEntity ic = new InvitationCodeEntity();
-        ic.setMtime(new Date());
-        ic.setCtime(new Date());
-        ic.setCreateUserId(user.getId());
-        ic.setAvailableInviteCount(availableInviteCount);
-        ic.setTagName(tagName);
-        ic.setStatus(0);
+        InvitationCodeEntity ic = InvitationCodeEntity.builder()
+            .mtime(new Date())
+            .ctime(new Date())
+            .createUserId(user.getId())
+            .availableInviteCount(availableInviteCount)
+            .tagName(tagName)
+            .status(0).build();
 
         for (String invitationCode : invitationCodes) {
             ic.setInvitationCode(invitationCode);
@@ -54,38 +55,33 @@ public class InvitationCodeModel {
                 invitationCodeDao.addNew(ic);
                 succeedCount++;
             } catch (Exception e) {
+                e.printStackTrace();
                 failureCount++;
-                log.error("插入失败！");
             }
         }
-
-        // 加入结果
-        data.put("successCount", succeedCount);
-        data.put("failureCount", failureCount);
-
         if(succeedCount == 0) {
-            return "邀请码全部生成失败";
-        }else {
-            return "0";
+            throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
         }
+
+        int finalSucceedCount = succeedCount;
+        int finalFailureCount = failureCount;
+        return new HashMap<>(){{
+            put("successCount", finalSucceedCount);
+            put("failureCount", finalFailureCount);
+        }};
     }
 
     /**
      * 使用一个邀请码实体
      * @param invitationCode    邀请码实体
      */
-    public String useInvitationCode(InvitationCodeEntity invitationCode) {
+    public void useInvitationCode(InvitationCodeEntity invitationCode) {
         int count = invitationCode.getAvailableInviteCount();
         if(count > 0) {
             invitationCode.setAvailableInviteCount(count - 1);
-            String message = this.updateInvitationCode(invitationCode);
-            if (message.equals("0")) {
-                return message;
-            } else {
-                return "邀请码使用出现了未知错误";
-            }
+            this.updateInvitationCode(invitationCode);
         }else {
-            return "邀请码可用次数已用尽";
+            throw UserExceptions.INVITATION_CODE_COUNT_0.exception;
         }
     }
 
@@ -93,20 +89,18 @@ public class InvitationCodeModel {
      * 删除一个邀请码
      * @param id    邀请码id
      */
-    public String deleteById(Long id) {
-        InvitationCodeEntity ice = new InvitationCodeEntity();
-        ice.setId(id);
-        ice.setStatus(-1);
-        ice.setMtime(new Date());
+    public void deleteById(Long id) {
+        InvitationCodeEntity ice = InvitationCodeEntity.builder()
+            .id(id)
+            .status(-1)
+            .mtime(new Date()).build();
         try {
             if (invitationCodeDao.update(ice) == 0) {
-                return "删除邀请码失败";
-            } else {
-                return "0";
+                throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
             }
         } catch (Exception e) {
-            log.error("删除邀请码出现了错误", e);
-            return CommonUseStrings.SERVER_FAILED.S;
+            e.printStackTrace();
+            throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
         }
     }
 
@@ -114,21 +108,19 @@ public class InvitationCodeModel {
      * 更新邀请码信息
      * @param invitationCode    邀请码实体
      */
-    public String updateInvitationCode(InvitationCodeEntity invitationCode) {
+    public void updateInvitationCode(InvitationCodeEntity invitationCode) {
         // 保证对外的唯一一致性
         if (invitationCode.getStatus() != null && invitationCode.getStatus() == -1) {
             throw new RangeException((short) 0, "该接口不支持将邀请码删除的功能");
         }
+
         try {
             invitationCode.setMtime(new Date());
             if (invitationCodeDao.update(invitationCode) == 0) {
-                return "更新邀请码失败";
-            } else {
-                return "0";
+                throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
             }
         } catch (Exception e) {
-            log.error("更新新邀请码时出现了错误", e);
-            return CommonUseStrings.SERVER_FAILED.S;
+            throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
         }
     }
 
@@ -137,14 +129,12 @@ public class InvitationCodeModel {
      * @param tagName           邀请码标签名
      * @param creatorName       创建者用户名
      * @param invitationCode    邀请码内容
-     * @param returnData        返回数据
      * @return 满足条件的邀请码实体列表
      */
-    public String getInvitationCodeList(
-        String creatorName, String tagName, String invitationCode,
-        List<InvitationCodeEntity> returnData
+    public List<InvitationCodeEntity> getInvitationCodeList(
+        String creatorName, String tagName, String invitationCode
     ) {
-        HashMap<String, String> searchConditions = new HashMap<String, String>(){{
+        HashMap<String, String> searchConditions = new HashMap<>(){{
             put("creatorName", creatorName);
             put("tagName", tagName);
             put("invitationCode", invitationCode);
@@ -158,18 +148,14 @@ public class InvitationCodeModel {
         });
 
         try {
-            List<InvitationCodeEntity> invitationCodeEntities = invitationCodeDao.getInvitationCodes(
+            return invitationCodeDao.getInvitationCodes(
                 searchConditions.get("creatorName"),
                 searchConditions.get("tagName"),
                 searchConditions.get("invitationCode")
             );
-            returnData.addAll(
-                invitationCodeEntities
-            );
-            return "0";
         } catch (Exception e) {
-            log.error("服务器错误", e);
-            return "服务器错误";
+            e.printStackTrace();
+            throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
         }
     }
 
@@ -207,15 +193,14 @@ public class InvitationCodeModel {
 
     /**
      * 返回所有的不重复不为空的tagName
-     * @param tagNameList tagName数组
+     * @return tagName数组
      */
-    public String getTagName(List<String> tagNameList){
+    public List<String> getTagName(){
         try {
-            tagNameList.addAll(invitationCodeDao.getTagNameList());
-            return "0";
+            return invitationCodeDao.getTagNameList();
         } catch (Exception e) {
-            log.error("获取标签名列表时异常", e);
-            return CommonUseStrings.SERVER_FAILED.S;
+            e.printStackTrace();
+            throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
         }
     }
 }

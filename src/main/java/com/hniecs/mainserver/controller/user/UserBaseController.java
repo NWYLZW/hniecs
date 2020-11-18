@@ -1,7 +1,7 @@
 package com.hniecs.mainserver.controller.user;
 
 import com.hniecs.mainserver.annotation.method.NotNeedLogin;
-import com.hniecs.mainserver.entity.user.UserDetailEntity;
+import com.hniecs.mainserver.exception.CommonExceptions;
 import com.hniecs.mainserver.service.user.UserBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import lombok.extern.slf4j.Slf4j;
@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
-import java.util.*;
-import java.util.function.BooleanSupplier;
-import java.util.function.Predicate;
 import java.util.regex.Pattern;
 
 /**
@@ -23,7 +20,8 @@ import java.util.regex.Pattern;
  * @logs[2] 2020-09-15 20:15 yijie 添加了登陆接口
  * @logs[3] 2020-09-16 01:17 yijie 登陆与注册接口不被拦截器拦截 预留一些TODO
  * @logs[4] 2020-09-16 22:06 yijie 预留数据校验todo，抽离与controller层无关的代码
- * @logs[4] 2020-09-25 04:08 yijie 删除无用的方法
+ * @logs[5] 2020-09-25 04:08 yijie 删除无用的方法
+ * @logs[6] 2020-11-18 12:56 yijie 重构代码
  */
 @RestController
 @Slf4j
@@ -64,27 +62,25 @@ public class UserBaseController {
 
     /**
      * 用户登陆
-     * @param user      用户信息
-     * @bodyParam userName    Y   ""    用户名
-     * @bodyParam password    Y   ""    密码
+     * @param userName    Y   ""    用户名
+     * @param password    Y   ""    密码
      */
     @NotNeedLogin
     @PostMapping("/user/base/login")
-    public CommonResult login(@RequestBody Map<String, String> user) {
-        String
-            userName = user.get("userName"),
-            password = user.get("password");
+    public CommonResult login(
+        @RequestParam(name = "userName", required = true) String userName,
+        @RequestParam(name = "password", required = true) String password
+    ) {
+        if (userName.equals("") || password.equals("")) {
+            throw CommonExceptions.BAD_REQUEST.exception;
+        }
         // 密码已加密过一遍，不需要校验
         if (!verifyUserName(userName)) {
-            return CommonResult.validateFailed();
+            throw CommonExceptions.BAD_REQUEST.exception;
         }
-        Hashtable data = new Hashtable();
-        String msg = userBaseService.login(userName, password, data);
-        if (msg.equals("0")) {
-            return CommonResult.success(data, "登陆成功");
-        } else {
-            return CommonResult.validateFailed(msg);
-        }
+        return CommonResult.success(
+            userBaseService.login(userName, password), "登陆成功"
+        );
     }
 
     /**
@@ -102,29 +98,29 @@ public class UserBaseController {
 
     /**
      * 用户注册
-     * @param registerData  注册信息字典
-     * @bodyParam userName          Y   ""  用户名     字母|中文|数字|-|_|.|@ (不能以 数字，特殊字符，中文 开头) 4-12位
-     * @bodyParam password          Y   ""  密码      字母|数字|-|_|.|@ 5-20位
-     * @bodyParam realName          Y   ""  真实姓名   中文 2-5位
-     * @bodyParam schoolNum         Y   ""  学号      20xxxxxxxxxx 12位
-     * @bodyParam profession        Y   ""  专业名    中文 20位
-     * @bodyParam classNum          Y   ""  班级      数字 4位
-     * @bodyParam qqNum             Y   ""  qq号码    数字 6-16位
-     * @bodyParam telNum            N   ""  电话号码   数字 11位
-     * @bodyParam invitationCode    Y   ""  邀请码    不含空格 50
+     * @param userName          Y   ""  用户名     字母|中文|数字|-|_|.|@ (不能以 数字，特殊字符，中文 开头) 4-12位
+     * @param password          Y   ""  密码      字母|数字|-|_|.|@ 5-20位
+     * @param realName          Y   ""  真实姓名   中文 2-5位
+     * @param schoolNum         Y   ""  学号      20xxxxxxxxxx 12位
+     * @param profession        Y   ""  专业名    中文 20位
+     * @param classNum          Y   ""  班级      数字 4位
+     * @param qqNum             Y   ""  qq号码    数字 6-16位
+     * @param telNum            N   ""  电话号码   数字 11位
+     * @param invitationCode    Y   ""  邀请码    不含空格 50
      */
     @NotNeedLogin
     @PostMapping("/user/base/registered")
-    public CommonResult register(@RequestBody Map<String, String> registerData) {
-        String userName         = registerData.get("userName");
-        String password         = registerData.get("password");
-        String realName         = registerData.get("realName");
-        String schoolNum        = registerData.get("schoolNum");
-        String profession       = registerData.get("profession");
-        String classNum         = registerData.get("classNum");
-        String qqNum            = registerData.get("qqNum");
-        String telNum           = registerData.get("telNum");
-        String invitationCode   = registerData.get("invitationCode");
+    public CommonResult<Object> register(
+        @RequestParam(name = "userName",       required = true) String userName,
+        @RequestParam(name = "password",       required = true) String password,
+        @RequestParam(name = "realName",       required = true) String realName,
+        @RequestParam(name = "schoolNum",      required = true) String schoolNum,
+        @RequestParam(name = "profession",     required = true) String profession,
+        @RequestParam(name = "classNum",       required = true) String classNum,
+        @RequestParam(name = "qqNum",          required = true) String qqNum,
+        @RequestParam(name = "telNum",         required = true) String telNum,
+        @RequestParam(name = "invitationCode", required = true) String invitationCode
+    ) {
         if (
             !verifyUserName(userName)
                 || !verifyPassword(password)
@@ -133,23 +129,19 @@ public class UserBaseController {
                 || !Pattern.matches("^[\u4E00-\u9FA5]{2,20}$", profession)
                 || !Pattern.matches("^[0-9]{4}$", classNum)
                 || !Pattern.matches("^[0-9]{6,16}$", qqNum)
-                || (telNum != null && !Pattern.matches("^1[3-9]\\d{9}$", telNum))
+                || !Pattern.matches("^1[3-9]\\d{9}$", telNum)
                 || !Pattern.matches("^\\S{1,50}$", invitationCode)
         ) {
-            return CommonResult.validateFailed();
+            throw CommonExceptions.BAD_REQUEST.exception;
         }
-        String msg = userBaseService.registerNewUser(
+        userBaseService.registerNewUser(
             userName, password
             , realName, schoolNum
             , profession, classNum
             , qqNum, telNum
             , invitationCode
         );
-        if (msg.equals("0")) {
-            return CommonResult.success();
-        } else {
-            return CommonResult.validateFailed(msg);
-        }
+        return CommonResult.success();
     }
 
     /**
@@ -157,22 +149,8 @@ public class UserBaseController {
      * @return 与搜索信息相关的用户列表
      */
     @GetMapping("/user/base/searchByIdOrUserName")
-    public CommonResult searchByIdOrUserName(@RequestParam String userName,@RequestParam Long userId) {
-        String msg;
-        ArrayList<UserDetailEntity> userDetailEntityArrayList = new ArrayList<>();
-        if(userName == null && userId == null){
-            return CommonResult.success(null,"参数必须有用户信息或者用户id");
-        }
-        if(userId != null && userName != null){
-            return CommonResult.success(null,"只能使用id或者用户名其中一个");
-        }
-        if(userId != null){
-            msg = userBaseService.getByUserNameOrUserId(userId, userDetailEntityArrayList);
-        }
-        if(userName != null){
-            msg = userBaseService.getByUserNameOrUserId(userName, userDetailEntityArrayList);
-        }
-        return CommonResult.notFound("接口未完成");
+    public CommonResult searchByIdOrUserName() {
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 
     /**
@@ -181,7 +159,7 @@ public class UserBaseController {
      */
     @GetMapping("/user/base/activeData")
     public CommonResult getActiveData() {
-        return CommonResult.notFound("接口未完成");
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 
     /**
@@ -190,7 +168,7 @@ public class UserBaseController {
      */
     @GetMapping("/user/base/integral")
     public CommonResult getIntegral() {
-        return CommonResult.notFound("接口未完成");
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 
     /**
@@ -199,6 +177,6 @@ public class UserBaseController {
      */
     @GetMapping("/user/base/myDetailData")
     public CommonResult getMyDetailData() {
-        return CommonResult.notFound("接口未完成");
+        throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 }
