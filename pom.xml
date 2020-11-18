@@ -19,12 +19,6 @@
     </properties>
 
     <dependencies>
-        <!--添加热部署-->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-devtools</artifactId>
-            <optional>true</optional>
-        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
@@ -39,25 +33,19 @@
             <artifactId>druid</artifactId>
             <version>1.1.14</version>
         </dependency>
-        <!-- 引入 ali-pay sdk -->
-        <!-- https://mvnrepository.com/artifact/com.alipay.sdk/alipay-easysdk -->
-        <dependency>
-            <groupId>com.alipay.sdk</groupId>
-            <artifactId>alipay-easysdk</artifactId>
-            <version>2.0.2</version>
-        </dependency>
         <!-- spring缓存依赖 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-cache</artifactId>
         </dependency>
+        <!-- 添加热部署 -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-        <!-- pagehelper -->
+        <!-- pageHelper -->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
@@ -113,19 +101,14 @@
                 </configuration>
             </plugin>
             <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-            <!--添加配置跳过测试-->
-            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.22.1</version>
                 <configuration>
+                    <!--添加配置跳过测试-->
                     <skipTests>true</skipTests>
                 </configuration>
             </plugin>
-            <!--添加配置跳过测试-->
         </plugins>
     </build>
 
