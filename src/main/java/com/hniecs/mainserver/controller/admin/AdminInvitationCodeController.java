@@ -55,10 +55,11 @@ public class AdminInvitationCodeController {
             }});
         }
 
-        return CommonResult.success(invitationCodeService
-            .addInvitationCodes(
-                Objects.requireNonNull(SessionTool.curUser()), availableCount, tagName, invitationCodes
-            )
+        return CommonResult.success(
+            invitationCodeService
+                .addInvitationCodes(
+                    Objects.requireNonNull(SessionTool.curUser()), availableCount, tagName, invitationCodes
+                )
         );
     }
 
@@ -144,13 +145,14 @@ public class AdminInvitationCodeController {
         ) {
             throw CommonExceptions.BAD_REQUEST.exception;
         }
-        invitationCodeService.updateInvitationCode(new InvitationCodeEntity(){{
-            this.setId(id);
-            this.setInvitationCode(invitationCode);
-            this.setTagName(tagName);
-            this.setAvailableInviteCount(availableInviteCount);
-            this.setStatus(status);
-        }});
+        invitationCodeService.updateInvitationCode(
+            InvitationCodeEntity.builder()
+                .id(id)
+                .invitationCode(invitationCode)
+                .tagName(tagName)
+                .availableInviteCount(availableInviteCount)
+                .status(status).build()
+        );
         return CommonResult.success();
     }
 

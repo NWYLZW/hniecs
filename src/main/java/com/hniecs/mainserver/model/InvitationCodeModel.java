@@ -41,13 +41,13 @@ public class InvitationCodeModel {
         // 操作信息
         int succeedCount = 0;
         int failureCount = 0;
-        InvitationCodeEntity ic = new InvitationCodeEntity();
-        ic.setMtime(new Date());
-        ic.setCtime(new Date());
-        ic.setCreateUserId(user.getId());
-        ic.setAvailableInviteCount(availableInviteCount);
-        ic.setTagName(tagName);
-        ic.setStatus(0);
+        InvitationCodeEntity ic = InvitationCodeEntity.builder()
+            .mtime(new Date())
+            .ctime(new Date())
+            .createUserId(user.getId())
+            .availableInviteCount(availableInviteCount)
+            .tagName(tagName)
+            .status(0).build();
 
         for (String invitationCode : invitationCodes) {
             ic.setInvitationCode(invitationCode);
@@ -90,10 +90,10 @@ public class InvitationCodeModel {
      * @param id    邀请码id
      */
     public void deleteById(Long id) {
-        InvitationCodeEntity ice = new InvitationCodeEntity();
-        ice.setId(id);
-        ice.setStatus(-1);
-        ice.setMtime(new Date());
+        InvitationCodeEntity ice = InvitationCodeEntity.builder()
+            .id(id)
+            .status(-1)
+            .mtime(new Date()).build();
         try {
             if (invitationCodeDao.update(ice) == 0) {
                 throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
