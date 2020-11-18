@@ -3,6 +3,7 @@ package com.hniecs.mainserver.service.user;
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.user.UserDetailEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
+import com.hniecs.mainserver.exception.UserExceptions;
 import com.hniecs.mainserver.model.InvitationCodeModel;
 import com.hniecs.mainserver.model.UserModel;
 import com.hniecs.mainserver.tool.security.SessionTool;
@@ -22,6 +23,7 @@ import java.util.Map;
  * @logs[1] 2020-09-14 21:35 yijie 添加邀请码校验逻辑
  * @logs[2] 2020-09-16 22:08 yijie 优化登陆逻辑
  * @logs[3] 2020-09-16 22:42 yijie 抽离sessionToken处理，集中管理易于处理加密次数
+ * @logs[4] 2020-11-18 12:56 yijie 重构代码
  */
 @Service
 public class UserBaseService {
@@ -58,7 +60,7 @@ public class UserBaseService {
      * @param invitationCode    邀请码
      */
     @Transactional
-    public String registerNewUser(
+    public void registerNewUser(
         String userName, String password
         , String realName, String schoolNum
         , String profession, String classNum
@@ -66,18 +68,15 @@ public class UserBaseService {
         , String invitationCode
     ) {
         if (userModel.have(userName)) {
-            return "该用户名用户已存在";
+            throw UserExceptions.EXIST_USER_BY_USERNAME.exception;
         }
 
         InvitationCodeEntity ice = invitationCodeModel.findAbleUse(invitationCode);
         if (ice == null) {
-            return "邀请码不存在";
+            throw UserExceptions.NOT_FOUND_INVITATION_CODE.exception;
         }
 
-        String msg = invitationCodeModel.useInvitationCode(ice);
-        if (!msg.equals("0")) {
-            return msg;
-        }
+        invitationCodeModel.useInvitationCode(ice);
 
         UserEntity u = new UserEntity(userName, password);
         u.setCtime(new Date());
@@ -87,7 +86,6 @@ public class UserBaseService {
             qqNum, telNum,
             ice.getId(), 1, new Date()
         ));
-        msg = userModel.addUser(u);
-        return msg;
+        userModel.addUser(u);
     }
 }

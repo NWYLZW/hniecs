@@ -1,12 +1,11 @@
 package com.hniecs.mainserver.controller.admin;
 
-import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
 import com.hniecs.mainserver.annotation.method.PermissionRequired;
 import com.hniecs.mainserver.entity.InvitationCodeEntity;
 import com.hniecs.mainserver.entity.permission.AdminPermissions;
+import com.hniecs.mainserver.exception.CommonExceptions;
 import com.hniecs.mainserver.service.admin.InvitationCodeService;
-import com.hniecs.mainserver.tool.CommonUseStrings;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import com.hniecs.mainserver.tool.security.SessionTool;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +24,7 @@ import java.util.*;
  * @logs[0] 2020-09-17 01:26 yijie 创建了文件AdminInvitationCodeController.java
  * @logs[1] 2020-09-20 03:53 yijie 完善了addInvitationCodes接口, 添加了importInvitationCodes接口
  * @logs[2] 2020-09-23 02:59 yijie 预留TODO，修改格式
+ * @logs[3] 2020-11-18 12:56 yijie 重构代码
  */
 @RestController
 @Slf4j
@@ -32,57 +32,39 @@ public class AdminInvitationCodeController {
     @Resource
     private InvitationCodeService invitationCodeService;
 
-    // TODO 下面俩个添加接口进行入参合法性校验
     /**
      * 根据json格式请求信息添加邀请码
-     * @param requestData 邀请码信息请求字典
-     * @bodyParam invitationCodes   Array      Y   []  待添加的邀请码列表
-     * @bodyParam tagName           String     Y   ""  标签名
-     * @bodyParam availableCount    Integer    N   0   邀请码可用次数
+     * @param invitationCodes   Array      Y   []  待添加的邀请码列表
+     * @param tagName           String     Y   ""  标签名
+     * @param availableCount    Integer    N   0   邀请码可用次数
      */
     @PermissionRequired(
         scope = AdminPermissions.NAME,
         permission = AdminPermissions.OPERATE_INVITATION_CODES
     )
     @PostMapping("/admin/invitationCode/list")
-    public CommonResult addInvitationCode(
-        @RequestBody Map<String, Object> requestData
+    public CommonResult<Object> addInvitationCode(
+        @RequestParam(name = "tagName"        ) String tagName,
+        @RequestParam(name = "availableCount" ) Integer availableCount,
+        @RequestParam(name = "invitationCodes") List<String> invitationCodes
     ) {
-        List<String> invitationCodes;
-        String tagName;
-        Integer availableCount;
-
-        try {
-            invitationCodes = (ArrayList<String>) requestData.get("invitationCodes");
-            tagName = (String) requestData.get("tagName");
-            availableCount = (Integer) requestData.get("availableCount");
-        } catch (ClassCastException | NullPointerException e) {
-            return CommonResult.validateFailed();
-        } catch (Exception e) {
-            log.error("发生了未知错误", e);
-            return CommonResult.failed();
-        }
-        HashMap<String, Object> data = new HashMap<>();
         if (invitationCodes.isEmpty()) {
-            data.put("successCount", 0);
-            data.put("failureCount", 0);
-            return CommonResult.success(data);
+            return CommonResult.success(new HashMap<>(){{
+                put("successCount", 0);
+                put("failureCount", 0);
+            }});
         }
-        String msg = invitationCodeService
+
+        return CommonResult.success(invitationCodeService
             .addInvitationCodes(
-                SessionTool.curUser(), availableCount, tagName, invitationCodes
-                , data
-            );
-        if (msg.equals("0")) {
-            return CommonResult.success(data);
-        } else {
-            return CommonResult.failed(msg);
-        }
+                Objects.requireNonNull(SessionTool.curUser()), availableCount, tagName, invitationCodes
+            )
+        );
     }
 
     /**
      * 通过支付宝或微信导出账单文件 导入邀请码到数据库
-     * @param excel             File       Y       表格二进制流文件
+     * @param excelFile         File       Y       表格二进制流文件
      * @param tagName           String     Y   ""  标签名
      * @param availableCount    Integer    N   0   邀请码可用次数
      * @param thresholdMoney    String     N   0   邀请码录入数据库阈值
@@ -92,32 +74,29 @@ public class AdminInvitationCodeController {
         permission = AdminPermissions.OPERATE_INVITATION_CODES
     )
     @PostMapping("/admin/invitationCode/importFromExcel")
-    public CommonResult importInvitationCodes(
-        @RequestParam(value = "excelFile",      required = true) MultipartFile excel,
+    public CommonResult<Object> importInvitationCodes(
+        @RequestParam(value = "excelFile",      required = true) MultipartFile excelFile,
         @RequestParam(value = "tagName",        required = true) String tagName,
         @RequestParam(value = "availableCount", required = false, defaultValue = "0") Integer availableCount,
         @RequestParam(value = "thresholdMoney", required = false, defaultValue = "30") String thresholdMoney
     ){
-        // TODO 校验tagName是否为 支付宝或者微信
-        InputStream excelIS;
-        try {
-            excelIS = excel.getInputStream();
-        } catch (IOException e) {
-            log.error("获取文件IS流出现了问题", e);
-            return CommonResult.failed(CommonUseStrings.SERVER_FAILED.S);
+        if (Arrays.binarySearch((new String[]{"微信", "支付宝"}), tagName) == -1) {
+            throw CommonExceptions.BAD_REQUEST.exception;
         }
 
-        HashMap<String, Object> data = new HashMap<>();
-        String msg = invitationCodeService
+        InputStream excelIS;
+        try {
+            excelIS = excelFile.getInputStream();
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
+        }
+
+        return CommonResult.success(invitationCodeService
             .addInvitationCodes(
                 SessionTool.curUser(), availableCount, tagName, thresholdMoney, excelIS
-                , data
-            );
-        if (msg.equals("0")) {
-            return CommonResult.success(data);
-        } else {
-            return CommonResult.failed(msg);
-        }
+            )
+        );
     }
 
     /**
@@ -129,57 +108,50 @@ public class AdminInvitationCodeController {
         scope = AdminPermissions.NAME,
         permission = AdminPermissions.OPERATE_INVITATION_CODES
     )
-    public CommonResult falseDeleteById(@RequestParam("id") Long id) {
-        if (id <= 0) {
-            return CommonResult.validateFailed();
+    public CommonResult<Object> falseDeleteById(
+        @RequestParam(value = "id", required = true) Long id
+    ) {
+        if (id < 0) {
+            throw CommonExceptions.BAD_REQUEST.exception;
         }
-        String message = invitationCodeService.deleteById(id);
-        if(message.equals("0")) {
-            return CommonResult.success();
-        }else {
-            return CommonResult.failed(message);
-        }
+        invitationCodeService.deleteById(id);
+        return CommonResult.success();
     }
 
     /**
      * 修改
      * 修改邀请码内容 禁用邀请码 添加标签 修改使用次数
-     * @bodyParam id                    Integer     Y   ""  邀请码id
-     * @bodyParam invitationCode        String      N   ""  待添加的邀请码列表
-     * @bodyParam tagName               String      N   ""  邀请码标签
-     * @bodyParam availableInviteCount  Integer     N   0   邀请码可用次数
-     * @bodyParam status                Integer     N   0   邀请码状态
+     * @param id                    Long        Y   ""  邀请码id
+     * @param invitationCode        String      N   ""  邀请码内容
+     * @param tagName               String      N   ""  邀请码标签
+     * @param availableInviteCount  Integer     N   0   邀请码可用次数
+     * @param status                Integer     N   0   邀请码状态
      */
     @PermissionRequired(
         scope = AdminPermissions.NAME,
         permission = AdminPermissions.OPERATE_INVITATION_CODES
     )
     @PutMapping("/admin/invitationCode/one")
-    public CommonResult updateInvitationCode(
-        @RequestBody InvitationCodeEntity ic
+    public CommonResult<Object> updateInvitationCode(
+        @RequestParam(name = "id"                  , required = true ) Long id,
+        @RequestParam(name = "invitationCode"      , required = false) String invitationCode,
+        @RequestParam(name = "tagName"             , required = false) String tagName,
+        @RequestParam(name = "availableInviteCount", required = false) Integer availableInviteCount,
+        @RequestParam(name = "status"              , required = false) Integer status
     ) {
-        // TODO 校验ic信息正确
-        //  status不能等于-1 在指定的范围内 (使用枚举值规范)
-        //  不可修改的数据设置为null 创建者id，ctime，mtime...
-        String content = ic.getInvitationCode();
-        Integer availableInviteCount = ic.getAvailableInviteCount();
-        Integer status = ic.getStatus();
         if (
-            ic.getId() == null
-                || (content != null
-                    && (content.length() <= 0 || content.length() > 50)
-                )
-                || (availableInviteCount != null && availableInviteCount < 0)
-                || (status != null && status == -1)
+            id < 0 || invitationCode.length() > 50 || availableInviteCount < 0 || status == -1
         ) {
-            return CommonResult.validateFailed();
+            throw CommonExceptions.BAD_REQUEST.exception;
         }
-        String message = invitationCodeService.updateInvitationCode(ic);
-        if(message.equals("0")) {
-            return CommonResult.success();
-        }else {
-            return CommonResult.failed(message);
-        }
+        invitationCodeService.updateInvitationCode(new InvitationCodeEntity(){{
+            this.setId(id);
+            this.setInvitationCode(invitationCode);
+            this.setTagName(tagName);
+            this.setAvailableInviteCount(availableInviteCount);
+            this.setStatus(status);
+        }});
+        return CommonResult.success();
     }
 
     /**
@@ -203,7 +175,7 @@ public class AdminInvitationCodeController {
         @RequestParam(name = "size"             , required = false, defaultValue = "20") Integer size
     ) {
         if (page <= 0 || size < 0) {
-            return CommonResult.validateFailed();
+            throw CommonExceptions.BAD_REQUEST.exception;
         }
         if (size == 0) {
             return CommonResult.success(new ArrayList<>());
@@ -211,17 +183,11 @@ public class AdminInvitationCodeController {
         // 设置分页规则
         PageHelper.startPage(page, size);
 
-        List<InvitationCodeEntity> data = new Page<InvitationCodeEntity>();
-        String message = invitationCodeService
-            .getInvitationCodePage(
+        return CommonResult.success(
+            invitationCodeService.getInvitationCodePage(
                 invitationCode, creatorName, tagName
-                , data
-            );
-        if(message.equals("0")) {
-            return CommonResult.success(data);
-        }else {
-            return CommonResult.failed(message);
-        }
+            )
+        );
     }
 
     /**
@@ -232,12 +198,9 @@ public class AdminInvitationCodeController {
         permission = AdminPermissions.SEARCH_INVITATION_CODES
     )
     @GetMapping("/admin/invitationCode/tagNames")
-    public CommonResult getTagName(){
-        ArrayList<String> tagNameList = new ArrayList<>();
-        String msg = invitationCodeService.geTagNameList(tagNameList);
-        if(msg.equals("0")){
-            return CommonResult.success(tagNameList);
-        }
-        return CommonResult.failed(msg);
+    public CommonResult<Object> getTagName(){
+        return CommonResult.success(
+            invitationCodeService.geTagNameList()
+        );
     }
 }

@@ -3,6 +3,7 @@ package com.hniecs.mainserver.model;
 import com.hniecs.mainserver.dao.UserDao;
 import com.hniecs.mainserver.entity.user.UserDetailEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
+import com.hniecs.mainserver.exception.CommonExceptions;
 import com.hniecs.mainserver.tool.CommonUseStrings;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
@@ -18,6 +19,7 @@ import java.util.Hashtable;
  * @date    2020-09-13 00:00
  * @logs[0] 2020-09-13 00:00 yijie 创建了文件UserModel.java
  * @logs[1] 2020-09-16 22:39 yijie 添加 vertify 方法的多态，给userBaseService处理
+ * @logs[2] 2020-11-18 12:56 yijie 重构代码
  */
 @Slf4j
 @Repository
@@ -105,29 +107,23 @@ public class UserModel {
      * 添加用户
      * @param user  用户entity实体结构
      */
-    public String addUser (UserEntity user) {
+    public void addUser(UserEntity user) {
         if (user.getDetail() == null) {
             log.error("传给userModel.addUser方法未设置detail属性信息");
-            return CommonUseStrings.SERVER_FAILED.S;
+            throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
         }
         try {
             if (userDao.addNew(user) == 0) {
-                return "添加用户失败";
+                throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
             }
-            try {
-                // 获取添加后的用户id 加到userDetail中
-                UserEntity newU = userDao.getSimpleByUserName(user.getUserName());
-                user.getDetail().setUserId(newU.getId());
-                userDao.addNewDetail(user.getDetail());
-                createfileDir(new File(""),user);
-                return "0";
-            } catch (Exception e) {
-                log.error("userDetail表 添加新用户详情信息时出现了错误", e.getMessage(), e);
-                return CommonUseStrings.SERVER_FAILED.S;
-            }
+            // 获取添加后的用户id 加到userDetail中
+            UserEntity newU = userDao.getSimpleByUserName(user.getUserName());
+            user.getDetail().setUserId(newU.getId());
+            userDao.addNewDetail(user.getDetail());
+            createfileDir(new File(""),user);
         } catch (Exception e) {
-            log.error("user表 添加新用户时出现了错误", e.getMessage(), e);
-            return CommonUseStrings.SERVER_FAILED.S;
+            e.printStackTrace();
+            throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
         }
     }
 }
