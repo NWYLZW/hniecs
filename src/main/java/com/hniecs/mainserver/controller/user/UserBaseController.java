@@ -67,9 +67,9 @@ public class UserBaseController {
      */
     @NotNeedLogin
     @PostMapping("/user/base/login")
-    public CommonResult login(
-        @RequestParam(name = "userName", required = true) String userName,
-        @RequestParam(name = "password", required = true) String password
+    public CommonResult<Object> login(
+        @RequestParam(name = "userName") String userName,
+        @RequestParam(name = "password") String password
     ) {
         if (userName.equals("") || password.equals("")) {
             throw CommonExceptions.BAD_REQUEST.exception;
@@ -88,7 +88,7 @@ public class UserBaseController {
      * @param session   httpSession，由mvc容器自己管理
      */
     @GetMapping("/user/base/logout")
-    public CommonResult logout(HttpSession session) {
+    public CommonResult<Object> logout(HttpSession session) {
         Object sessionToken = session.getAttribute("sessionToken");
         if (sessionToken != null) {
             session.removeAttribute("sessionToken");
@@ -149,7 +149,7 @@ public class UserBaseController {
      * @return 与搜索信息相关的用户列表
      */
     @GetMapping("/user/base/searchByIdOrUserName")
-    public CommonResult searchByIdOrUserName() {
+    public CommonResult<Object> searchByIdOrUserName() {
         throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 
@@ -158,7 +158,7 @@ public class UserBaseController {
      * @return 年度活跃信息
      */
     @GetMapping("/user/base/activeData")
-    public CommonResult getActiveData() {
+    public CommonResult<Object> getActiveData() {
         throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 
@@ -167,7 +167,7 @@ public class UserBaseController {
      * @return 各种积分的一个字典
      */
     @GetMapping("/user/base/integral")
-    public CommonResult getIntegral() {
+    public CommonResult<Object> getIntegral() {
         throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 
@@ -176,7 +176,7 @@ public class UserBaseController {
      * @return 我的详情信息字典
      */
     @GetMapping("/user/base/myDetailData")
-    public CommonResult getMyDetailData() {
+    public CommonResult<Object> getMyDetailData() {
         throw CommonExceptions.NOT_IMPLEMENTED.exception;
     }
 }
