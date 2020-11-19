@@ -7,13 +7,15 @@ import com.hniecs.mainserver.exception.UserExceptions;
 import com.hniecs.mainserver.model.InvitationCodeModel;
 import com.hniecs.mainserver.model.UserModel;
 import com.hniecs.mainserver.tool.security.SessionTool;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Hashtable;
 
 /**
  * @desc    UserBaseService.java
@@ -26,6 +28,7 @@ import java.util.Map;
  * @logs[4] 2020-11-18 12:56 yijie 重构代码
  */
 @Service
+@Slf4j
 public class UserBaseService {
     @Resource
     private UserModel userModel;
@@ -34,19 +37,51 @@ public class UserBaseService {
 
     /**
      * 登陆，将信息储存到session中
-     * @param userName 用户名
-     * @param password 密码
+     * @param userName      用户名
+     * @param password      密码
+     * @param returnData    返回数据字典
      */
-    public Map<String, Object> login(String userName, String password) {
-        UserEntity user = userModel.vertify(userName, password);
-        return new HashMap<>(){{
-            put(
-                "sessionToken", SessionTool.setUserSessionToken(user).toString()
+    public String login(String userName, String password, Hashtable returnData) {
+        Hashtable getReturnData = new Hashtable();
+        String msg = userModel.vertify(userName, password, getReturnData);
+        if (msg.equals("0")) {
+            UserEntity user = (UserEntity) getReturnData.get("userData");
+            returnData.put(
+                "sessionToken",
+                SessionTool
+                    .setUserSessionToken(user)
+                    .toString()
             );
-            put("user", user);
-        }};
+            returnData.put("user", user);
+        }
+        return msg;
     }
 
+    /**
+     * 通过用户名获取用户可公开数据
+     * @param userName 用户名
+     * @param getUserDetailList 获取用户数据的数组
+     */
+    public String getByUserNameOrUserId(String userName, ArrayList<UserDetailEntity> getUserDetailList){
+        UserDetailEntity userDetailEntity;
+        if(!userModel.have(userName)){
+            return "用户名不存在";
+        }
+        return "接口未完成";
+    }
+
+    /**
+     * 通过用户id获取用户可公开数据
+     * @param id 用户id
+     * @param getUserDetailList 获取用户数据的数组
+     */
+    public String getByUserNameOrUserId(long id, ArrayList<UserDetailEntity> getUserDetailList){
+        UserDetailEntity userDetailEntity;
+        if(!userModel.have(id)){
+            return "用户id不存在";
+        }
+        return "接口未完成";
+    }
     /**
      * 注册新用户
      * @param userName          用户名

@@ -2,13 +2,17 @@ package com.hniecs.mainserver.model;
 
 import com.hniecs.mainserver.dao.FileDao;
 import com.hniecs.mainserver.entity.FileEntity;
+import com.hniecs.mainserver.tool.threadtool.ClearCacheTask;
+import com.hniecs.mainserver.tool.threadtool.ThreadManager;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.ArrayList;
@@ -83,15 +87,27 @@ public class FileModel {
     public byte[] readFile(File file) throws IOException {
         FileInputStream in = new FileInputStream(file);
         byte[] bytes = new byte[(int) file.length()];
+        ThreadManager threadManager = ThreadManager.getInstance();
+        threadManager.addTask(new ClearCacheTask(file,threadManager.getScheduledExecutorService()));
         in.read(bytes);
         return bytes;
     }
 
     @CachePut(value = "myCache", key = "#file.name")
     public byte[] updateCache(File file) throws IOException {
-        return readFile(file);
+        FileInputStream in = new FileInputStream(file);
+        byte[] bytes = new byte[(int) file.length()];
+        in.read(bytes);
+        return bytes;
     }
-
+    @CacheEvict(value = "myCache", key = "#file.name")
+    public String clearCache(File file){
+        try{
+            return "释放成功";
+        }catch (Exception e){
+            return "释放失败";
+        }
+    }
     /**
      * 更新文件
      * @param file          文件对象
@@ -110,7 +126,6 @@ public class FileModel {
             temp.add(file.getCanonicalPath());
             return "0";
         } catch (Exception e) {
-            log.error("fuck");
             log.error(e.getMessage());
             return "服务器出错";
         }
@@ -118,16 +133,31 @@ public class FileModel {
 
     public String upload(MultipartFile file, File targetFile, long uploaderId) {
         try {
-            FileEntity fileEntity = new FileEntity();
-            fileEntity.setPath(targetFile.getCanonicalPath().replace("\\", "/"));
-            fileEntity.setSize(file.getSize());
-            fileEntity.setCtime(new Date());
-            fileEntity.setUploaderId(uploaderId);
-            file.transferTo(targetFile);
-            fileDao.insert(fileEntity);
-            return "0";
+            String path = targetFile.getCanonicalPath().replace("\\", "/");
+            if(!have(path)) {
+                FileEntity fileEntity = new FileEntity();
+                fileEntity.setPath(path);
+                fileEntity.setSize(file.getSize());
+                fileEntity.setCtime(new Date());
+                fileEntity.setUploaderId(uploaderId);
+                file.transferTo(targetFile);
+                fileDao.insert(fileEntity);
+                return "0";
+            }else {
+                FileEntity fileEntity = fileDao.getByPath(path);
+                fileEntity.setMtime(new Date());
+                fileEntity.setSize(file.getSize());
+                System.gc();
+                if(targetFile.delete()) {
+                    file.transferTo(targetFile);
+                    fileDao.update(fileEntity);
+                    return "0";
+                }else {
+                    throw new Exception();
+                }
+            }
         } catch (IOException e) {
-            log.error("读取文件路径失败或转换路径失败");
+            log.error("读取文件路径失败或转换文件失败");
             if (targetFile.exists()) {
                 targetFile.delete();
             }
@@ -167,5 +197,7 @@ public class FileModel {
             return null;
         }
     }
-
+    public boolean have(String path){
+        return fileDao.getByPath(path) != null;
+    }
 }

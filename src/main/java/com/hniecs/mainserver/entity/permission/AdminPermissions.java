@@ -13,4 +13,6 @@ public interface AdminPermissions extends IPermissions {
     long OPERATE_INVITATION_CODES = 0X001;
     // 搜索邀请码列表权限
     long SEARCH_INVITATION_CODES = 0X002;
+    //操作用户文件的权限
+    long CHANGE_USER_FILE = 0x004;
 }
