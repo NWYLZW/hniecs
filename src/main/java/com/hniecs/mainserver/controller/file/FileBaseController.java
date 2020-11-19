@@ -1,6 +1,7 @@
 package com.hniecs.mainserver.controller.file;
 
 import com.hniecs.mainserver.entity.user.UserEntity;
+import com.hniecs.mainserver.exception.CommonExceptions;
 import com.hniecs.mainserver.service.FileBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import com.hniecs.mainserver.tool.enums.DirTypeEnum;
@@ -65,7 +66,7 @@ public class FileBaseController {
         ArrayList<HttpServletResponse> fileDateList = new ArrayList<>();
         fileDateList.add(response);
         if (!verifySuffix(suffix) || !verifyDirType(dirType)) {
-            return CommonResult.failed("url有误");
+            throw CommonExceptions.BAD_REQUEST.exception;
         }
         String basePath = System.getProperty("user.dir").replace("\\", "/") + "/workPlace/public" + "/"
             + dirType + "/" + fileName + "." + suffix;
@@ -98,10 +99,10 @@ public class FileBaseController {
         String suffix = name.split(".", 2)[1];
         ArrayList<String> pathList = new ArrayList<>();
         if (multipartFile.getSize() >= 5 * 1024 * 1024) {
-            return CommonResult.failed("图片过大");
+            throw CommonExceptions.FILE_BIG.exception;
         }
         if (verifySuffix(suffix)) {
-            return CommonResult.failed("文件类型有误");
+            throw CommonExceptions.BAD_FILE_TYPE.exception;
         }
         UserEntity userEntity = SessionTool.curUser();
         String msg = fileService.update(path, name, multipartFile, userEntity, pathList);
@@ -122,10 +123,10 @@ public class FileBaseController {
         String msg;
         log.warn("fuck");
         if (!verifyDirType(dirType) || !verifySuffix(suffix)) {
-            return CommonResult.validateFailed("url错误");
+            throw CommonExceptions.BAD_REQUEST.exception;
         }
         if (multipartFile.getSize() >= 5 * 1024 * 1024) {
-            return CommonResult.validateFailed("文件过大");
+            throw CommonExceptions.FILE_BIG.exception;
         }
         if (scopeType.equals("private")) {
             basePath += SessionTool.curUser().getId() + "/" + dirType;
@@ -135,7 +136,7 @@ public class FileBaseController {
             msg = fileService.addPublic(suffix, basePath,
                 fileNameNotSuffix, multipartFile, getPathList, SessionTool.curUser().getId());
         } else {
-            return CommonResult.validateFailed("路径错误");
+            throw CommonExceptions.BAD_FILE_ADDRESS_ERROR.exception;
         }
         if (msg.equals("0")) {
             return CommonResult.success(getPathList.get(0), "上传成功");
