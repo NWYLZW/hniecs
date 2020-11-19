@@ -16,6 +16,12 @@
 
     <properties>
         <java.version>14</java.version>
+        <auto-service.version>
+            1.0-rc2
+        </auto-service.version>
+        <maven-compiler-plugin.version>
+            3.5.1
+        </maven-compiler-plugin.version>
     </properties>
 
     <dependencies>
@@ -45,7 +51,6 @@
             <scope>runtime</scope>
             <optional>true</optional>
         </dependency>
-        <!-- pageHelper -->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
@@ -107,6 +112,13 @@
                 <configuration>
                     <!--添加配置跳过测试-->
                     <skipTests>true</skipTests>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
                 </configuration>
             </plugin>
         </plugins>
