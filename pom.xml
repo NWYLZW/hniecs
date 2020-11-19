@@ -16,9 +16,6 @@
 
     <properties>
         <java.version>14</java.version>
-        <auto-service.version>
-            1.0-rc2
-        </auto-service.version>
         <maven-compiler-plugin.version>
             3.5.1
         </maven-compiler-plugin.version>
