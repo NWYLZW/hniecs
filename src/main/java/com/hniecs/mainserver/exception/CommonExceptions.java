@@ -47,7 +47,13 @@ public enum CommonExceptions {
     INSUFFICIENT_STORAGE(507, "存储空间不足"),
     LOOP_DETECTED(508, "检测到死循环"),
     NOT_EXTENDED(510, "需要对请求进一步扩展"),
-    NETWORK_AUTHENTICATION_REQUIRED(511, "需要网络验证");
+    NETWORK_AUTHENTICATION_REQUIRED(511, "需要网络验证"),
+
+    BAD_FILE_ADDRESS_ERROR(600,"错误的文件路径"),
+    FILE_BIG(601,"文件过大"),
+    BAD_FILE_TYPE(602,"文件类型错误");
+
+
 
     public RuntimeException exception;
 

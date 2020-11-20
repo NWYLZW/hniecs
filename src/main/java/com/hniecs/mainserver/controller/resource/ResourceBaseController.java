@@ -49,7 +49,7 @@ public class ResourceBaseController {
         }
         return CommonResult.failed(msg);
     }
-    /**
+    /**e
      * 搜索资源
      * @param condition String  N  ""     搜索条件
      * @param kind      String  N  ""     资源种类
