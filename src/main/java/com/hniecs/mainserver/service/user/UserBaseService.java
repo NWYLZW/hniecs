@@ -7,13 +7,12 @@ import com.hniecs.mainserver.exception.UserExceptions;
 import com.hniecs.mainserver.model.InvitationCodeModel;
 import com.hniecs.mainserver.model.UserModel;
 import com.hniecs.mainserver.tool.security.SessionTool;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @desc    UserBaseService.java
@@ -26,6 +25,7 @@ import java.util.Map;
  * @logs[4] 2020-11-18 12:56 yijie 重构代码
  */
 @Service
+@Slf4j
 public class UserBaseService {
     @Resource
     private UserModel userModel;
@@ -34,8 +34,8 @@ public class UserBaseService {
 
     /**
      * 登陆，将信息储存到session中
-     * @param userName 用户名
-     * @param password 密码
+     * @param userName      用户名
+     * @param password      密码
      */
     public Map<String, Object> login(String userName, String password) {
         UserEntity user = userModel.vertify(userName, password);

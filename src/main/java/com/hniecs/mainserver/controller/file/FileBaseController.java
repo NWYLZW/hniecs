@@ -77,14 +77,6 @@ public class FileBaseController {
     }
 
 
-    @ResponseBody
-    @GetMapping("/test/{path}")
-    @Cacheable(value = "Cache", key = "#path")
-    public byte[] test(@PathVariable String path) {
-        System.out.println("fuck!");
-        return new byte[10];
-    }
-
     /**
      * 上传文件进public文件夹目录
      * @param path          文件对应路径不包括文件名
