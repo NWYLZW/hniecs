@@ -2,6 +2,7 @@ package com.hniecs.mainserver.entity.market;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,10 +23,18 @@ public class GoodsEntity {
     /**
      * 商品预期价格
      */
+    @NotNull(message = "预期报价不能为空")
     private Integer price;
+
+    /**
+     * 接受的降价
+     */
+    private Integer pricerRange;
+
     /**
      * 商品标题
      */
+    @NotNull(message = "标题不能为空")
     private String title;
     /**
      * 商品介绍

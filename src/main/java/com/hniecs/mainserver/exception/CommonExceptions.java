@@ -49,9 +49,12 @@ public enum CommonExceptions {
     NOT_EXTENDED(510, "需要对请求进一步扩展"),
     NETWORK_AUTHENTICATION_REQUIRED(511, "需要网络验证"),
 
-    BAD_FILE_ADDRESS_ERROR(600,"错误的文件路径"),
-    FILE_BIG(601,"文件过大"),
-    BAD_FILE_TYPE(602,"文件类型错误");
+    FILE_ERROR(600,"未知文件错误"),
+    BAD_FILE_ADDRESS_ERROR(601,"错误的文件路径"),
+    FILE_BIG(602,"文件过大"),
+    BAD_FILE_TYPE(603,"文件类型错误"),
+    NOT_FILE(604,"未选择文件"),
+    FILE_UPLOAD_FAIL(605,"文件上传错误");
 
 
 

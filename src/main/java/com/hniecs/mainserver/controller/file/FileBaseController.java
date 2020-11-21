@@ -1,9 +1,12 @@
 package com.hniecs.mainserver.controller.file;
 
+import com.hniecs.mainserver.entity.FileEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
+import com.hniecs.mainserver.exception.CommonExceptions;
 import com.hniecs.mainserver.service.FileBaseService;
 import com.hniecs.mainserver.tool.api.CommonResult;
 import com.hniecs.mainserver.tool.enums.DirTypeEnum;
+import com.hniecs.mainserver.tool.security.SHA256;
 import com.hniecs.mainserver.tool.security.SessionTool;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.Cacheable;
@@ -11,10 +14,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import com.hniecs.mainserver.tool.enums.SuffixEnum;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
+
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * @author 陈桢梁
@@ -59,7 +66,19 @@ public class FileBaseController {
         return false;
     }
 
-    @PostMapping("/dynamic-static/public/{dirType}/{fileName}.{suffix}")
+    private boolean verityFile(String dirType, String suffix, MultipartFile multipartFile){
+        if (!verifyDirType(dirType) || !verifySuffix(suffix)) {
+            throw CommonExceptions.BAD_FILE_ADDRESS_ERROR.exception;
+        }
+        if (multipartFile.getSize() >= 5 * 1024 * 1024) {
+            throw CommonExceptions.BAD_FILE_TYPE.exception;
+        }
+        if (verifySuffix(suffix)) {
+            throw CommonExceptions.BAD_FILE_TYPE.exception;
+        }
+        return true;
+    }
+    @PostMapping("/static/public/{dirType}/{fileName}.{suffix}")
     public Object get(@PathVariable String dirType, @PathVariable String fileName
         , @PathVariable String suffix, HttpServletResponse response) {
         ArrayList<HttpServletResponse> fileDateList = new ArrayList<>();
@@ -90,10 +109,10 @@ public class FileBaseController {
         String suffix = name.split(".", 2)[1];
         ArrayList<String> pathList = new ArrayList<>();
         if (multipartFile.getSize() >= 5 * 1024 * 1024) {
-            return CommonResult.failed("图片过大");
+            throw CommonExceptions.FILE_BIG.exception;
         }
         if (verifySuffix(suffix)) {
-            return CommonResult.failed("文件类型有误");
+            throw CommonExceptions.BAD_FILE_TYPE.exception;
         }
         UserEntity userEntity = SessionTool.curUser();
         String msg = fileService.update(path, name, multipartFile, userEntity, pathList);
@@ -103,38 +122,24 @@ public class FileBaseController {
         return CommonResult.failed(msg);
     }
 
+    /**
+     * 上传头像
+     */
     @ResponseBody
-    @PostMapping("/file/base/upload/{scopeType}/{dirType}")
-    public CommonResult upload(@RequestParam MultipartFile multipartFile, @PathVariable String scopeType, @PathVariable String dirType) {
-        String[] fileName = multipartFile.getOriginalFilename().split("\\.", 2);
-        String suffix = fileName[1];
-        String fileNameNotSuffix = fileName[0];
-        ArrayList<String> getPathList = new ArrayList<>();
-        String basePath = System.getProperty("user.dir").replace("\\", "/") + "/workPlace/" + scopeType + "/";
-        String msg;
-        log.warn("fuck");
-        if (!verifyDirType(dirType) || !verifySuffix(suffix)) {
-            return CommonResult.validateFailed("url错误");
+    @PostMapping("/file/base/upload/images")
+    public CommonResult uploadImages(@RequestBody MultipartFile multipartFile){
+        String[] fileNames = multipartFile.getOriginalFilename().split("\\.",2);
+        String basePath = System.getProperty("user.dir").replace("\\", "/")
+            +"/workPlace/public/image"+ SHA256.salt(fileNames[0],2)+"."+fileNames[1];
+        if(!verifySuffix(fileNames[1])){
+            throw CommonExceptions.BAD_FILE_TYPE.exception;
         }
-        if (multipartFile.getSize() >= 5 * 1024 * 1024) {
-            return CommonResult.validateFailed("文件过大");
+        String msg = fileService.add(basePath,multipartFile,SessionTool.curUser().getId());
+        if(msg.equals("0")){
+            return CommonResult.success(basePath,"上传成功");
         }
-        if (scopeType.equals("private")) {
-            basePath += SessionTool.curUser().getId() + "/" + dirType;
-            msg = fileService.addPrivate(multipartFile.getOriginalFilename(), multipartFile, getPathList);
-        } else if (scopeType.equals("public")) {
-            basePath += dirType;
-            msg = fileService.addPublic(suffix, basePath,
-                fileNameNotSuffix, multipartFile, getPathList, SessionTool.curUser().getId());
-        } else {
-            return CommonResult.validateFailed("路径错误");
-        }
-        if (msg.equals("0")) {
-            return CommonResult.success(getPathList.get(0), "上传成功");
-        }
-        return CommonResult.failed(msg);
+        throw CommonExceptions.FILE_ERROR.exception;
     }
-
     /**
      * @param path 需要删除的图片路径
      */
