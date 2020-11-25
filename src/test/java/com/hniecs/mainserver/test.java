@@ -7,4 +7,11 @@ package com.hniecs.mainserver;
  */
 
 public class test {
+    public <T> void Test(T condition){
+        System.out.println(condition.getClass().getTypeName());
+    }
+
+    public static void main(String[] args) {
+        new test().Test(new Long(12));
+    }
 }

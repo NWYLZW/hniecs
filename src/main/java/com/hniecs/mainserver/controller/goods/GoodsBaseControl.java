@@ -13,6 +13,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
 import javax.validation.Valid;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 /**
@@ -62,6 +63,66 @@ public class GoodsBaseControl {
         String msg = goodsBaseService.upload(goodsEntity);
         if (msg.equals("0")) {
             return CommonResult.success(null,"上传成功");
+        }
+        throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
+    }
+
+    @GetMapping("/get/{id}")
+    public CommonResult get(@PathVariable long id){
+        String msg;
+        ArrayList<GoodsEntity> goodsEntityArrayList = new ArrayList<>();
+        msg = goodsBaseService.get(Long.valueOf(id),goodsEntityArrayList);
+        if(msg.equals("0")){
+            return CommonResult.success(goodsEntityArrayList.get(0),"获取成功");
+        }
+        throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
+    }
+
+    @GetMapping("/get")
+    public CommonResult get(){
+        ArrayList<GoodsEntity> goodsList = new ArrayList<>();
+        String msg = goodsBaseService.get(goodsList);
+        if(msg.equals("0")){
+            return CommonResult.success(goodsList,"查找成功");
+        }
+        throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
+    }
+
+    @GetMapping("/get/search")
+    public CommonResult get(@RequestParam String condition) {
+        String msg;
+        ArrayList<GoodsEntity> goodsEntityArrayList = new ArrayList<>();
+        msg = goodsBaseService.get(condition,goodsEntityArrayList);
+        if(msg.equals("0")){
+            return CommonResult.success(goodsEntityArrayList,"获取成功");
+        }
+        throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
+    }
+
+    @GetMapping("/get/price")
+    public CommonResult get(@RequestParam int priceRange,@RequestParam int count){
+        int max = count*priceRange;
+        int min;
+        if(count > 0){
+            min = (count-1)*priceRange;
+        }else {
+            min = 0;
+
+        }
+        ArrayList<GoodsEntity> goodsEntities = new ArrayList<>();
+        String msg = goodsBaseService.get(max,min,goodsEntities);
+        if(msg.equals("0")){
+            return CommonResult.success(goodsEntities,"查找成功");
+        }
+        throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
+    }
+
+    @GetMapping("/get/userId")
+    public CommonResult getByUserId(@RequestParam long userId){
+        ArrayList<GoodsEntity> goodsEntities = new ArrayList<>();
+        String msg = goodsBaseService.getByUserId(userId,goodsEntities);
+        if(msg.equals("0")){
+            return CommonResult.success(goodsEntities,"查找成功");
         }
         throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
     }

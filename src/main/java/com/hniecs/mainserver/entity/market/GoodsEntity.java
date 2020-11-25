@@ -30,6 +30,11 @@ public class GoodsEntity {
      * 接受的降价
      */
     private Integer pricerRange;
+    /**
+     * 商品标题
+     */
+    @NotNull(message = "种类不能为空")
+    private String type;
 
     /**
      * 商品标题

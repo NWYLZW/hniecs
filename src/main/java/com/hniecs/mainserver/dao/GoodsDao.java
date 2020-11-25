@@ -13,7 +13,7 @@ import java.util.ArrayList;
  */
 @Mapper
 public interface GoodsDao {
-    @Results({
+    @Results(id = "goodsMap",value = {
         @Result(property = "userId", column = "user_id"),
         @Result(property = "fileUrl", column = "file_url"),
         @Result(property = "priceRange", column = "price_range")
@@ -23,12 +23,26 @@ public interface GoodsDao {
                 "or introduce like '%${condition}%'")
     ArrayList<GoodsEntity> getGoodEntitiesByCondition(String condition);
 
+    @ResultMap(value = "goodsMap")
+    @Select("select * from goods" +
+                " where id = #{id}")
+    GoodsEntity getById(long id);
+
+    @ResultMap(value = "goodsMap")
+    @Select("select * from goods" +
+                " where price<max and price>min")
+    ArrayList<GoodsEntity> getGoodsEntitiesByPriceRange(int max, int min);
+
+    @ResultMap(value = "goodsMap")
     @Select("select * from goods" +
                 " where userId = #{userId}")
     ArrayList<GoodsEntity> getGoodsEntitiesByUserId(long userId);
+    @ResultMap(value = "goodsMap")
+    @Select("select * from goods")
+    ArrayList<GoodsEntity> getAll();
 
-    @Insert("insert into goods(user_id,price,title,introduce,file_url,ctime,mtime)" +
-        "value(#{userId},#{price},#{title},#{introduce},#{fileUrl},#{ctime},#{mtime})")
+    @Insert("insert into goods(user_id,price,type,title,introduce,file_url,ctime,mtime)" +
+        "value(#{userId},#{price},#{type},#{title},#{introduce},#{fileUrl},#{ctime},#{mtime})")
     void inert(GoodsEntity goodsEntity);
 
     @Update("<script>" +
@@ -39,6 +53,7 @@ public interface GoodsDao {
                     "<if text = 'ctime != null'> ctime = #{ctime},</if>" +
                     "<if text = 'fileUrl != null'>file_url=#{fileUrl},</if>" +
                     "<if text  = 'introduce != null'>introduce = #{introduce}</if>" +
+                    "<if text = 'type != null'>type = #{type}</if>" +
                     "mtime = #{mtime}" +
                     " where id = #{id}" +
             "</script>")
