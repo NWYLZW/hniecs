@@ -66,18 +66,6 @@ public class FileBaseController {
         return false;
     }
 
-    private boolean verityFile(String dirType, String suffix, MultipartFile multipartFile){
-        if (!verifyDirType(dirType) || !verifySuffix(suffix)) {
-            throw CommonExceptions.BAD_FILE_ADDRESS_ERROR.exception;
-        }
-        if (multipartFile.getSize() >= 5 * 1024 * 1024) {
-            throw CommonExceptions.BAD_FILE_TYPE.exception;
-        }
-        if (verifySuffix(suffix)) {
-            throw CommonExceptions.BAD_FILE_TYPE.exception;
-        }
-        return true;
-    }
     @PostMapping("/static/public/{dirType}/{fileName}.{suffix}")
     public Object get(@PathVariable String dirType, @PathVariable String fileName
         , @PathVariable String suffix, HttpServletResponse response) {
@@ -92,10 +80,26 @@ public class FileBaseController {
         if (msg.equals("0")) {
             return fileDateList.get(0);
         }
-        return CommonResult.failed(msg);
+        throw  CommonExceptions.INTERNAL_SERVER_ERROR.exception;
     }
 
-
+    /**
+     * 获取公共文件夹下某个分类的全部文件
+     * @param dirType
+     * @return
+     */
+    @GetMapping("file/base/get/{dirType}")
+    public CommonResult getAll(@PathVariable String dirType){
+        if(!verifyDirType(dirType)){
+            throw CommonExceptions.BAD_FILE_ADDRESS_ERROR.exception;
+        }
+        ArrayList<FileEntity> fileEntities = new ArrayList<>();
+        String msg = fileService.getByType(dirType,fileEntities);
+        if(msg.equals("0")){
+            return CommonResult.success(fileEntities, "获取成功");
+        }
+        throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
+    }
     /**
      * 上传文件进public文件夹目录
      * @param path          文件对应路径不包括文件名
@@ -143,6 +147,7 @@ public class FileBaseController {
     /**
      * @param path 需要删除的图片路径
      */
+    @PostMapping()
     public CommonResult delete(@RequestParam String path) {
         return CommonResult.failed("未完成");
     }

@@ -54,7 +54,8 @@ public enum CommonExceptions {
     FILE_BIG(602,"文件过大"),
     BAD_FILE_TYPE(603,"文件类型错误"),
     NOT_FILE(604,"未选择文件"),
-    FILE_UPLOAD_FAIL(605,"文件上传错误");
+    FILE_NOT_FOUND(605,"文件未找到"),
+    FILE_UPLOAD_FAIL(606,"文件上传错误");
 
 
 

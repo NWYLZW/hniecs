@@ -2,6 +2,7 @@ package com.hniecs.mainserver.model;
 
 import com.hniecs.mainserver.dao.FileDao;
 import com.hniecs.mainserver.entity.FileEntity;
+import com.hniecs.mainserver.exception.CommonExceptions;
 import com.hniecs.mainserver.tool.threadtool.ClearCacheTask;
 import com.hniecs.mainserver.tool.threadtool.ThreadManager;
 import lombok.extern.slf4j.Slf4j;
@@ -131,6 +132,20 @@ public class FileModel {
         }
     }
 
+    public String getAllByDirType(ArrayList<FileEntity> fileEntities, String dirType){
+        try{
+            fileEntities.addAll(fileDao.getByType(dirType));
+            return "0";
+        }catch (Exception e){
+            throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
+        }
+    }
+    /**
+     * 上传文件
+     * @param file 文件数据流
+     * @param targetFile 文件对象
+     * @param uploaderId 上传者id
+     */
     public String upload(MultipartFile file, File targetFile, long uploaderId) {
         try {
             String path = targetFile.getCanonicalPath().replace("\\", "/");

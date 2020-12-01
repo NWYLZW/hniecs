@@ -76,11 +76,12 @@ public class FileBaseService{
                byte[] bytes = fileModel.readFile(file);
                dateList.add(fileModel.export(bytes,suffix,dateList.get(0)));
                ThreadManager.getInstance().getTaskList().Check(file);
+               return "0";
            }catch (IOException e){
                return "服务器出错";
            }
        }
-       return msg;
+       throw CommonExceptions.FILE_NOT_FOUND.exception;
    }
 
     /**
@@ -138,8 +139,15 @@ public class FileBaseService{
                         throw CommonExceptions.BAD_FILE_ADDRESS_ERROR.exception;
                     }
                     String[] paths = path.split("/",20);
-                    getPathList.add("http://hniecs.com/web/static/"+paths[paths.length-2]+"/"+paths[paths.length-1]+"/"
-                        +file.getName());
+                    if(paths[paths.length-2].equals("public")){
+                        getPathList.add("http://hniecs.com/web/static/public/"
+                            +paths[paths.length-1] +"/" +file.getName());
+                    }else if(paths[paths.length-3].equals("private")){
+                        getPathList.add("http://hniecs.com/web/static/private/"
+                            +paths[paths.length-2]+"/"+paths[paths.length-1] +"/" +file.getName());
+                    }else{
+                        throw CommonExceptions.BAD_FILE_ADDRESS_ERROR.exception;
+                    }
                     String msg = fileModel.upload(multipartFile, file, uploadId);
                     if(!msg.equals("0")){
                         throw CommonExceptions.FILE_UPLOAD_FAIL.exception;
@@ -150,6 +158,9 @@ public class FileBaseService{
         return "0";
     }
 
+    public String getByType(String type, ArrayList<FileEntity> fileEntities){
+        return fileModel.getAllByDirType(fileEntities, type);
+    }
     /**
      * 通过路径和原名字返回一个文件(将文件名加密后缀不加密)
      * @param path 文件路径

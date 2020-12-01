@@ -3,6 +3,8 @@ package com.hniecs.mainserver.dao;
 import com.hniecs.mainserver.entity.FileEntity;
 import org.apache.ibatis.annotations.*;
 
+import java.util.ArrayList;
+
 /**
  * @author 陈桢梁
  * @desc $END$ fileDao.java
@@ -15,6 +17,9 @@ public interface FileDao {
      * 通过id搜索图片对象
      * @param id 图片id
      */
+    @Results(id = "map",value = {
+        @Result(property = "uploaderId",column = "uploader_id")
+    })
     @Select(
         "select * " +
             "from file " +
@@ -23,9 +28,19 @@ public interface FileDao {
     public FileEntity getById(Long id);
 
     /**
+     * 通过种类查找文件对象
+     */
+    @ResultMap(value = "map")
+    @Select("select *" +
+                "from file " +
+                "where type = #{type}")
+    ArrayList<FileEntity> getByType(String type);
+
+    /**
      * 通过用户id来查找图片对象
      * @param userId 用户id
      */
+    @ResultMap(value = "map")
     @Select(
         "select * " +
             "from file " +
@@ -37,6 +52,7 @@ public interface FileDao {
      * 通过路径查找图片实体
      * @param path 图片路径
      */
+    @ResultMap(value = "map")
     @Select(
         "select * " +
             "from file " +
@@ -68,7 +84,7 @@ public interface FileDao {
                 "<if test = 'suffix != null'>suffix = #{suffix},</if>" +
                 "<if test = 'size != null'>size = #{size},</if>" +
                 "<if test = 'mtime != null'>mtime = #{mtime},</if>" +
-                "id = #{id} " +
+                "uploader_id = #{uploaderId} " +
             "where id = #{id}" +
         "</script>"
     )

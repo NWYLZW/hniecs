@@ -1,6 +1,7 @@
 package com.hniecs.mainserver.service.market;
 
 import com.hniecs.mainserver.entity.market.GoodsEntity;
+import com.hniecs.mainserver.exception.CommonExceptions;
 import com.hniecs.mainserver.model.GoodsModel;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class GoodsBaseService {
         if(condition.getClass().getTypeName().equals("java.lang.Long")){
             return goodsModel.getById((long)condition,entities);
         }
-        return null;
+        throw CommonExceptions.BAD_REQUEST.exception;
     }
 
     /**
