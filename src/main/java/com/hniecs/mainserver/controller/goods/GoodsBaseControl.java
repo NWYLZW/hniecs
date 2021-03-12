@@ -1,5 +1,6 @@
 package com.hniecs.mainserver.controller.goods;
 
+import com.hniecs.mainserver.annotation.method.NotNeedLogin;
 import com.hniecs.mainserver.entity.market.GoodsEntity;
 import com.hniecs.mainserver.exception.CommonExceptions;
 import com.hniecs.mainserver.service.FileBaseService;
@@ -12,8 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.annotation.Resource;
-import javax.validation.Valid;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 /**
@@ -78,6 +77,7 @@ public class GoodsBaseControl {
         throw CommonExceptions.INTERNAL_SERVER_ERROR.exception;
     }
 
+    @NotNeedLogin
     @GetMapping("/get")
     public CommonResult get(){
         ArrayList<GoodsEntity> goodsList = new ArrayList<>();

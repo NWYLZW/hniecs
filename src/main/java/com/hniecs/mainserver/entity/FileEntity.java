@@ -31,6 +31,12 @@ public class FileEntity {
     @Setter
     private Long size;
     /**
+     * 获取文件的路径
+     */
+    @Getter
+    @Setter
+    private String url;
+    /**
      * 图片在服务器上保存的路径
      */
     @Getter

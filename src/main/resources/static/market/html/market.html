@@ -1,0 +1,70 @@
+<!DOCTYPE >
+<!DOCTYPE html>
+<html style="width: calc(50vw);background-color: rgba(168,168,168,0.1);overflow-x: hidden;">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" type="text/css" href="../css/welcomePage.css"/>
+		<script type="text/javascript" src="../js/good.js"></script>
+		<script type="text/javascript" src="../js/head.js"></script>
+		<script type="text/javascript" src="https://cdn.staticfile.org/jquery/1.10.2/jquery.min.js">
+		</script>
+		<script>
+			$(document).ready(
+					function (){
+						goods.run();
+					}
+			)
+		</script>
+		<title>欢迎来到湖南工程学院二手市场</title>
+	</head>
+	<body>
+		<div id="head" style="position:absolute;top: 10px;left: -10px;background: cornflowerblue;height: 100px;width: calc(110vw);box-shadow:0 0 10px #000;">
+			<img src="../source/symbol.png" style="position: absolute;left: calc(10vw);width: 120px;height: 120px;top: -10px;">
+			<div style="position: absolute;left: calc(10vw + 110px);top: 70px;height: 50px;">
+				<label style="font-weight: bold">湖南工程学院计算机协会二手市场</label>
+			</div>
+		</div>
+		<div id="head_photo_part" style="width: calc(100vw);height: calc(35vh);position: absolute;top: 130px;">
+			<div id="select">
+				<div id="select_type" class="select" style="box-shadow: 2px 2px 2px 1px rgba(168,168,168,0.5)">
+						<div id="type_one" style="border-color: white;" >
+							<label>学习资料</label>
+						</div>
+						<div id="type_two">
+							<label>电子产品</label>
+						</div>
+						<div id="type_three">
+							<label>电子外设</label>
+						</div>
+						<div id="type_four">
+							<label>小件物体</label>
+						</div>
+						<div id="type_five">
+							<label>其他</label>
+						</div>
+				</div>
+				<div id="hidden_select_type" style="display: none" class="hidden_select_type">
+
+				</div>
+			</div>
+			<div id="head_photo_back" class="head_photo_back" style="box-shadow: 2px 2px 2px 1px rgba(168,168,168,0.5)">
+				<div id="head_photo" class="head_photo">
+
+				</div>
+				<div id="head_photo_button_right" class="head_photo_button" style="position: absolute; left: calc(38vw);">
+					<img src="../source/right.png" id="head_photo_button_right_photo" style="display: none;">
+				</div>
+				<div id="head_photo_button_left" class="head_photo_button" style="position: absolute;left: 0px">
+					<img src="../source/left.png" id="head_photo_button_left_photo" style="display: none;">
+				</div>
+				<div id="head_photo_down_button_part" class="head_photo_down_button_part">
+					
+				</div>
+			</div> 
+		</div>
+		<div id="goods" class="good_container">
+
+		</div>
+	</body>
+</html>

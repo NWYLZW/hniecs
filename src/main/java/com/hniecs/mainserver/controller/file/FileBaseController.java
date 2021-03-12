@@ -1,5 +1,6 @@
 package com.hniecs.mainserver.controller.file;
 
+import com.hniecs.mainserver.annotation.method.NotNeedLogin;
 import com.hniecs.mainserver.entity.FileEntity;
 import com.hniecs.mainserver.entity.user.UserEntity;
 import com.hniecs.mainserver.exception.CommonExceptions;
@@ -65,8 +66,8 @@ public class FileBaseController {
         }
         return false;
     }
-
-    @PostMapping("/static/public/{dirType}/{fileName}.{suffix}")
+    @NotNeedLogin
+    @GetMapping("/static/public/{dirType}/{fileName}.{suffix}")
     public Object get(@PathVariable String dirType, @PathVariable String fileName
         , @PathVariable String suffix, HttpServletResponse response) {
         ArrayList<HttpServletResponse> fileDateList = new ArrayList<>();
@@ -88,7 +89,9 @@ public class FileBaseController {
      * @param dirType
      * @return
      */
-    @GetMapping("file/base/get/{dirType}")
+    @NotNeedLogin
+    @ResponseBody
+    @GetMapping("/file/base/get/{dirType}")
     public CommonResult getAll(@PathVariable String dirType){
         if(!verifyDirType(dirType)){
             throw CommonExceptions.BAD_FILE_ADDRESS_ERROR.exception;
@@ -133,12 +136,14 @@ public class FileBaseController {
     @PostMapping("/file/base/upload/images")
     public CommonResult uploadImages(@RequestBody MultipartFile multipartFile){
         String[] fileNames = multipartFile.getOriginalFilename().split("\\.",2);
+        String finalName = SHA256.salt(fileNames[0],2);
         String basePath = System.getProperty("user.dir").replace("\\", "/")
-            +"/workPlace/public/image"+ SHA256.salt(fileNames[0],2)+"."+fileNames[1];
+            +"/workPlace/public/image"+ finalName+"."+fileNames[1];
         if(!verifySuffix(fileNames[1])){
             throw CommonExceptions.BAD_FILE_TYPE.exception;
         }
-        String msg = fileService.add(basePath,multipartFile,SessionTool.curUser().getId());
+        String url = "/static/public/image/"+finalName+"."+fileNames[1];
+        String msg = fileService.add(basePath, url, multipartFile, SessionTool.curUser().getId());
         if(msg.equals("0")){
             return CommonResult.success(basePath,"上传成功");
         }

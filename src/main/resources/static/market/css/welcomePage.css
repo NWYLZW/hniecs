@@ -1,0 +1,130 @@
+.select{
+	background-color: white;
+	position: absolute;
+	border-top-left-radius: 10px;
+	border-bottom-left-radius: 10px;
+	width: calc(10vw);
+	height: calc(35vh);
+	left: calc(25vw);
+}
+.select > div{
+	display: flex;
+	align-items: center;
+	background-color: rgba(255,250,240,0.5);
+	border-top: 1px;
+	border-left: 0;
+	border-right: 0;
+	border-bottom: 0;
+	border-style: solid;
+	justify-content: center;
+	height: calc(7vh - 1px);
+}
+.select > div > label{
+	font-family: "arial narrow";
+}
+.head_photo_back{
+	background-color: white;
+	position: absolute;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+	width: calc(40vw);
+	height: calc(35vh);
+	left: calc(35vw);
+	display: flex;
+	align-items: flex-end;
+	z-index: 0;
+}
+.head_photo{
+	width: calc(35vw);
+	height: calc(35vh);
+	z-index: 1;
+}
+.head_photo > img{
+	width: 100%;
+	height: 100%;
+	position: absolute;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+}
+.head_photo_button{
+	height: calc(35vh);
+	width: calc(2vw);
+	display: flex;
+	align-items: center;
+	z-index: 2;
+}
+.head_photo_button > img{
+	z-index: 1;
+	width: 100%;
+}
+.head_photo_down_button_part{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: transparent;
+	position: absolute;
+	width: calc(36vw);
+	height: calc(2vh);
+	left: calc(2vw);
+	z-index: 3;
+}
+.head_photo_down_button_part > div{
+	background-color: darkgray;
+	opacity: 40%;
+	margin-left: 5px;
+	margin-right: 5px;
+	border-radius: 5px;
+	width: calc(2vh);
+	height: 20%;
+	z-index: 4;
+}
+.hidden_select_type{
+	width: calc(20vw);
+	height: calc(35vh);
+	position: absolute;
+	border-top-right-radius: 10px;
+	border-bottom-right-radius: 10px;
+	left: calc(35vw);
+	background-color: white;
+	z-index: 5;
+}
+.good_container{
+	width: calc(100vw + 10px);
+	height: 500px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	position: absolute;
+	left: -1px;
+	top: calc(35vh + 150px);
+}
+.good_container > div{
+	width: 1120px;
+	height: 200px;
+	display: flex;
+	justify-content: flex-start;
+	margin-top: 40px;
+	border-bottom: 40px;
+}
+.good_container > div > a > div{
+	width: 200px;
+	height: 200px;
+	margin-left: 20px;
+	border-radius: 10px;
+	display: flex;
+	box-shadow: 2px 2px 2px 3px rgba(168,168,168,0.5);
+	flex-direction: column;
+	align-items: center;
+}
+.good_container > div > a > div > div{
+	width: 180px;
+	height: 80px;
+	margin-top: 10px;
+	display: flex;
+	align-items: center;
+}
+
+.good_container > div > a > div > div > img{
+	width: 100%;
+	height: 100%;
+}

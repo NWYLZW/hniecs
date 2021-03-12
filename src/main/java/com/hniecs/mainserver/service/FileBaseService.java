@@ -107,9 +107,9 @@ public class FileBaseService{
      * @param multipartFile 媒体对象
      * @param uploadId 上传者id
      */
-    public String add(String path, MultipartFile multipartFile, long uploadId){
+    public String add(String path, String url,MultipartFile multipartFile, long uploadId){
         File targetFile = new File(path);
-        return fileModel.upload(multipartFile, targetFile, uploadId);
+        return fileModel.upload(multipartFile, targetFile, url,uploadId);
     }
 
     /**
@@ -139,16 +139,17 @@ public class FileBaseService{
                         throw CommonExceptions.BAD_FILE_ADDRESS_ERROR.exception;
                     }
                     String[] paths = path.split("/",20);
+                    String url = "";
                     if(paths[paths.length-2].equals("public")){
-                        getPathList.add("http://hniecs.com/web/static/public/"
-                            +paths[paths.length-1] +"/" +file.getName());
+                        url = "/static/public/" +paths[paths.length-1] +"/" +file.getName();
+                        getPathList.add(url);
                     }else if(paths[paths.length-3].equals("private")){
-                        getPathList.add("http://hniecs.com/web/static/private/"
-                            +paths[paths.length-2]+"/"+paths[paths.length-1] +"/" +file.getName());
+                        url = "/static/private/" +paths[paths.length-2]+"/"+paths[paths.length-1] +"/" +file.getName();
+                        getPathList.add(url);
                     }else{
                         throw CommonExceptions.BAD_FILE_ADDRESS_ERROR.exception;
                     }
-                    String msg = fileModel.upload(multipartFile, file, uploadId);
+                    String msg = fileModel.upload(multipartFile, file, url, uploadId);
                     if(!msg.equals("0")){
                         throw CommonExceptions.FILE_UPLOAD_FAIL.exception;
                     }

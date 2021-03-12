@@ -66,8 +66,8 @@ public interface FileDao {
      */
     @Insert(
         "insert into " +
-            "file(path, type, name, suffix, size, uploader_id,  ctime, mtime)" +
-            "value(#{path}, #{type}, #{name}, #{suffix}, #{size}, #{uploaderId}, #{ctime}, #{mtime})"
+            "file(path, type, name, suffix, size, uploader_id,url, ctime, mtime)" +
+            "value(#{path}, #{type}, #{name}, #{suffix}, #{size}, #{uploaderId},#{url}, #{ctime}, #{mtime})"
     )
     public void insert(FileEntity fileEntity);
 
@@ -81,6 +81,7 @@ public interface FileDao {
                 "<if test = 'path != null'>path = #{path},</if>" +
                 "<if test = 'type != null'>type = #{type},</if>" +
                 "<if test = 'name != null'>name = #{name},</if>" +
+                "<if test = 'url != null'>name = #{url},</if>" +
                 "<if test = 'suffix != null'>suffix = #{suffix},</if>" +
                 "<if test = 'size != null'>size = #{size},</if>" +
                 "<if test = 'mtime != null'>mtime = #{mtime},</if>" +

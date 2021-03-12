@@ -146,12 +146,13 @@ public class FileModel {
      * @param targetFile 文件对象
      * @param uploaderId 上传者id
      */
-    public String upload(MultipartFile file, File targetFile, long uploaderId) {
+    public String upload(MultipartFile file, File targetFile, String url,long uploaderId) {
         try {
             String path = targetFile.getCanonicalPath().replace("\\", "/");
             if(!have(path)) {
                 FileEntity fileEntity = new FileEntity();
                 fileEntity.setPath(path);
+                fileEntity.setUrl(url);
                 fileEntity.setSize(file.getSize());
                 fileEntity.setCtime(new Date());
                 fileEntity.setUploaderId(uploaderId);
@@ -160,6 +161,9 @@ public class FileModel {
                 return "0";
             }else {
                 FileEntity fileEntity = fileDao.getByPath(path);
+                if(fileEntity == null){
+                    throw CommonExceptions.BAD_FILE_ADDRESS_ERROR.exception;
+                }
                 fileEntity.setMtime(new Date());
                 fileEntity.setSize(file.getSize());
                 System.gc();
