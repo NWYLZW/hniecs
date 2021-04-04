@@ -1,5 +1,6 @@
 package com.hniecs.mainserver.handler;
 
+import com.hniecs.mainserver.exception.SQLException;
 import com.hniecs.mainserver.tool.CommonUseStrings;
 import com.hniecs.mainserver.tool.EnvController;
 import com.hniecs.mainserver.tool.api.CommonResult;
@@ -8,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -23,6 +25,15 @@ import java.util.regex.Pattern;
 public class ExceptionsHandler {
     @Autowired
     private EnvController<RuntimeException, List> envController;
+
+    @ExceptionHandler(SQLException.class)
+    public CommonResult<Object> sqlExceptionHandler(SQLException sqlException) throws InvocationTargetException, IllegalAccessException {
+        if(sqlException.getMethod()!=null) {
+            sqlException.doMethod();
+        }
+        log.error(sqlException.getMessage());
+        return CommonResult.failed(sqlException.getLocalizedMessage());
+    }
 
     /**
      * 运行时异常
